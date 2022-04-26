@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 7 分散分析 | データ解析マニュアル</title>
+<meta name="author" content="水圏植物生態学研究室">
+<meta name="description" content="7.1 必要なパッケージ library(tidyverse) library(readxl) library(car) library(emmeans)  7.2 データの読み込み rootdatafolder = rprojroot::find_rstudio_root_file(&quot;Data/&quot;) filename = '瀬戸内海藻場データ.xlsx' path =...">
+<meta name="generator" content="bookdown 0.24 with bs4_book()">
+<meta property="og:title" content="Chapter 7 分散分析 | データ解析マニュアル">
+<meta property="og:type" content="book">
+<meta property="og:description" content="7.1 必要なパッケージ library(tidyverse) library(readxl) library(car) library(emmeans)  7.2 データの読み込み rootdatafolder = rprojroot::find_rstudio_root_file(&quot;Data/&quot;) filename = '瀬戸内海藻場データ.xlsx' path =...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 7 分散分析 | データ解析マニュアル">
+<meta name="twitter:description" content="7.1 必要なパッケージ library(tidyverse) library(readxl) library(car) library(emmeans)  7.2 データの読み込み rootdatafolder = rprojroot::find_rstudio_root_file(&quot;Data/&quot;) filename = '瀬戸内海藻場データ.xlsx' path =...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.12/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="bs4_style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">データ解析マニュアル</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">このマニュアルについて</a></li>
+<li><a class="" href="data-input.html"><span class="header-section-number">1</span> データの読み込み</a></li>
+<li><a class="" href="data-wrangling.html"><span class="header-section-number">2</span> データの処理</a></li>
+<li><a class="" href="data-logger-input.html"><span class="header-section-number">3</span> ロガーからの読み込み</a></li>
+<li><a class="" href="data-summary.html"><span class="header-section-number">4</span> データの集計</a></li>
+<li><a class="" href="map-function.html"><span class="header-section-number">5</span> map 関数ってすごい</a></li>
+<li><a class="" href="t-test.html"><span class="header-section-number">6</span> t 検定</a></li>
+<li><a class="active" href="anova.html"><span class="header-section-number">7</span> 分散分析</a></li>
+<li><a class="" href="glm.html"><span class="header-section-number">8</span> 一般化線形モデル</a></li>
+<li><a class="" href="gam.html"><span class="header-section-number">9</span> 一般化加法モデル</a></li>
+<li><a class="" href="ggplot.html"><span class="header-section-number">10</span> ggplot</a></li>
+<li><a class="" href="maps.html"><span class="header-section-number">11</span> 地図の作り方</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/rstudio/bookdown-demo">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="anova" class="section level1" number="7">
+<h1>
+<span class="header-section-number">7</span> 分散分析<a class="anchor" aria-label="anchor" href="#anova"><i class="fas fa-link"></i></a>
+</h1>
+<div id="必要なパッケージ-5" class="section level2" number="7.1">
+<h2>
+<span class="header-section-number">7.1</span> 必要なパッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-5"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-forge.r-project.org/projects/car/">car</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rvlenth/emmeans">emmeans</a></span><span class="op">)</span></code></pre></div>
+</div>
+<div id="データの読み込み-1" class="section level2" number="7.2">
+<h2>
+<span class="header-section-number">7.2</span> データの読み込み<a class="anchor" aria-label="anchor" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF-1"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">rootdatafolder</span> <span class="op">=</span> <span class="fu">rprojroot</span><span class="fu">::</span><span class="fu"><a href="https://rprojroot.r-lib.org/reference/find_root_file.html">find_rstudio_root_file</a></span><span class="op">(</span><span class="st">"Data/"</span><span class="op">)</span>
+<span class="va">filename</span> <span class="op">=</span> <span class="st">'瀬戸内海藻場データ.xlsx'</span>
+<span class="va">path</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="va">rootdatafolder</span>, <span class="va">filename</span><span class="op">)</span>
+
+<span class="co"># fy1990 の処理</span>
+<span class="va">RNG</span> <span class="op">=</span> <span class="st">"A4:C27"</span>   <span class="co"># セルの範囲</span>
+<span class="va">SHEET</span> <span class="op">=</span> <span class="st">"FY1990"</span> <span class="co"># シート名</span>
+<span class="va">d19</span> <span class="op">=</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="va">path</span>, sheet <span class="op">=</span> <span class="va">SHEET</span>, range <span class="op">=</span> <span class="va">RNG</span><span class="op">)</span>
+<span class="va">d19</span> <span class="op">=</span> <span class="va">d19</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>site <span class="op">=</span> <span class="va">調査海域</span>, seaweed <span class="op">=</span> <span class="va">海藻</span>, seagrass <span class="op">=</span> <span class="va">海草</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">site</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'東部'</span>, <span class="st">'中部'</span>, <span class="st">'西部'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+
+<span class="co"># fy2018の処理</span>
+<span class="va">RNG</span> <span class="op">=</span> <span class="st">"A6:C15"</span>   <span class="co"># 海藻データのセル範囲</span>
+<span class="va">SHEET</span> <span class="op">=</span> <span class="st">"FY2018"</span> <span class="co"># シート名</span>
+<span class="va">seaweed</span> <span class="op">=</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="va">path</span>, sheet <span class="op">=</span> <span class="va">SHEET</span>, range <span class="op">=</span> <span class="va">RNG</span><span class="op">)</span>
+<span class="va">RNG</span> <span class="op">=</span> <span class="st">"E6:G15"</span>   <span class="co"># 海草データのセル範囲</span>
+
+<span class="va">seagrass</span> <span class="op">=</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="va">path</span>, sheet <span class="op">=</span> <span class="va">SHEET</span>, range <span class="op">=</span> <span class="va">RNG</span><span class="op">)</span>
+<span class="va">seaweed</span> <span class="op">=</span> <span class="va">seaweed</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html">everything</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<span class="va">seagrass</span> <span class="op">=</span> <span class="va">seagrass</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html">everything</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">d20</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span>seaweed <span class="op">=</span> <span class="va">seaweed</span>, seagrass <span class="op">=</span> <span class="va">seagrass</span>, .id <span class="op">=</span> <span class="st">"type"</span><span class="op">)</span>
+<span class="va">d20</span> <span class="op">=</span> <span class="va">d20</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>id_cols <span class="op">=</span> <span class="va">name</span>,
+                   names_from <span class="op">=</span> <span class="va">type</span>, values_from <span class="op">=</span> <span class="va">value</span>, 
+                   values_fn <span class="op">=</span> <span class="st">"list"</span><span class="op">)</span>
+<span class="va">d20</span> <span class="op">=</span> <span class="va">d20</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">seaweed</span>, <span class="va">seagrass</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>site <span class="op">=</span> <span class="va">name</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">d20</span> <span class="op">=</span> <span class="va">d20</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">site</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'東部'</span>, <span class="st">'中部'</span>, <span class="st">'西部'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="一元配置分散分析" class="section level2" number="7.3">
+<h2>
+<span class="header-section-number">7.3</span> 一元配置分散分析<a class="anchor" aria-label="anchor" href="#%E4%B8%80%E5%85%83%E9%85%8D%E7%BD%AE%E5%88%86%E6%95%A3%E5%88%86%E6%9E%90"><i class="fas fa-link"></i></a>
+</h2>
+<p>では、一元配置分散分析を実施します。
+まず、分散分析の平方和を正しく求めるためには、<code>contr.sum</code> を設定することです。
+その処理のあと、<code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> 関数でモデルを当てはめます。
+<code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> 関数に渡すモデルは、 <code>〜</code> の右辺に説明変数、左辺に観測値を指定しましょう。</p>
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/contrasts.html">contrasts</a></span><span class="op">(</span><span class="va">d19</span><span class="op">$</span><span class="va">site</span><span class="op">)</span> <span class="op">=</span> <span class="va">contr.sum</span>
+<span class="fu"><a href="https://rdrr.io/r/stats/contrasts.html">contrasts</a></span><span class="op">(</span><span class="va">d20</span><span class="op">$</span><span class="va">site</span><span class="op">)</span> <span class="op">=</span> <span class="va">contr.sum</span>
+<span class="va">m19</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">seaweed</span> <span class="op">~</span> <span class="va">site</span>, data <span class="op">=</span> <span class="va">d19</span><span class="op">)</span>
+<span class="va">m20</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">seaweed</span> <span class="op">~</span> <span class="va">site</span>, data <span class="op">=</span> <span class="va">d20</span><span class="op">)</span></code></pre></div>
+<p>FY1990 海藻藻場面積の一元配置分散分析の結果は次のとおりです。</p>
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">a19</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">m19</span><span class="op">)</span>
+<span class="va">a20</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">m20</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">m19</span><span class="op">)</span> <span class="co"># FY1990 の処理</span>
+<span class="co">#&gt; Analysis of Variance Table</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Response: seaweed</span>
+<span class="co">#&gt;           Df  Sum Sq Mean Sq F value  Pr(&gt;F)  </span>
+<span class="co">#&gt; site       2  892963  446482  2.6621 0.09439 .</span>
+<span class="co">#&gt; Residuals 20 3354343  167717                  </span>
+<span class="co">#&gt; ---</span>
+<span class="co">#&gt; Signif. codes:  </span>
+<span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></code></pre></div>
+<p>FY2019 海藻藻場面積の一元配置分散分析の結果は次のとおりです。</p>
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">m20</span><span class="op">)</span> <span class="co"># FY2018 の処理</span>
+<span class="co">#&gt; Analysis of Variance Table</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Response: seaweed</span>
+<span class="co">#&gt;           Df  Sum Sq Mean Sq F value  Pr(&gt;F)  </span>
+<span class="co">#&gt; site       2  330811  165405  2.9569 0.07499 .</span>
+<span class="co">#&gt; Residuals 20 1118771   55939                  </span>
+<span class="co">#&gt; ---</span>
+<span class="co">#&gt; Signif. codes:  </span>
+<span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></code></pre></div>
+<p>FY1990 のP値は P = 0.0944、
+FY2018 のP値は P = 0.0750 でした。
+どちらも有意水準 (α = 0.05) より大きいので、帰無仮説（海域間の藻場面積は同じ）を棄却できません。</p>
+<p>等分散性と正規性の検定を無視したように、今回だけ分散分析の結果を無視して、多重比較をしてみます。</p>
+</div>
+<div id="多重比較" class="section level2" number="7.4">
+<h2>
+<span class="header-section-number">7.4</span> 多重比較<a class="anchor" aria-label="anchor" href="#%E5%A4%9A%E9%87%8D%E6%AF%94%E8%BC%83"><i class="fas fa-link"></i></a>
+</h2>
+<p>調査海域の全ペアの比較をしるので、Tukey HSDを用います。</p>
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">e19</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/emmeans/man/emmeans.html">emmeans</a></span><span class="op">(</span><span class="va">m19</span>, specs <span class="op">=</span> <span class="va">pairwise</span> <span class="op">~</span> <span class="va">site</span>, adjust <span class="op">=</span> <span class="st">"tukey"</span><span class="op">)</span>
+<span class="va">e20</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/emmeans/man/emmeans.html">emmeans</a></span><span class="op">(</span><span class="va">m20</span>, specs <span class="op">=</span> <span class="va">pairwise</span> <span class="op">~</span> <span class="va">site</span>, adjust <span class="op">=</span> <span class="st">"tukey"</span><span class="op">)</span></code></pre></div>
+<p>FY2019 の場合、全ペアを比較したら、有意な結果はありません。</p>
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">e19</span> <span class="co"># FY1990 の処理</span>
+<span class="co">#&gt; $emmeans</span>
+<span class="co">#&gt;  site emmean  SE df lower.CL upper.CL</span>
+<span class="co">#&gt;  東部    118 167 20     -230      467</span>
+<span class="co">#&gt;  中部    205 137 20      -80      490</span>
+<span class="co">#&gt;  西部    578 145 20      276      880</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Confidence level used: 0.95 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $contrasts</span>
+<span class="co">#&gt;     contrast estimate  SE df t.ratio p.value</span>
+<span class="co">#&gt;  東部 - 中部    -86.4 216 20  -0.400  0.9158</span>
+<span class="co">#&gt;  東部 - 西部   -459.3 221 20  -2.077  0.1202</span>
+<span class="co">#&gt;  中部 - 西部   -372.8 199 20  -1.874  0.1723</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; P value adjustment: tukey method for comparing a family of 3 estimates</span></code></pre></div>
+<p>FY2020 も同じですね。</p>
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">e20</span> <span class="co"># FY2018 の処理</span>
+<span class="co">#&gt; $emmeans</span>
+<span class="co">#&gt;  site emmean   SE df lower.CL upper.CL</span>
+<span class="co">#&gt;  東部  109.3 96.6 20    -92.1      311</span>
+<span class="co">#&gt;  中部  301.0 78.8 20    136.5      465</span>
+<span class="co">#&gt;  西部   29.2 83.6 20   -145.2      204</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Confidence level used: 0.95 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $contrasts</span>
+<span class="co">#&gt;     contrast estimate  SE df t.ratio p.value</span>
+<span class="co">#&gt;  東部 - 中部   -191.7 125 20  -1.538  0.2953</span>
+<span class="co">#&gt;  東部 - 西部     80.1 128 20   0.627  0.8072</span>
+<span class="co">#&gt;  中部 - 西部    271.8 115 20   2.365  0.0696</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; P value adjustment: tukey method for comparing a family of 3 estimates</span></code></pre></div>
+<p>この用な結果は予想していました。そもそも分散分析から有意な結果がでなかったので、多重比較しても有意な結果はでません。</p>
+<p>ちなみに Dunnet Method をつかって、西部と東部を中部と比較したら次の結果になります。</p>
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">e19d</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/emmeans/man/emmeans.html">emmeans</a></span><span class="op">(</span><span class="va">m19</span>, specs <span class="op">=</span> <span class="va">trt.vs.ctrl</span> <span class="op">~</span> <span class="va">site</span>, ref <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+<span class="va">e20d</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/emmeans/man/emmeans.html">emmeans</a></span><span class="op">(</span><span class="va">m20</span>, specs <span class="op">=</span> <span class="va">trt.vs.ctrl</span> <span class="op">~</span> <span class="va">site</span>, ref <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">e19d</span> <span class="co"># FY1990 の処理</span>
+<span class="co">#&gt; $emmeans</span>
+<span class="co">#&gt;  site emmean  SE df lower.CL upper.CL</span>
+<span class="co">#&gt;  東部    118 167 20     -230      467</span>
+<span class="co">#&gt;  中部    205 137 20      -80      490</span>
+<span class="co">#&gt;  西部    578 145 20      276      880</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Confidence level used: 0.95 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $contrasts</span>
+<span class="co">#&gt;     contrast estimate  SE df t.ratio p.value</span>
+<span class="co">#&gt;  東部 - 中部    -86.4 216 20  -0.400  0.8781</span>
+<span class="co">#&gt;  西部 - 中部    372.8 199 20   1.874  0.1373</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; P value adjustment: dunnettx method for 2 tests</span></code></pre></div>
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">e20d</span> <span class="co"># FY2018 の処理</span>
+<span class="co">#&gt; $emmeans</span>
+<span class="co">#&gt;  site emmean   SE df lower.CL upper.CL</span>
+<span class="co">#&gt;  東部  109.3 96.6 20    -92.1      311</span>
+<span class="co">#&gt;  中部  301.0 78.8 20    136.5      465</span>
+<span class="co">#&gt;  西部   29.2 83.6 20   -145.2      204</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Confidence level used: 0.95 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $contrasts</span>
+<span class="co">#&gt;     contrast estimate  SE df t.ratio p.value</span>
+<span class="co">#&gt;  東部 - 中部     -192 125 20  -1.538  0.2441</span>
+<span class="co">#&gt;  西部 - 中部     -272 115 20  -2.365  0.0531</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; P value adjustment: dunnettx method for 2 tests</span></code></pre></div>
+<p>Dunnet Method の場合でも有意な結果はありません。</p>
+</div>
+<div id="二元配置分散分析" class="section level2" number="7.5">
+<h2>
+<span class="header-section-number">7.5</span> 二元配置分散分析<a class="anchor" aria-label="anchor" href="#%E4%BA%8C%E5%85%83%E9%85%8D%E7%BD%AE%E5%88%86%E6%95%A3%E5%88%86%E6%9E%90"><i class="fas fa-link"></i></a>
+</h2>
+</div>
+<div id="正規性と等分散性の確認" class="section level2" number="7.6">
+<h2>
+<span class="header-section-number">7.6</span> 正規性と等分散性の確認<a class="anchor" aria-label="anchor" href="#%E6%AD%A3%E8%A6%8F%E6%80%A7%E3%81%A8%E7%AD%89%E5%88%86%E6%95%A3%E6%80%A7%E3%81%AE%E7%A2%BA%E8%AA%8D"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dall</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span>fy1990 <span class="op">=</span> <span class="va">d19</span>,
+                 fy2018 <span class="op">=</span> <span class="va">d20</span>, 
+                 .id <span class="op">=</span> <span class="st">"year"</span><span class="op">)</span>
+<span class="va">dall</span> <span class="op">=</span> <span class="va">dall</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>分散分析を行う前に、Levene Test と Shapiro-Wilk Normality Test でデータの等分散性<a href="maps.html#fn11" class="footnote-ref" id="fnref11"><sup>11</sup></a> と正規性<a href="maps.html#fn12" class="footnote-ref" id="fnref12"><sup>12</sup></a> を確認します。
+ルビーン検定とシャピロウィルク検定については、t 検定の資料を参考にしてください。
+ここで紹介する解析は <code>海藻</code> に対してです。</p>
+<p><strong>ルビーン検定</strong></p>
+<p><code>FY1990</code>と<code>FY2018</code> データの等分散性検定結果は P = 0.0996 でしたので、
+帰無仮説は棄却できません。
+つまり、等分散性であると判断できます。</p>
+<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/car/man/leveneTest.html">leveneTest</a></span><span class="op">(</span><span class="va">seaweed</span> <span class="op">~</span> <span class="va">site</span><span class="op">*</span><span class="va">year</span>, data <span class="op">=</span> <span class="va">dall</span><span class="op">)</span> 
+<span class="co">#&gt; Levene's Test for Homogeneity of Variance (center = median)</span>
+<span class="co">#&gt;       Df F value Pr(&gt;F)  </span>
+<span class="co">#&gt; group  5  1.9994 0.0996 .</span>
+<span class="co">#&gt;       40                 </span>
+<span class="co">#&gt; ---</span>
+<span class="co">#&gt; Signif. codes:  </span>
+<span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></code></pre></div>
+<p><strong>シャピロウィルク検定</strong></p>
+<p><code>FY1990</code>と<code>FY2018</code> データの等分散性について、P &lt; 0.0001 だったので、
+帰無仮説を棄却できます。
+データの母集団は正規分布に従わないかもしれないです。</p>
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/shapiro.test.html">shapiro.test</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">dall</span><span class="op">$</span><span class="va">seaweed</span><span class="op">)</span> <span class="co"># FY1990 の処理</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;  Shapiro-Wilk normality test</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; data:  dall$seaweed</span>
+<span class="co">#&gt; W = 0.63263, p-value = 1.731e-09</span></code></pre></div>
+</div>
+<div id="二元配置分散分析-1" class="section level2" number="7.7">
+<h2>
+<span class="header-section-number">7.7</span> 二元配置分散分析<a class="anchor" aria-label="anchor" href="#%E4%BA%8C%E5%85%83%E9%85%8D%E7%BD%AE%E5%88%86%E6%95%A3%E5%88%86%E6%9E%90-1"><i class="fas fa-link"></i></a>
+</h2>
+<p>では、二元配置分散分析を実施します。
+まず、分散分析の平方和を正しく求めるためには、<code>contr.sum</code> を設定することです。
+その処理のあと、<code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> 関数でモデルを当てはめます。
+<code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> 関数に渡すモデルは、 <code>〜</code> の右辺に説明変数、左辺に観測値を指定しましょう。</p>
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/contrasts.html">contrasts</a></span><span class="op">(</span><span class="va">dall</span><span class="op">$</span><span class="va">site</span><span class="op">)</span> <span class="op">=</span> <span class="va">contr.sum</span>
+<span class="fu"><a href="https://rdrr.io/r/stats/contrasts.html">contrasts</a></span><span class="op">(</span><span class="va">dall</span><span class="op">$</span><span class="va">year</span><span class="op">)</span> <span class="op">=</span> <span class="va">contr.sum</span>
+<span class="va">mall</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">seaweed</span> <span class="op">~</span> <span class="va">site</span><span class="op">*</span><span class="va">year</span>, data <span class="op">=</span> <span class="va">dall</span><span class="op">)</span></code></pre></div>
+<p>FY1990 海藻藻場面積の一元配置分散分析の結果は次のとおりです。</p>
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/car/man/Anova.html">Anova</a></span><span class="op">(</span><span class="va">mall</span>, type <span class="op">=</span><span class="fl">3</span><span class="op">)</span>
+<span class="co">#&gt; Anova Table (Type III tests)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Response: seaweed</span>
+<span class="co">#&gt;              Sum Sq Df F value    Pr(&gt;F)    </span>
+<span class="co">#&gt; (Intercept) 2230084  1 19.9421 6.382e-05 ***</span>
+<span class="co">#&gt; site         256846  2  1.1484   0.32738    </span>
+<span class="co">#&gt; year         263994  1  2.3607   0.13230    </span>
+<span class="co">#&gt; site:year    966928  2  4.3233   0.01996 *  </span>
+<span class="co">#&gt; Residuals   4473114 40                      </span>
+<span class="co">#&gt; ---</span>
+<span class="co">#&gt; Signif. codes:  </span>
+<span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></code></pre></div>
+<p><code>site</code> 効果のP値は P = 0.3274、
+<code>year</code> 効果のP値は P = 0.1323、
+相互作用のP値は P = 0.0200 でした。
+相互作用のP値は有意水準 (α = 0.05) より大きいので、相互作用の帰無仮説は棄却できますが、主効果の帰無仮説は棄却できません。</p>
+</div>
+<div id="多重比較-1" class="section level2" number="7.8">
+<h2>
+<span class="header-section-number">7.8</span> 多重比較<a class="anchor" aria-label="anchor" href="#%E5%A4%9A%E9%87%8D%E6%AF%94%E8%BC%83-1"><i class="fas fa-link"></i></a>
+</h2>
+<p>調査海域の全ペアの比較をしるので、Tukey HSDを用います。</p>
+<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">eall</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/emmeans/man/emmeans.html">emmeans</a></span><span class="op">(</span><span class="va">mall</span>, specs <span class="op">=</span> <span class="va">pairwise</span> <span class="op">~</span> <span class="va">site</span><span class="op">:</span><span class="va">year</span>, adjust <span class="op">=</span> <span class="st">"tukey"</span><span class="op">)</span></code></pre></div>
+<p>FY2019 の場合、全ペアを比較したら、有意な結果はありません。</p>
+<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">eall</span> 
+<span class="co">#&gt; $emmeans</span>
+<span class="co">#&gt;  site year   emmean  SE df lower.CL upper.CL</span>
+<span class="co">#&gt;  東部 fy1990  118.3 137 40   -157.6      394</span>
+<span class="co">#&gt;  中部 fy1990  204.8 111 40    -20.5      430</span>
+<span class="co">#&gt;  西部 fy1990  577.6 118 40    338.7      817</span>
+<span class="co">#&gt;  東部 fy2018  109.3 137 40   -166.6      385</span>
+<span class="co">#&gt;  中部 fy2018  301.0 111 40     75.7      526</span>
+<span class="co">#&gt;  西部 fy2018   29.2 118 40   -209.7      268</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Confidence level used: 0.95 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $contrasts</span>
+<span class="co">#&gt;      contrast              estimate  SE df t.ratio p.value</span>
+<span class="co">#&gt;  東部 fy1990 - 中部 fy1990    -86.4 176 40  -0.490  0.9962</span>
+<span class="co">#&gt;  東部 fy1990 - 西部 fy1990   -459.3 181 40  -2.543  0.1360</span>
+<span class="co">#&gt;  東部 fy1990 - 東部 fy2018      9.0 193 40   0.047  1.0000</span>
+<span class="co">#&gt;  東部 fy1990 - 中部 fy2018   -182.7 176 40  -1.036  0.9027</span>
+<span class="co">#&gt;  東部 fy1990 - 西部 fy2018     89.1 181 40   0.493  0.9961</span>
+<span class="co">#&gt;  中部 fy1990 - 西部 fy1990   -372.8 162 40  -2.295  0.2201</span>
+<span class="co">#&gt;  中部 fy1990 - 東部 fy2018     95.4 176 40   0.542  0.9940</span>
+<span class="co">#&gt;  中部 fy1990 - 中部 fy2018    -96.2 158 40  -0.610  0.9897</span>
+<span class="co">#&gt;  中部 fy1990 - 西部 fy2018    175.5 162 40   1.080  0.8863</span>
+<span class="co">#&gt;  西部 fy1990 - 東部 fy2018    468.3 181 40   2.593  0.1226</span>
+<span class="co">#&gt;  西部 fy1990 - 中部 fy2018    276.6 162 40   1.702  0.5383</span>
+<span class="co">#&gt;  西部 fy1990 - 西部 fy2018    548.4 167 40   3.280  0.0245</span>
+<span class="co">#&gt;  東部 fy2018 - 中部 fy2018   -191.7 176 40  -1.087  0.8835</span>
+<span class="co">#&gt;  東部 fy2018 - 西部 fy2018     80.1 181 40   0.443  0.9977</span>
+<span class="co">#&gt;  中部 fy2018 - 西部 fy2018    271.8 162 40   1.672  0.5573</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; P value adjustment: tukey method for comparing a family of 6 estimates</span></code></pre></div>
+<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/emmeans/man/emmeans.html">emmeans</a></span><span class="op">(</span><span class="va">mall</span>, specs <span class="op">=</span> <span class="va">pairwise</span> <span class="op">~</span> <span class="va">site</span><span class="op">|</span><span class="va">year</span>, adjust <span class="op">=</span> <span class="st">"tukey"</span><span class="op">)</span>
+<span class="co">#&gt; $emmeans</span>
+<span class="co">#&gt; year = fy1990:</span>
+<span class="co">#&gt;  site emmean  SE df lower.CL upper.CL</span>
+<span class="co">#&gt;  東部  118.3 137 40   -157.6      394</span>
+<span class="co">#&gt;  中部  204.8 111 40    -20.5      430</span>
+<span class="co">#&gt;  西部  577.6 118 40    338.7      817</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; year = fy2018:</span>
+<span class="co">#&gt;  site emmean  SE df lower.CL upper.CL</span>
+<span class="co">#&gt;  東部  109.3 137 40   -166.6      385</span>
+<span class="co">#&gt;  中部  301.0 111 40     75.7      526</span>
+<span class="co">#&gt;  西部   29.2 118 40   -209.7      268</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Confidence level used: 0.95 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $contrasts</span>
+<span class="co">#&gt; year = fy1990:</span>
+<span class="co">#&gt;     contrast estimate  SE df t.ratio p.value</span>
+<span class="co">#&gt;  東部 - 中部    -86.4 176 40  -0.490  0.8762</span>
+<span class="co">#&gt;  東部 - 西部   -459.3 181 40  -2.543  0.0389</span>
+<span class="co">#&gt;  中部 - 西部   -372.8 162 40  -2.295  0.0681</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; year = fy2018:</span>
+<span class="co">#&gt;     contrast estimate  SE df t.ratio p.value</span>
+<span class="co">#&gt;  東部 - 中部   -191.7 176 40  -1.087  0.5273</span>
+<span class="co">#&gt;  東部 - 西部     80.1 181 40   0.443  0.8976</span>
+<span class="co">#&gt;  中部 - 西部    271.8 162 40   1.672  0.2282</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; P value adjustment: tukey method for comparing a family of 3 estimates</span>
+<span class="fu"><a href="https://rdrr.io/pkg/emmeans/man/emmeans.html">emmeans</a></span><span class="op">(</span><span class="va">mall</span>, specs <span class="op">=</span> <span class="va">pairwise</span> <span class="op">~</span> <span class="va">year</span><span class="op">|</span><span class="va">site</span>, adjust <span class="op">=</span> <span class="st">"tukey"</span><span class="op">)</span>
+<span class="co">#&gt; $emmeans</span>
+<span class="co">#&gt; site = 東部:</span>
+<span class="co">#&gt;  year   emmean  SE df lower.CL upper.CL</span>
+<span class="co">#&gt;  fy1990  118.3 137 40   -157.6      394</span>
+<span class="co">#&gt;  fy2018  109.3 137 40   -166.6      385</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; site = 中部:</span>
+<span class="co">#&gt;  year   emmean  SE df lower.CL upper.CL</span>
+<span class="co">#&gt;  fy1990  204.8 111 40    -20.5      430</span>
+<span class="co">#&gt;  fy2018  301.0 111 40     75.7      526</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; site = 西部:</span>
+<span class="co">#&gt;  year   emmean  SE df lower.CL upper.CL</span>
+<span class="co">#&gt;  fy1990  577.6 118 40    338.7      817</span>
+<span class="co">#&gt;  fy2018   29.2 118 40   -209.7      268</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Confidence level used: 0.95 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $contrasts</span>
+<span class="co">#&gt; site = 東部:</span>
+<span class="co">#&gt;  contrast        estimate  SE df t.ratio p.value</span>
+<span class="co">#&gt;  fy1990 - fy2018      9.0 193 40   0.047  0.9631</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; site = 中部:</span>
+<span class="co">#&gt;  contrast        estimate  SE df t.ratio p.value</span>
+<span class="co">#&gt;  fy1990 - fy2018    -96.2 158 40  -0.610  0.5451</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; site = 西部:</span>
+<span class="co">#&gt;  contrast        estimate  SE df t.ratio p.value</span>
+<span class="co">#&gt;  fy1990 - fy2018    548.4 167 40   3.280  0.0022</span></code></pre></div>
+</div>
+<div id="等分散性と正規性の事後確認" class="section level2" number="7.9">
+<h2>
+<span class="header-section-number">7.9</span> 等分散性と正規性の事後確認<a class="anchor" aria-label="anchor" href="#%E7%AD%89%E5%88%86%E6%95%A3%E6%80%A7%E3%81%A8%E6%AD%A3%E8%A6%8F%E6%80%A7%E3%81%AE%E4%BA%8B%E5%BE%8C%E7%A2%BA%E8%AA%8D"><i class="fas fa-link"></i></a>
+</h2>
+<p><code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> に渡している <code>mall</code> は前章に当てはめた二元配置分散分析のモデルです。</p>
+</div>
+<div id="等分散性の確認に使うプロット" class="section level2" number="7.10">
+<h2>
+<span class="header-section-number">7.10</span> 等分散性の確認に使うプロット<a class="anchor" aria-label="anchor" href="#%E7%AD%89%E5%88%86%E6%95%A3%E6%80%A7%E3%81%AE%E7%A2%BA%E8%AA%8D%E3%81%AB%E4%BD%BF%E3%81%86%E3%83%97%E3%83%AD%E3%83%83%E3%83%88"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">mall</span>, which <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:rfplot"></span>
+<img src="22-analysis-anova_files/figure-html/rfplot-1.png" alt="残渣 vs. 期待値" width="576"><p class="caption">
+Figure 7.1: 残渣 vs. 期待値
+</p>
+</div>
+<p>Fig. <a href="anova.html#fig:rfplot">7.1</a> は残渣<a href="maps.html#fn13" class="footnote-ref" id="fnref13"><sup>13</sup></a>
+と期待値<a href="maps.html#fn14" class="footnote-ref" id="fnref14"><sup>14</sup></a> の関係を理解するてめに使います。
+等分散性に問題がない場合、残渣は y = 0 の周りを均一に、変動なくばらつきます。
+ところが Fig. <a href="anova.html#fig:rfplot">7.1</a> の場合、期待値が高いとき、残渣のばらつきが大きい。</p>
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">mall</span>, which <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:slplot"></span>
+<img src="22-analysis-anova_files/figure-html/slplot-1.png" alt="スケール・位置プロット" width="576"><p class="caption">
+Figure 7.2: スケール・位置プロット
+</p>
+</div>
+<p>Fig. <a href="anova.html#fig:slplot">7.2</a> はスケール・ロケーションプロットといいます。
+スケール<a href="maps.html#fn15" class="footnote-ref" id="fnref15"><sup>15</sup></a> は確率密度分布のばらつきのパラメータです。
+位置（ロケーション）<a href="maps.html#fn16" class="footnote-ref" id="fnref16"><sup>16</sup></a> は確率分布の中心のパラメータです。
+たとえば、正規分布のスケールパラメータは分散、位置パラメータは平均値です。
+Fig. <a href="anova.html#fig:slplot">7.2</a> の横軸は位置、縦長はスケールパラメータで標準化した残渣の平方根です。
+示されている標準化残渣のばらつきが均一で、期待値<a href="maps.html#fn17" class="footnote-ref" id="fnref17"><sup>17</sup></a> と無関係であれば、ばらつきは均一であると考えられます。
+Fig. <a href="anova.html#fig:slplot">7.2</a> の場合、標準化残渣は期待値と正の関係があるので、ばらつきは均一であると考えられません。</p>
+</div>
+<div id="正規性の確認に使うプロット" class="section level2" number="7.11">
+<h2>
+<span class="header-section-number">7.11</span> 正規性の確認に使うプロット<a class="anchor" aria-label="anchor" href="#%E6%AD%A3%E8%A6%8F%E6%80%A7%E3%81%AE%E7%A2%BA%E8%AA%8D%E3%81%AB%E4%BD%BF%E3%81%86%E3%83%97%E3%83%AD%E3%83%83%E3%83%88"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">mall</span>, which <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:qqplot"></span>
+<img src="22-analysis-anova_files/figure-html/qqplot-1.png" alt="QQプロット" width="576"><p class="caption">
+Figure 7.3: QQプロット
+</p>
+</div>
+</div>
+<div id="飛び値異常値の確認プロット" class="section level2" number="7.12">
+<h2>
+<span class="header-section-number">7.12</span> 飛び値・異常値の確認プロット<a class="anchor" aria-label="anchor" href="#%E9%A3%9B%E3%81%B3%E5%80%A4%E7%95%B0%E5%B8%B8%E5%80%A4%E3%81%AE%E7%A2%BA%E8%AA%8D%E3%83%97%E3%83%AD%E3%83%83%E3%83%88"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">mall</span>, which <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:cookplot"></span>
+<img src="22-analysis-anova_files/figure-html/cookplot-1.png" alt="クックの距離とてこ比" width="576"><p class="caption">
+Figure 7.4: クックの距離とてこ比
+</p>
+</div>
+
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="t-test.html"><span class="header-section-number">6</span> t 検定</a></div>
+<div class="next"><a href="glm.html"><span class="header-section-number">8</span> 一般化線形モデル</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#anova"><span class="header-section-number">7</span> 分散分析</a></li>
+<li><a class="nav-link" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-5"><span class="header-section-number">7.1</span> 必要なパッケージ</a></li>
+<li><a class="nav-link" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF-1"><span class="header-section-number">7.2</span> データの読み込み</a></li>
+<li><a class="nav-link" href="#%E4%B8%80%E5%85%83%E9%85%8D%E7%BD%AE%E5%88%86%E6%95%A3%E5%88%86%E6%9E%90"><span class="header-section-number">7.3</span> 一元配置分散分析</a></li>
+<li><a class="nav-link" href="#%E5%A4%9A%E9%87%8D%E6%AF%94%E8%BC%83"><span class="header-section-number">7.4</span> 多重比較</a></li>
+<li><a class="nav-link" href="#%E4%BA%8C%E5%85%83%E9%85%8D%E7%BD%AE%E5%88%86%E6%95%A3%E5%88%86%E6%9E%90"><span class="header-section-number">7.5</span> 二元配置分散分析</a></li>
+<li><a class="nav-link" href="#%E6%AD%A3%E8%A6%8F%E6%80%A7%E3%81%A8%E7%AD%89%E5%88%86%E6%95%A3%E6%80%A7%E3%81%AE%E7%A2%BA%E8%AA%8D"><span class="header-section-number">7.6</span> 正規性と等分散性の確認</a></li>
+<li><a class="nav-link" href="#%E4%BA%8C%E5%85%83%E9%85%8D%E7%BD%AE%E5%88%86%E6%95%A3%E5%88%86%E6%9E%90-1"><span class="header-section-number">7.7</span> 二元配置分散分析</a></li>
+<li><a class="nav-link" href="#%E5%A4%9A%E9%87%8D%E6%AF%94%E8%BC%83-1"><span class="header-section-number">7.8</span> 多重比較</a></li>
+<li><a class="nav-link" href="#%E7%AD%89%E5%88%86%E6%95%A3%E6%80%A7%E3%81%A8%E6%AD%A3%E8%A6%8F%E6%80%A7%E3%81%AE%E4%BA%8B%E5%BE%8C%E7%A2%BA%E8%AA%8D"><span class="header-section-number">7.9</span> 等分散性と正規性の事後確認</a></li>
+<li><a class="nav-link" href="#%E7%AD%89%E5%88%86%E6%95%A3%E6%80%A7%E3%81%AE%E7%A2%BA%E8%AA%8D%E3%81%AB%E4%BD%BF%E3%81%86%E3%83%97%E3%83%AD%E3%83%83%E3%83%88"><span class="header-section-number">7.10</span> 等分散性の確認に使うプロット</a></li>
+<li><a class="nav-link" href="#%E6%AD%A3%E8%A6%8F%E6%80%A7%E3%81%AE%E7%A2%BA%E8%AA%8D%E3%81%AB%E4%BD%BF%E3%81%86%E3%83%97%E3%83%AD%E3%83%83%E3%83%88"><span class="header-section-number">7.11</span> 正規性の確認に使うプロット</a></li>
+<li><a class="nav-link" href="#%E9%A3%9B%E3%81%B3%E5%80%A4%E7%95%B0%E5%B8%B8%E5%80%A4%E3%81%AE%E7%A2%BA%E8%AA%8D%E3%83%97%E3%83%AD%E3%83%83%E3%83%88"><span class="header-section-number">7.12</span> 飛び値・異常値の確認プロット</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/rstudio/bookdown-demo/blob/master/22-analysis-anova.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/rstudio/bookdown-demo/edit/master/22-analysis-anova.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室. It was last built on 2022-04-26.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

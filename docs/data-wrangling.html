@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 2 データの処理 | データ解析マニュアル</title>
+<meta name="author" content="水圏植物生態学研究室">
+<meta name="description" content="2.1 必要なパッケージ library(tidyverse) library(readxl)  2.2 データの読み込み データの読み込みを参考に：1 。 rootdatafolder = rprojroot::find_rstudio_root_file(&quot;Data/&quot;) filename = '瀬戸内海藻場データ.xlsx' path = str_c(rootdatafolder,...">
+<meta name="generator" content="bookdown 0.24 with bs4_book()">
+<meta property="og:title" content="Chapter 2 データの処理 | データ解析マニュアル">
+<meta property="og:type" content="book">
+<meta property="og:description" content="2.1 必要なパッケージ library(tidyverse) library(readxl)  2.2 データの読み込み データの読み込みを参考に：1 。 rootdatafolder = rprojroot::find_rstudio_root_file(&quot;Data/&quot;) filename = '瀬戸内海藻場データ.xlsx' path = str_c(rootdatafolder,...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 2 データの処理 | データ解析マニュアル">
+<meta name="twitter:description" content="2.1 必要なパッケージ library(tidyverse) library(readxl)  2.2 データの読み込み データの読み込みを参考に：1 。 rootdatafolder = rprojroot::find_rstudio_root_file(&quot;Data/&quot;) filename = '瀬戸内海藻場データ.xlsx' path = str_c(rootdatafolder,...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.12/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="bs4_style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">データ解析マニュアル</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">このマニュアルについて</a></li>
+<li><a class="" href="data-input.html"><span class="header-section-number">1</span> データの読み込み</a></li>
+<li><a class="active" href="data-wrangling.html"><span class="header-section-number">2</span> データの処理</a></li>
+<li><a class="" href="data-logger-input.html"><span class="header-section-number">3</span> ロガーからの読み込み</a></li>
+<li><a class="" href="data-summary.html"><span class="header-section-number">4</span> データの集計</a></li>
+<li><a class="" href="map-function.html"><span class="header-section-number">5</span> map 関数ってすごい</a></li>
+<li><a class="" href="t-test.html"><span class="header-section-number">6</span> t 検定</a></li>
+<li><a class="" href="anova.html"><span class="header-section-number">7</span> 分散分析</a></li>
+<li><a class="" href="glm.html"><span class="header-section-number">8</span> 一般化線形モデル</a></li>
+<li><a class="" href="gam.html"><span class="header-section-number">9</span> 一般化加法モデル</a></li>
+<li><a class="" href="ggplot.html"><span class="header-section-number">10</span> ggplot</a></li>
+<li><a class="" href="maps.html"><span class="header-section-number">11</span> 地図の作り方</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/rstudio/bookdown-demo">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="data-wrangling" class="section level1" number="2">
+<h1>
+<span class="header-section-number">2</span> データの処理<a class="anchor" aria-label="anchor" href="#data-wrangling"><i class="fas fa-link"></i></a>
+</h1>
+<div id="必要なパッケージ-1" class="section level2" number="2.1">
+<h2>
+<span class="header-section-number">2.1</span> 必要なパッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-1"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span></code></pre></div>
+</div>
+<div id="データの読み込み" class="section level2" number="2.2">
+<h2>
+<span class="header-section-number">2.2</span> データの読み込み<a class="anchor" aria-label="anchor" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF"><i class="fas fa-link"></i></a>
+</h2>
+<p>データの読み込みを参考に：<a href="data-input.html#data-input">1</a> 。</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">rootdatafolder</span> <span class="op">=</span> <span class="fu">rprojroot</span><span class="fu">::</span><span class="fu"><a href="https://rprojroot.r-lib.org/reference/find_root_file.html">find_rstudio_root_file</a></span><span class="op">(</span><span class="st">"Data/"</span><span class="op">)</span>
+<span class="va">filename</span> <span class="op">=</span> <span class="st">'瀬戸内海藻場データ.xlsx'</span>
+<span class="va">path</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="va">rootdatafolder</span>, <span class="va">filename</span><span class="op">)</span>
+
+<span class="co"># fy1990 の処理</span>
+<span class="va">RNG</span> <span class="op">=</span> <span class="st">"A4:C27"</span>   <span class="co"># セルの範囲</span>
+<span class="va">SHEET</span> <span class="op">=</span> <span class="st">"FY1990"</span> <span class="co"># シート名</span>
+<span class="va">d19</span> <span class="op">=</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="va">path</span>, sheet <span class="op">=</span> <span class="va">SHEET</span>, range <span class="op">=</span> <span class="va">RNG</span><span class="op">)</span>
+
+<span class="co"># fy2018の処理</span>
+<span class="va">RNG</span> <span class="op">=</span> <span class="st">"A6:C15"</span>   <span class="co"># 海藻データのセル範囲</span>
+<span class="va">SHEET</span> <span class="op">=</span> <span class="st">"FY2018"</span> <span class="co"># シート名</span>
+<span class="va">seaweed</span> <span class="op">=</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="va">path</span>, sheet <span class="op">=</span> <span class="va">SHEET</span>, range <span class="op">=</span> <span class="va">RNG</span><span class="op">)</span>
+<span class="va">RNG</span> <span class="op">=</span> <span class="st">"E6:G15"</span>   <span class="co"># 海草データのセル範囲</span>
+<span class="va">seagrass</span> <span class="op">=</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="va">path</span>, sheet <span class="op">=</span> <span class="va">SHEET</span>, range <span class="op">=</span> <span class="va">RNG</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="データの処理" class="section level2" number="2.3">
+<h2>
+<span class="header-section-number">2.3</span> データの処理<a class="anchor" aria-label="anchor" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%87%A6%E7%90%86"><i class="fas fa-link"></i></a>
+</h2>
+<p>データの形（横長から縦長）を変えたいとき、<code>tidyverse</code> の <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider()</a></code> と <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> を使うと楽です。</p>
+<p>では、FY2018シートの構造をFY1990シートと同じようにします。
+横長のデータを縦長に変換するには、<code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> を使います。
+これは MS Excel の ピボットテーブル (pivot table) の機能とにています。</p>
+<div class="rmdnote">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># %&gt;% と |&gt; はパイプ演算子とよびます。</span>
+<span class="co"># |&gt; はR 4.1.0 から追加された、ネーティブのパイプ演算子です。</span>
+<span class="co"># RStudio の設定を変えなければ、CTRL+SHIFT+M をしたら、%&gt;% が入力されるとおもいます。</span>
+<span class="co"># ネーティブパイプを使いたいなら、Tools -&gt; Global Options -&gt; Code に</span>
+<span class="co">#   いって、Use native pipe operator のボックスにチェックを入れてください。</span>
+<span class="co"># seaweed = seaweed %&gt;% pivot_longer(cols = everything())</span>
+<span class="va">seaweed</span> <span class="op">=</span> <span class="va">seaweed</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html">everything</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+</div>
+<p>ここでの重要なポイントは、必ずピボットしたい列を指定することです。
+このとき、すべての列をピボットしたいので、<code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> には <code>cols = everything()</code> をわたします。
+ピボットされた <code>seaweed</code> は次のとおりです。
+<code>|&gt; print(n = Inf)</code> をすると、<code>tibble</code> 内容をすべて表示できます<a href="maps.html#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>。</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">seaweed</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span>n <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 27 × 2</span>
+<span class="co">#&gt;    name  value</span>
+<span class="co">#&gt;    &lt;chr&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 東部     14</span>
+<span class="co">#&gt;  2 中部     62</span>
+<span class="co">#&gt;  3 西部    108</span>
+<span class="co">#&gt;  4 東部     93</span>
+<span class="co">#&gt;  5 中部    838</span>
+<span class="co">#&gt;  6 西部      0</span>
+<span class="co">#&gt;  7 東部     12</span>
+<span class="co">#&gt;  8 中部    933</span>
+<span class="co">#&gt;  9 西部      0</span>
+<span class="co">#&gt; 10 東部      8</span>
+<span class="co">#&gt; 11 中部    193</span>
+<span class="co">#&gt; 12 西部      0</span>
+<span class="co">#&gt; 13 東部    444</span>
+<span class="co">#&gt; 14 中部    235</span>
+<span class="co">#&gt; 15 西部      0</span>
+<span class="co">#&gt; 16 東部     85</span>
+<span class="co">#&gt; 17 中部    150</span>
+<span class="co">#&gt; 18 西部    126</span>
+<span class="co">#&gt; 19 東部     NA</span>
+<span class="co">#&gt; 20 中部    283</span>
+<span class="co">#&gt; 21 西部      0</span>
+<span class="co">#&gt; 22 東部     NA</span>
+<span class="co">#&gt; 23 中部      3</span>
+<span class="co">#&gt; 24 西部      0</span>
+<span class="co">#&gt; 25 東部     NA</span>
+<span class="co">#&gt; 26 中部     12</span>
+<span class="co">#&gt; 27 西部     NA</span></code></pre></div>
+<p><code>seagrass</code> も同じように処理しました。</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">seagrass</span> <span class="op">=</span> <span class="va">seagrass</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html">everything</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>では、次は <code>seaweed</code> と <code>seagrass</code> を縦に結合することです。
+複数の <code>tibble</code> を縦に結合するための関数は <code><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows()</a></code> です。</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">d20</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span>seaweed <span class="op">=</span> <span class="va">seaweed</span>, seagrass <span class="op">=</span> <span class="va">seagrass</span>, .id <span class="op">=</span> <span class="st">"type"</span><span class="op">)</span></code></pre></div>
+<p><code>seaweed</code> に <code>seaweed</code>、<code>seagrass</code> に <code>seagrass</code> を渡します。
+さらに、<code>seaweed</code> と <code>seagrass</code> を <code>type</code> 変数に書き込みます。</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">d20</span>　<span class="co"># FY2018 データ</span>
+<span class="co">#&gt; # A tibble: 54 × 3</span>
+<span class="co">#&gt;    type    name  value</span>
+<span class="co">#&gt;    &lt;chr&gt;   &lt;chr&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 seaweed 東部     14</span>
+<span class="co">#&gt;  2 seaweed 中部     62</span>
+<span class="co">#&gt;  3 seaweed 西部    108</span>
+<span class="co">#&gt;  4 seaweed 東部     93</span>
+<span class="co">#&gt;  5 seaweed 中部    838</span>
+<span class="co">#&gt;  6 seaweed 西部      0</span>
+<span class="co">#&gt;  7 seaweed 東部     12</span>
+<span class="co">#&gt;  8 seaweed 中部    933</span>
+<span class="co">#&gt;  9 seaweed 西部      0</span>
+<span class="co">#&gt; 10 seaweed 東部      8</span>
+<span class="co">#&gt; # … with 44 more rows</span></code></pre></div>
+<p>実は、次のように <code><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows()</a></code> を実行できますが、データの構造は不都合になります。
+どちらも 2つの <code>tibble</code> を縦に結合してくれますが、結果は全く違います。
+コードと結果の違いをよく確認して、その違いを理解しましょう。</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span><span class="va">seaweed</span>, <span class="va">seagrass</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 54 × 2</span>
+<span class="co">#&gt;    name  value</span>
+<span class="co">#&gt;    &lt;chr&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 東部     14</span>
+<span class="co">#&gt;  2 中部     62</span>
+<span class="co">#&gt;  3 西部    108</span>
+<span class="co">#&gt;  4 東部     93</span>
+<span class="co">#&gt;  5 中部    838</span>
+<span class="co">#&gt;  6 西部      0</span>
+<span class="co">#&gt;  7 東部     12</span>
+<span class="co">#&gt;  8 中部    933</span>
+<span class="co">#&gt;  9 西部      0</span>
+<span class="co">#&gt; 10 東部      8</span>
+<span class="co">#&gt; # … with 44 more rows</span></code></pre></div>
+<p>では、<code>d20</code> の <code>type</code> ごとの <code>value</code> 変数を横にならべたら、<code>d19</code> と全く同じ構造になります。</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">d20</span> <span class="op">=</span> <span class="va">d20</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>id_cols <span class="op">=</span> <span class="va">name</span>,
+                   names_from <span class="op">=</span> <span class="va">type</span>,
+                   values_from <span class="op">=</span> <span class="va">value</span><span class="op">)</span></code></pre></div>
+<p>このように処理したら、<code>Warning message</code> がでます。
+<code>Warning</code> (ウォーニング) は <code>Error</code> (エラー) ほどの問題ではないので、コードは実行されています。
+<code>Error</code> の場合はコードは実行されません。
+この <code>Warning</code> で <code>values are not uniquely identified</code> と返ってきました。
+つまり、各サンプルの値は、区別することができないと意味します。
+このデータの場合は、区別しなくても問題ないので、このまま解析を続きます。
+それにしても、<code>seaweed</code> と <code>seagrass</code> の変数 type は <code>&lt;list&gt;</code> です。
+それぞれの変数の要素に <code>&lt;dbl [9]&gt;</code> と記述されています。
+各要素に 9つの値が入力されていると意味します。
+研究室では、<code>seaweed</code> と <code>seagrass</code> 変数は nested (ネスト) または、「たたまれている」といいます。
+では、この２つの変数を unnest (アンネスト) します。</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">d20</span> <span class="op">=</span> <span class="va">d20</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">seaweed</span>, <span class="va">seagrass</span><span class="op">)</span><span class="op">)</span>
+<span class="va">d20</span>
+<span class="co">#&gt; # A tibble: 27 × 3</span>
+<span class="co">#&gt;    name  seaweed seagrass</span>
+<span class="co">#&gt;    &lt;chr&gt;   &lt;dbl&gt;    &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 東部       14       71</span>
+<span class="co">#&gt;  2 東部       93      145</span>
+<span class="co">#&gt;  3 東部       12       94</span>
+<span class="co">#&gt;  4 東部        8       82</span>
+<span class="co">#&gt;  5 東部      444       49</span>
+<span class="co">#&gt;  6 東部       85      100</span>
+<span class="co">#&gt;  7 東部       NA       NA</span>
+<span class="co">#&gt;  8 東部       NA       NA</span>
+<span class="co">#&gt;  9 東部       NA       NA</span>
+<span class="co">#&gt; 10 中部       62       63</span>
+<span class="co">#&gt; # … with 17 more rows</span></code></pre></div>
+<p>さらに、<code>name</code> を <code>site</code> (調査海域) に変更します。</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">d20</span> <span class="op">=</span> <span class="va">d20</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>site <span class="op">=</span> <span class="va">name</span><span class="op">)</span>
+<span class="va">d20</span>
+<span class="co">#&gt; # A tibble: 27 × 3</span>
+<span class="co">#&gt;    site  seaweed seagrass</span>
+<span class="co">#&gt;    &lt;chr&gt;   &lt;dbl&gt;    &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 東部       14       71</span>
+<span class="co">#&gt;  2 東部       93      145</span>
+<span class="co">#&gt;  3 東部       12       94</span>
+<span class="co">#&gt;  4 東部        8       82</span>
+<span class="co">#&gt;  5 東部      444       49</span>
+<span class="co">#&gt;  6 東部       85      100</span>
+<span class="co">#&gt;  7 東部       NA       NA</span>
+<span class="co">#&gt;  8 東部       NA       NA</span>
+<span class="co">#&gt;  9 東部       NA       NA</span>
+<span class="co">#&gt; 10 中部       62       63</span>
+<span class="co">#&gt; # … with 17 more rows</span></code></pre></div>
+<p>最後に、<code>d20</code> の <code>NA</code> データを外します。</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">d20</span> <span class="op">=</span> <span class="va">d20</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># NAを外す</span>
+<span class="va">d20</span>
+<span class="co">#&gt; # A tibble: 23 × 3</span>
+<span class="co">#&gt;    site  seaweed seagrass</span>
+<span class="co">#&gt;    &lt;chr&gt;   &lt;dbl&gt;    &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 東部       14       71</span>
+<span class="co">#&gt;  2 東部       93      145</span>
+<span class="co">#&gt;  3 東部       12       94</span>
+<span class="co">#&gt;  4 東部        8       82</span>
+<span class="co">#&gt;  5 東部      444       49</span>
+<span class="co">#&gt;  6 東部       85      100</span>
+<span class="co">#&gt;  7 中部       62       63</span>
+<span class="co">#&gt;  8 中部      838        5</span>
+<span class="co">#&gt;  9 中部      933      674</span>
+<span class="co">#&gt; 10 中部      193       69</span>
+<span class="co">#&gt; # … with 13 more rows</span></code></pre></div>
+<p>これで、<code>d20</code> と <code>d19</code> はほぼ同じ構造です。
+次のコードブロックで、<code>d19</code> の変数名を<code><a href="https://dplyr.tidyverse.org/reference/rename.html">rename()</a></code> を用いて英語に変えます。
+日本語の変数名は使いづらくて、バグの原因になることが多いので名前を変更します。</p>
+<p>解析をするまえに、<code>site</code> を要因 (因子) として設定します。
+<code>levels = c('東部', '中部', '西部')</code> は因子の順序を指定するためです。
+指定しなかった場合、アルファベット順やあいうえお順になります。</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">d19</span> <span class="op">=</span> <span class="va">d19</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>site <span class="op">=</span> <span class="va">調査海域</span>, seaweed <span class="op">=</span> <span class="va">海藻</span>, seagrass <span class="op">=</span> <span class="va">海草</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">site</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'東部'</span>, <span class="st">'中部'</span>, <span class="st">'西部'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">d20</span> <span class="op">=</span> <span class="va">d20</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">site</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'東部'</span>, <span class="st">'中部'</span>, <span class="st">'西部'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="data-input.html"><span class="header-section-number">1</span> データの読み込み</a></div>
+<div class="next"><a href="data-logger-input.html"><span class="header-section-number">3</span> ロガーからの読み込み</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#data-wrangling"><span class="header-section-number">2</span> データの処理</a></li>
+<li><a class="nav-link" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-1"><span class="header-section-number">2.1</span> 必要なパッケージ</a></li>
+<li><a class="nav-link" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF"><span class="header-section-number">2.2</span> データの読み込み</a></li>
+<li><a class="nav-link" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%87%A6%E7%90%86"><span class="header-section-number">2.3</span> データの処理</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/rstudio/bookdown-demo/blob/master/02-data-wrangling.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/rstudio/bookdown-demo/edit/master/02-data-wrangling.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室. It was last built on 2022-04-26.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>
