@@ -1,0 +1,262 @@
+# 分散分析 {#anova}
+
+
+## 必要なパッケージ
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(car)
+library(emmeans)
+```
+
+## データの読み込み
+
+```{r}
+rootdatafolder = rprojroot::find_rstudio_root_file("Data/")
+filename = '瀬戸内海藻場データ.xlsx'
+path = str_c(rootdatafolder, filename)
+
+# fy1990 の処理
+RNG = "A4:C27"   # セルの範囲
+SHEET = "FY1990" # シート名
+d19 = read_xlsx(path, sheet = SHEET, range = RNG)
+d19 = d19 |> 
+  rename(site = 調査海域, seaweed = 海藻, seagrass = 海草) |> 
+  mutate(site = factor(site, levels = c('東部', '中部', '西部')))
+
+# fy2018の処理
+RNG = "A6:C15"   # 海藻データのセル範囲
+SHEET = "FY2018" # シート名
+seaweed = read_xlsx(path, sheet = SHEET, range = RNG)
+RNG = "E6:G15"   # 海草データのセル範囲
+
+seagrass = read_xlsx(path, sheet = SHEET, range = RNG)
+seaweed = seaweed |> pivot_longer(cols = everything())
+seagrass = seagrass |> pivot_longer(cols = everything())
+
+d20 = bind_rows(seaweed = seaweed, seagrass = seagrass, .id = "type")
+d20 = d20 |> pivot_wider(id_cols = name,
+                   names_from = type, values_from = value, 
+                   values_fn = "list")
+d20 = d20 |> unnest(c(seaweed, seagrass)) |> rename(site = name) |> drop_na()
+d20 = d20 |> 
+  mutate(site = factor(site, levels = c('東部', '中部', '西部')))
+
+```
+
+
+
+## 一元配置分散分析
+
+では、一元配置分散分析を実施します。
+まず、分散分析の平方和を正しく求めるためには、`contr.sum` を設定することです。
+その処理のあと、`lm()` 関数でモデルを当てはめます。
+`lm()` 関数に渡すモデルは、 `〜` の右辺に説明変数、左辺に観測値を指定しましょう。
+
+```{r}
+contrasts(d19$site) = contr.sum
+contrasts(d20$site) = contr.sum
+m19 = lm(seaweed ~ site, data = d19)
+m20 = lm(seaweed ~ site, data = d20)
+```
+
+FY1990 海藻藻場面積の一元配置分散分析の結果は次のとおりです。
+```{r}
+a19 = anova(m19)
+a20 = anova(m20)
+```
+
+```{r}
+anova(m19) # FY1990 の処理
+```
+
+FY2019 海藻藻場面積の一元配置分散分析の結果は次のとおりです。
+
+```{r}
+anova(m20) # FY2018 の処理
+```
+
+FY1990 のP値は `r pval(a19[[5]][1])`、
+FY2018 のP値は `r pval(a20[[5]][1])` でした。
+どちらも有意水準 (α = 0.05) より大きいので、帰無仮説（海域間の藻場面積は同じ）を棄却できません。
+
+等分散性と正規性の検定を無視したように、今回だけ分散分析の結果を無視して、多重比較をしてみます。
+
+## 多重比較
+
+調査海域の全ペアの比較をしるので、Tukey HSDを用います。
+
+
+```{r}
+e19 = emmeans(m19, specs = pairwise ~ site, adjust = "tukey")
+e20 = emmeans(m20, specs = pairwise ~ site, adjust = "tukey")
+```
+
+
+FY2019 の場合、全ペアを比較したら、有意な結果はありません。
+
+```{r}
+e19 # FY1990 の処理
+```
+
+FY2020 も同じですね。
+
+```{r}
+e20 # FY2018 の処理
+```
+
+この用な結果は予想していました。そもそも分散分析から有意な結果がでなかったので、多重比較しても有意な結果はでません。
+
+ちなみに Dunnet Method をつかって、西部と東部を中部と比較したら次の結果になります。
+
+```{r}
+e19d = emmeans(m19, specs = trt.vs.ctrl ~ site, ref = 2)
+e20d = emmeans(m20, specs = trt.vs.ctrl ~ site, ref = 2)
+```
+
+```{r}
+e19d # FY1990 の処理
+```
+
+```{r}
+e20d # FY2018 の処理
+``` 
+
+Dunnet Method の場合でも有意な結果はありません。
+
+
+## 二元配置分散分析
+
+## 正規性と等分散性の確認
+
+```{r}
+dall = bind_rows(fy1990 = d19,
+                 fy2018 = d20, 
+                 .id = "year")
+dall = dall |> mutate(year = factor(year))
+```
+
+
+```{r, echo=FALSE}
+lall = leveneTest(seaweed ~ site*year, data = dall)
+sall = shapiro.test(x = dall$seaweed)
+```
+
+分散分析を行う前に、Levene Test と Shapiro-Wilk Normality Test でデータの等分散性^[assumption of homogeneity of variance] と正規性^[assumption normality] を確認します。
+ルビーン検定とシャピロウィルク検定については、t 検定の資料を参考にしてください。
+ここで紹介する解析は `海藻` に対してです。
+
+
+**ルビーン検定**
+
+`FY1990`と`FY2018` データの等分散性検定結果は `r pval(lall[[3]][1])` でしたので、
+帰無仮説は棄却できません。
+つまり、等分散性であると判断できます。
+
+```{r}
+leveneTest(seaweed ~ site*year, data = dall) 
+```
+
+**シャピロウィルク検定**
+
+
+`FY1990`と`FY2018` データの等分散性について、`r pval(sall[2])` だったので、
+帰無仮説を棄却できます。
+データの母集団は正規分布に従わないかもしれないです。
+
+```{r}
+shapiro.test(x = dall$seaweed) # FY1990 の処理
+```
+
+
+## 二元配置分散分析
+
+では、二元配置分散分析を実施します。
+まず、分散分析の平方和を正しく求めるためには、`contr.sum` を設定することです。
+その処理のあと、`lm()` 関数でモデルを当てはめます。
+`lm()` 関数に渡すモデルは、 `〜` の右辺に説明変数、左辺に観測値を指定しましょう。
+
+```{r}
+contrasts(dall$site) = contr.sum
+contrasts(dall$year) = contr.sum
+mall = lm(seaweed ~ site*year, data = dall)
+```
+
+FY1990 海藻藻場面積の一元配置分散分析の結果は次のとおりです。
+```{r, echo = F}
+aall = Anova(mall, type = 3)
+```
+
+```{r}
+Anova(mall, type =3)
+```
+
+
+`site` 効果のP値は `r pval(aall[[4]][2])`、
+`year` 効果のP値は `r pval(aall[[4]][3])`、
+相互作用のP値は    `r pval(aall[[4]][4])` でした。
+相互作用のP値は有意水準 (α = 0.05) より大きいので、相互作用の帰無仮説は棄却できますが、主効果の帰無仮説は棄却できません。
+
+## 多重比較
+
+調査海域の全ペアの比較をしるので、Tukey HSDを用います。
+
+
+```{r}
+eall = emmeans(mall, specs = pairwise ~ site:year, adjust = "tukey")
+```
+
+
+FY2019 の場合、全ペアを比較したら、有意な結果はありません。
+
+```{r}
+eall 
+```
+
+```{r}
+emmeans(mall, specs = pairwise ~ site|year, adjust = "tukey")
+emmeans(mall, specs = pairwise ~ year|site, adjust = "tukey")
+```
+
+## 等分散性と正規性の事後確認
+
+`plot()` に渡している `mall` は前章に当てはめた二元配置分散分析のモデルです。
+
+## 等分散性の確認に使うプロット
+
+```{r rfplot, fig.cap ="残渣 vs. 期待値", fig.height=6, fig.width=6}
+plot(mall, which = 1)
+```
+
+Fig. \@ref(fig:rfplot) は残渣^[residual] 
+と期待値^[fitted values] の関係を理解するてめに使います。
+等分散性に問題がない場合、残渣は y = 0 の周りを均一に、変動なくばらつきます。
+ところが Fig. \@ref(fig:rfplot) の場合、期待値が高いとき、残渣のばらつきが大きい。
+
+```{r slplot, fig.cap = "スケール・位置プロット", fig.height=6, fig.width=6}
+plot(mall, which = 3)
+```
+
+Fig. \@ref(fig:slplot) はスケール・ロケーションプロットといいます。
+スケール^[scale] は確率密度分布のばらつきのパラメータです。
+位置（ロケーション）^[location] は確率分布の中心のパラメータです。
+たとえば、正規分布のスケールパラメータは分散、位置パラメータは平均値です。
+Fig. \@ref(fig:slplot) の横軸は位置、縦長はスケールパラメータで標準化した残渣の平方根です。
+示されている標準化残渣のばらつきが均一で、期待値^[fitted values] と無関係であれば、ばらつきは均一であると考えられます。
+Fig. \@ref(fig:slplot) の場合、標準化残渣は期待値と正の関係があるので、ばらつきは均一であると考えられません。
+
+
+## 正規性の確認に使うプロット
+
+```{r qqplot, fig.cap = "QQプロット", fig.height=6, fig.width=6}
+plot(mall, which = 2)
+```
+
+
+## 飛び値・異常値の確認プロット
+
+```{r cookplot, fig.cap = "クックの距離とてこ比", fig.height=6, fig.width=6}
+plot(mall, which = 5)
+```
+

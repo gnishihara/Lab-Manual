@@ -1,0 +1,234 @@
+# map 関数ってすごい {#map-function}
+
+## 必要なパッケージ
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(broom)
+```
+
+## データの準備
+
+Rの `iris`^[iris: アヤメ] データで解析を紹介します。
+`iris` は `data.frame` として定義されているので、`as_tibble()` を使って `tibble` のクラスを追加します。
+
+```{r}
+iris = iris |> as_tibble()
+iris
+```
+
+## 説明
+
+`tidyverse` の開発によって、Rでのデータ処理はすこぶる楽になりました。
+個人的には、Rでデータ処理するのはとても楽しいです。
+そこで、もっともデータ処理を楽にしてくれたのは `map()` 関数です。
+実は、数種類の`map()` があります。
+
+* `map()`
+* `map_lgl()`, `map_int()`, `map_dbl()`, `map_chr()`
+
+そのほかにもありますが、研究室のコードでは上のものが多いです。
+他によく使う関数は `pmap()` と `map2()` です。
+`pmap()` は3変数以上を関数に渡したいときに使います。
+`map2()` は2変数のバージョンです。
+
+どの `map()` には `.x` と `.f` の引数を渡す必要があります。
+
+* `.x` は list または vector のオブジェクトです。
+* `.f` は list/vector のそれぞれの要素に適応したい関数です。
+
+例えば、つぎの list を定義します。
+
+```{r}
+z = list(a = rnorm(10),
+         b = rnorm(10),
+         c = rnorm(5))
+z
+```
+
+それぞれの要素の平均値を出したいなら、次のように `map()` を使います。
+
+```{r}
+map(z, mean)
+```
+
+`map()`は必ず list として結果を返します。
+ベース　(base) R`lapply()` と同じですね。
+
+```{r}
+lapply(z, mean)
+```
+
+ベースRの `sapply()` のようにベクトルとして返してほしいなら、`map_dbl()` を使います。
+
+```{r}
+map_dbl(z, mean)
+```
+
+ベースRの `sapply()` の結果と同じです。
+
+```{r}
+sapply(z, mean)
+```
+
+ちなみに、for-loop でもできますが、研究室では使用を禁じます。
+
+```{r}
+# 良い子はループ使わない。
+zout = vector("numeric", 3)
+n = length(z)
+for(i in 1:n) {
+  zout[i] = mean(z[[i]])
+}
+zout
+```
+
+
+## `map()` の魅力
+
+`map()`の魅力は `tidyverse` のパイプラインに使えること、`map()` に複雑な関数を渡せること。
+結果は `tibble` として返せることかな。
+他にあるとおもいますが、使えるようになるとデータ処理は楽しいです。
+
+
+たとえば、次のようことができます。
+`iris` のデータを `tibble` に変換し、`pivot_longer()` に渡して縦長に変えます。
+`pivot_longer()` には `Sepal` と `Petal` を含む列を `cols` 引数に渡すようにしています。
+変換したあと、`pivot_longer()` が作った `name` の列は `separate()` によって `part` と `measurement` に分けます。
+
+```{r}
+iris_long = iris |> 
+  as_tibble() |> 
+  pivot_longer(cols = matches("Sepal|Petal")) |> 
+  separate(name, c("part", "measurement"))
+```
+
+ここでは関数を定義していますが、この関数は複数の t 検定を実施し、その結果を一つの `tibble` にまとめています。
+`t.test()` に渡すデータは `filter()` 関数に通しています。
+`filter()` は `str_detect()` を使って、 `Species` 列から解析したいデータを抽出しています。
+`str_detect()` で処理する列は `Species`、検索する文字列は `pattern` に渡しています。
+たとえば、`pattern = "set|ver"` は `set` または `ver` を意味しています。
+t 検定の結果を `t12`、`t13`、`t23`の入れます。
+こんど、それらを `broom` パッケージの `tidy()` に渡し、`tibble`かします。
+`bind_rows()` を使って、縦に結合し、結合した要素の名前を `comparison` にします。
+
+```{r}
+runmultttest = function(df) {
+  #t12: setosa - versicolor
+  #t13: setosa - virginica
+  #t23: versicolor - virginica
+   
+  t12 = t.test(value ~ part, data = filter(df, str_detect(string = Species, pattern = "set|ver")))
+  t13 = t.test(value ~ part, data = filter(df, str_detect(string = Species, pattern = "set|vir")))
+  t23 = t.test(value ~ part, data = filter(df, str_detect(string = Species, pattern = "ver|vir")))
+  bind_rows("setosa vs. versicolor"    = tidy(t12), 
+            "setosa vs. virginica"     = tidy(t13), 
+            "versicolor vs. virginica" = tidy(t23), .id = "comparison")
+}
+```
+
+上のコードチャンクで定義した関数は `iris_long` に適応しますが、
+`measurement` ごとに `data` の要素ごとに実施されます。
+
+```{r}
+iris_long = iris_long |> group_nest(measurement) 
+iris_long
+```
+
+つまり、`data` は `map()` を通して、 `runmultttest()` が適応されます。
+
+```{r}
+iris_long |> 
+  mutate(tout = map(data, runmultttest)) |> 
+  unnest(tout)
+```
+
+
+## `map_dbl()` の使い方
+
+`map_lgl()`, `map_int()`, `map_dbl()`, `map_chr()` シリーズの関数が返すものは N = 1 のベクトルです。
+よって、適応する関数はベクトルを返すようにくみましょう。
+
+`\(df) {...}` は無名関数と呼びます。
+`\(df) {...}` は `function(df) {...}` の諸略です。
+このとき、関数は `summarise()` を通して、`tibble()`を返すので、エラーが発生します。
+
+```{r, error=TRUE}
+iris_long |> 
+  mutate(out = map_dbl(data, \(df) {
+    df |> 
+      group_by(Species, part) |> 
+      summarise(value = mean(value))
+  }))
+```
+
+次のコードは `pull()` を使って、`mean` だけ返すようにしたが、
+N > 1 のベクトルなので、エラーが発生した。
+```{r, error=TRUE}
+iris_long |> 
+  mutate(out = map_dbl(data, \(df) {
+    df |> 
+      group_by(Species, part) |> 
+      summarise(value = mean(value)) |> pull(mean)
+  }))
+```
+
+`Species`, `measurement`, `part` ごとに `map_dbl()` で平均を求めたいので、
+一旦 `iris_long` の `data` のネスティングを作り直します。
+
+```{r, error=TRUE}
+iris_long |> 
+  unnest(data) |> 
+  group_nest(Species, measurement, part) |> 
+  mutate(out = map_dbl(data, \(df) {
+    # mean(df$value) # でもOK
+    df |> summarise(value = mean(value)) |> pull(value)
+  }))
+```
+
+エラーがなくなりましたが、グループごとの平均値をもとめたいなら、`summarise()` のほうがいいですね。
+
+```{r}
+iris_long |> 
+  unnest(data) |> 
+  group_by(Species, measurement, part) |> 
+  summarise(value = mean(value))
+```
+
+`map2()` を使えば、 2変数渡せます。
+ここでは `map2_dbl()` を使っています。
+
+```{r}
+iris |> 
+  mutate(LW = map2_dbl(Petal.Length, Petal.Width, \(l,w) {
+    (l * w)
+  })) 
+```
+
+`pmap()` の場合、渡す変数は list にまとめてから渡しましょう。
+
+```{r}
+iris |> 
+  mutate(out = pmap_dbl(list(Petal.Length, Petal.Width, 
+                             Sepal.Length, Sepal.Width), \(pl,pw, sl, sw) {
+                               (pl * pw) / (sl * sw)
+                             })) 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
