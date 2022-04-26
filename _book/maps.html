@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 11 地図の作り方 | データ解析マニュアル</title>
+<meta name="author" content="水圏植物生態学研究室">
+<meta name="description" content="11.1 必要なパッケージ library(tidyverse)　# Essential package library(ggpubr)   # Publication-oriented figures library(kableExtra) # Tables library(magick)   # Imagemagick R API library(patchwork) #...">
+<meta name="generator" content="bookdown 0.24 with bs4_book()">
+<meta property="og:title" content="Chapter 11 地図の作り方 | データ解析マニュアル">
+<meta property="og:type" content="book">
+<meta property="og:description" content="11.1 必要なパッケージ library(tidyverse)　# Essential package library(ggpubr)   # Publication-oriented figures library(kableExtra) # Tables library(magick)   # Imagemagick R API library(patchwork) #...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 11 地図の作り方 | データ解析マニュアル">
+<meta name="twitter:description" content="11.1 必要なパッケージ library(tidyverse)　# Essential package library(ggpubr)   # Publication-oriented figures library(kableExtra) # Tables library(magick)   # Imagemagick R API library(patchwork) #...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.12/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="bs4_style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">データ解析マニュアル</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">このマニュアルについて</a></li>
+<li><a class="" href="data-input.html"><span class="header-section-number">1</span> データの読み込み</a></li>
+<li><a class="" href="data-wrangling.html"><span class="header-section-number">2</span> データの処理</a></li>
+<li><a class="" href="data-logger-input.html"><span class="header-section-number">3</span> ロガーからの読み込み</a></li>
+<li><a class="" href="data-summary.html"><span class="header-section-number">4</span> データの集計</a></li>
+<li><a class="" href="map-function.html"><span class="header-section-number">5</span> map 関数ってすごい</a></li>
+<li><a class="" href="t-test.html"><span class="header-section-number">6</span> t 検定</a></li>
+<li><a class="" href="anova.html"><span class="header-section-number">7</span> 分散分析</a></li>
+<li><a class="" href="glm.html"><span class="header-section-number">8</span> 一般化線形モデル</a></li>
+<li><a class="" href="gam.html"><span class="header-section-number">9</span> 一般化加法モデル</a></li>
+<li><a class="" href="ggplot.html"><span class="header-section-number">10</span> ggplot</a></li>
+<li><a class="active" href="maps.html"><span class="header-section-number">11</span> 地図の作り方</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/rstudio/bookdown-demo">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="maps" class="section level1" number="11">
+<h1>
+<span class="header-section-number">11</span> 地図の作り方<a class="anchor" aria-label="anchor" href="#maps"><i class="fas fa-link"></i></a>
+</h1>
+<div id="必要なパッケージ-6" class="section level2" number="11.1">
+<h2>
+<span class="header-section-number">11.1</span> 必要なパッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-6"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>　<span class="co"># Essential package</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rpkgs.datanovia.com/ggpubr/">ggpubr</a></span><span class="op">)</span>     <span class="co"># Publication-oriented figures</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://haozhu233.github.io/kableExtra/">kableExtra</a></span><span class="op">)</span> <span class="co"># Tables</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/magick/">magick</a></span><span class="op">)</span>     <span class="co"># Imagemagick R API</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span>  <span class="co"># Simplified figure tiling</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/yixuan/showtext">showtext</a></span><span class="op">)</span>   <span class="co"># I want to use google fonts in the figures</span></code></pre></div>
+<p>次の2つは地図専用のパッケージです。</p>
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://paleolimbot.github.io/ggspatial/">ggspatial</a></span><span class="op">)</span>  <span class="co"># Essential for map-making with ggplot</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span>         <span class="co"># Essential for map data manipulation</span></code></pre></div>
+<p>Noto Sans のフォントが好きなので、ここで <a href="https://fonts.google.com/">Google Fonts</a> からアクセスします。</p>
+<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/sysfonts/man/font_add_google.html">font_add_google</a></span><span class="op">(</span><span class="st">"Noto Sans"</span>,<span class="st">"notosans"</span><span class="op">)</span></code></pre></div>
+<p><code>ggplot</code> のデフォルトテーマも設定し、フォント埋め込みも可能にします。
+ここでデフォルトを設定すると、毎回 <code><a href="https://rpkgs.datanovia.com/ggpubr/reference/theme_pubr.html">theme_pubr()</a></code> を <code>ggplot</code>のチェインにたさなくていい。</p>
+<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/theme_pubr.html">theme_pubr</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">10</span>, base_family <span class="op">=</span> <span class="st">"notosans"</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span><span class="op">(</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/showtext/man/showtext_auto.html">showtext_auto</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Automatically embed the Noto Sans fonts into the ggplots.</span></code></pre></div>
+</div>
+<div id="シェープファイルの読み込み" class="section level2" number="11.2">
+<h2>
+<span class="header-section-number">11.2</span> シェープファイルの読み込み<a class="anchor" aria-label="anchor" href="#%E3%82%B7%E3%82%A7%E3%83%BC%E3%83%97%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF"><i class="fas fa-link"></i></a>
+</h2>
+<p>シェープファイル (shapefile) は地図データのことです。
+基本的の拡張子は <code>shp</code>, <code>shx</code>, <code>dbf</code>　ですが、その他に <code>prj</code> と <code>xml</code> もあります。</p>
+<p>研究室用にダウンロードした <a href="https://nlftp.mlit.go.jp/ksj/index.html">国土交通省・国土数値情報ダウンロードサービス</a> のシェープファイルは <code>~/Lab_Data/Japan_map_data/Japan</code> に入っています。</p>
+<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mlit</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="st">"~/Lab_Data/Japan_map_data/Japan/N03-20210101_GML/"</span><span class="op">)</span></code></pre></div>
+<p><code>mlit</code> に読み込んだシェープファイルは<a href="https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N03-v3_0.html">ここへ</a>。</p>
+<p>シェープファイルの 座標参照系 (CRS: Coordinate Reference System) を確認しましょう。</p>
+<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">mlit</span><span class="op">)</span>
+<span class="co">#&gt; Coordinate Reference System:</span>
+<span class="co">#&gt;   User input: JGD2011 </span>
+<span class="co">#&gt;   wkt:</span>
+<span class="co">#&gt; GEOGCRS["JGD2011",</span>
+<span class="co">#&gt;     DATUM["Japanese Geodetic Datum 2011",</span>
+<span class="co">#&gt;         ELLIPSOID["GRS 1980",6378137,298.257222101,</span>
+<span class="co">#&gt;             LENGTHUNIT["metre",1]]],</span>
+<span class="co">#&gt;     PRIMEM["Greenwich",0,</span>
+<span class="co">#&gt;         ANGLEUNIT["degree",0.0174532925199433]],</span>
+<span class="co">#&gt;     CS[ellipsoidal,2],</span>
+<span class="co">#&gt;         AXIS["geodetic latitude (Lat)",north,</span>
+<span class="co">#&gt;             ORDER[1],</span>
+<span class="co">#&gt;             ANGLEUNIT["degree",0.0174532925199433]],</span>
+<span class="co">#&gt;         AXIS["geodetic longitude (Lon)",east,</span>
+<span class="co">#&gt;             ORDER[2],</span>
+<span class="co">#&gt;             ANGLEUNIT["degree",0.0174532925199433]],</span>
+<span class="co">#&gt;     USAGE[</span>
+<span class="co">#&gt;         SCOPE["Horizontal component of 3D system."],</span>
+<span class="co">#&gt;         AREA["Japan - onshore and offshore."],</span>
+<span class="co">#&gt;         BBOX[17.09,122.38,46.05,157.65]],</span>
+<span class="co">#&gt;     ID["EPSG",6668]]</span></code></pre></div>
+<p>CRSには <strong>地理座標系</strong> と <strong>投影座標系</strong> の2種類があります。
+座標系にはEPSGコードもつけられています。</p>
+<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># HTML 用テーブル</span>
+<span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>`EPSG Code` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4326</span>,<span class="fl">6668</span>,<span class="fl">6677</span><span class="op">)</span>,
+       `CRS` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"WGS84"</span>, <span class="st">"JGD2011"</span>, <span class="st">"JGD2011 / Japan Plane Rectangular CS IX"</span><span class="op">)</span>,
+       `Units` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"degrees"</span>, <span class="st">"degrees"</span>, <span class="st">"meters"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kbl.html">kbl</a></span><span class="op">(</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>bootstrap_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"hover"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table table-hover" style="margin-left: auto; margin-right: auto;">
+<thead><tr>
+<th style="text-align:right;">
+EPSG Code
+</th>
+<th style="text-align:left;">
+CRS
+</th>
+<th style="text-align:left;">
+Units
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+4326
+</td>
+<td style="text-align:left;">
+WGS84
+</td>
+<td style="text-align:left;">
+degrees
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6668
+</td>
+<td style="text-align:left;">
+JGD2011
+</td>
+<td style="text-align:left;">
+degrees
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6677
+</td>
+<td style="text-align:left;">
+JGD2011 / Japan Plane Rectangular CS IX
+</td>
+<td style="text-align:left;">
+meters
+</td>
+</tr>
+</tbody>
+</table></div>
+<p>このデータは政策区域のデータなので、とても重いです。
+まずは、都道府県ごとにまとめた <code>RDS</code> ファイルを作って保存します。
+都道府県ごとに <code><a href="https://r-spatial.github.io/sf/reference/geos_combine.html">st_union()</a></code> を使って <code>polgyon</code> データを結合します。
+結合したデータを unnest して、simple feature に戻してかた保存します。
+121158 features もあるので、数時間もかります。</p>
+<p>沿岸のデータだけなら軽いですので、<code>C23</code> シリーズのファイルを読み込みます。</p>
+<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mlit</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">dir</a></span><span class="op">(</span><span class="st">"~/Lab_Data/Japan_map_data/Coastline/"</span>, full <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">folder</span>, <span class="va">read_sf</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="fl">6668</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>では、ここで地図の確認をします。</p>
+<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mlit</span> |&gt; <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="50-maps_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;"></div>
+<p><code>mlit</code> のデータは細かい政策区域まで分けられているので、全国スケールの図には向いていません。
+<code><a href="https://r-spatial.github.io/sf/reference/geos_combine.html">st_union()</a></code> をつかって、都道府県ごとに polygon を結合したファイルは、<code>~/Lab_Data/Japan_map_data/Japan/todofuken.rds</code> に保存しています。
+次のコードで、都道府県ごとにまとめましたが、並列処理でも５時間以上もかかったので、<code>RDS</code> ファイルを使いましょう。</p>
+<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Takes 5.5 hours to complete with 30 cores!</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/DavisVaughan/furrr">furrr</a></span><span class="op">)</span>
+<span class="fu"><a href="https://future.futureverse.org/reference/plan.html">plan</a></span><span class="op">(</span><span class="va">multisession</span>, workers <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>
+<span class="co"># Group by prefecture</span>
+<span class="va">mlit1</span> <span class="op">=</span> <span class="va">mlit</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">N03_001</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/furrr/man/future_map.html">future_map</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">st_union</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span> 
+<span class="va">mlit1</span> |&gt; <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html">write_rds</a></span><span class="op">(</span><span class="st">"~/Lab_Data/Japan_map_data/Japan/todofuken.rds"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mlit1</span> <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html">read_rds</a></span><span class="op">(</span><span class="st">"~/Lab_Data/Japan_map_data/Japan/todofuken.rds"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mlit1</span> |&gt; <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="50-maps_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;"></div>
+</div>
+<div id="調査地点のデータを準備する" class="section level2" number="11.3">
+<h2>
+<span class="header-section-number">11.3</span> 調査地点のデータを準備する<a class="anchor" aria-label="anchor" href="#%E8%AA%BF%E6%9F%BB%E5%9C%B0%E7%82%B9%E3%81%AE%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E6%BA%96%E5%82%99%E3%81%99%E3%82%8B"><i class="fas fa-link"></i></a>
+</h2>
+<p>形上湾アマモ場調査のステーションの GPS <code>tibble</code> を準備する。</p>
+<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">zostera</span> <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span><span class="st">"~/Lab_Data/matsumuro/Katagami_Bay/longlat_info.csv"</span><span class="op">)</span>
+<span class="va">zostera</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 105 × 6</span>
+<span class="co">#&gt;    Name   lat  long datetime            eelgrass</span>
+<span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dttm&gt;              &lt;chr&gt;   </span>
+<span class="co">#&gt; 1     1  33.0  130. 2021-05-25 09:14:48 absent  </span>
+<span class="co">#&gt; 2     2  33.0  130. 2021-05-25 09:30:32 absent  </span>
+<span class="co">#&gt; 3     3  33.0  130. 2021-05-25 09:37:16 present </span>
+<span class="co">#&gt; # … with 102 more rows, and 1 more variable:</span>
+<span class="co">#&gt; #   `coverage(%)` &lt;dbl&gt;</span></code></pre></div>
+<p><code>zostera</code> に緯度経度を設定する。
+CRS は <code>mlit</code> と同じにします。</p>
+<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">zostera</span> <span class="op">=</span> <span class="va">zostera</span> |&gt; <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"long"</span>, <span class="st">"lat"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">mlit</span><span class="op">)</span><span class="op">)</span>
+<span class="va">zostera</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
+<span class="co">#&gt; Simple feature collection with 105 features and 4 fields</span>
+<span class="co">#&gt; Geometry type: POINT</span>
+<span class="co">#&gt; Dimension:     XY</span>
+<span class="co">#&gt; Bounding box:  xmin: 129.7845 ymin: 32.90032 xmax: 129.806 ymax: 32.95375</span>
+<span class="co">#&gt; Geodetic CRS:  JGD2011</span>
+<span class="co">#&gt; # A tibble: 105 × 5</span>
+<span class="co">#&gt;    Name datetime            eelgrass `coverage(%)`</span>
+<span class="co">#&gt; * &lt;dbl&gt; &lt;dttm&gt;              &lt;chr&gt;            &lt;dbl&gt;</span>
+<span class="co">#&gt; 1     1 2021-05-25 09:14:48 absent               0</span>
+<span class="co">#&gt; 2     2 2021-05-25 09:30:32 absent               0</span>
+<span class="co">#&gt; 3     3 2021-05-25 09:37:16 present              5</span>
+<span class="co">#&gt; # … with 102 more rows, and 1 more variable:</span>
+<span class="co">#&gt; #   geometry &lt;POINT [°]&gt;</span></code></pre></div>
+</div>
+<div id="九州データの抽出" class="section level2" number="11.4">
+<h2>
+<span class="header-section-number">11.4</span> 九州データの抽出<a class="anchor" aria-label="anchor" href="#%E4%B9%9D%E5%B7%9E%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA"><i class="fas fa-link"></i></a>
+</h2>
+<p>九州のデータと長崎のデータを抽出します。
+<strong>重要：長崎の名前が誤っています。<code>Nagasaki</code> のはずが、<code>Naoasaki</code> として記録されています。</strong></p>
+<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">toget</span> <span class="op">=</span> <span class="st">"長崎|福岡|大分|佐賀|熊本|鹿児島|宮崎"</span>
+<span class="va">kyushu</span> <span class="op">=</span> <span class="va">mlit1</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">N03_001</span>, <span class="va">toget</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>海岸線のデータ (<code>mlit</code>) から長崎の情報を抽出したいが、このデータの位置情報はコードで記述されています。</p>
+<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">admincode</span> <span class="op">=</span> <span class="fu">readxl</span><span class="fu">::</span><span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="st">"~/Lab_Data/Japan_map_data/AdminiBoundary_CD.xlsx"</span>, skip <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+<span class="va">admincode</span> <span class="op">=</span> <span class="va">admincode</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span>code <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"行政"</span><span class="op">)</span>, N03_001 <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"都道府県*.*漢字"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">codes</span> <span class="op">=</span> <span class="va">admincode</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">N03_001</span>, <span class="st">"長崎"</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">code</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">nagasaki</span> <span class="op">=</span> <span class="va">mlit</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">C23_001</span>, <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="va">codes</span>, collapse <span class="op">=</span> <span class="st">"|"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> </code></pre></div>
+<p>長崎の海岸線は次のようになります。</p>
+<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nagasaki</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="50-maps_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;"></div>
+<p>九州は <code>mlit1</code> から抽出したので、都道府県政策区域として作図されます。</p>
+<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">kyushu</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="50-maps_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;"></div>
+<p>長崎をハイライトしましょう。</p>
+<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">kyushu</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>fillme <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">N03_001</span>, <span class="st">"長崎"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">fillme</span><span class="op">)</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_fill_viridis_d</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>panel.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"lightblue"</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span>,
+        axis.line <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="50-maps_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;"></div>
+<p>この図には、違和感を感じるので、山口、島根、愛媛、広島と高知も追加します。
+そしれ、最初に作った <code>kyushu</code> の範囲を抽出しておきます。</p>
+<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">kbbox</span> <span class="op">=</span> <span class="va">kyushu</span> |&gt; <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">toget</span> <span class="op">=</span> <span class="st">"長崎|福岡|大分|佐賀|熊本|鹿児島|宮崎|山口|島根|愛媛|高知|広島"</span>
+<span class="va">kyushu</span> <span class="op">=</span> <span class="va">mlit1</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">N03_001</span>, <span class="va">toget</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>長崎、九州、その他の色分けをして、 <code>kyushu</code> をクロップします。
+クロップ範囲は <code>kbbox</code> です。</p>
+<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">kyushu</span> <span class="op">=</span> <span class="va">kyushu</span> |&gt;
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>fillme <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">N03_001</span>, <span class="st">"長崎"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Nagasaki"</span>,
+                            <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">N03_001</span>, <span class="st">"福岡|大分|佐賀|熊本|鹿児島|宮崎"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Kyushu"</span>,
+                            <span class="cn">TRUE</span> <span class="op">~</span> <span class="st">"Honshu"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crop.html">st_crop</a></span><span class="op">(</span><span class="va">kbbox</span><span class="op">)</span></code></pre></div>
+<p>この地図は次のようになりました。</p>
+<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">kyushu</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">fillme</span><span class="op">)</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_fill_viridis_d</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>panel.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"lightblue"</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span>,
+        axis.line <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="50-maps_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;"></div>
+</div>
+<div id="調査地点の図" class="section level2" number="11.5">
+<h2>
+<span class="header-section-number">11.5</span> 調査地点の図<a class="anchor" aria-label="anchor" href="#%E8%AA%BF%E6%9F%BB%E5%9C%B0%E7%82%B9%E3%81%AE%E5%9B%B3"><i class="fas fa-link"></i></a>
+</h2>
+<p>形上湾と大村湾の図を作ります。
+形上湾の方には、調査地点と結果ものせます。
+まずは形上湾と大村湾の範囲を決めます。
+範囲は Google Map で選びました。</p>
+<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">katagami</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">32.95809069048365</span>, <span class="fl">129.7669185309373</span><span class="op">)</span><span class="op">)</span>,
+                 <span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">32.89802000729197</span>, <span class="fl">129.82832411747583</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> |&gt;
+  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span>.name_repair <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"long"</span>, <span class="st">"lat"</span><span class="op">)</span><span class="op">)</span> |&gt;
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"long"</span>, <span class="st">"lat"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">kyushu</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">omurabay</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">33.103196388120104</span>, <span class="fl">129.67183787501082</span><span class="op">)</span><span class="op">)</span>,
+                 <span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">32.817013859622804</span>, <span class="fl">130.03298144413574</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span>.name_repair <span class="op">=</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"long"</span>, <span class="st">"lat"</span><span class="op">)</span><span class="op">)</span> |&gt;
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"long"</span>, <span class="st">"lat"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">kyushu</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>ここで、それぞれの湾のデータを <code>kyushu</code> からぬきます。</p>
+<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">omurabay_area</span> <span class="op">=</span> <span class="va">kyushu</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">N03_001</span>, <span class="st">"長崎"</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crop.html">st_crop</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="va">omurabay</span><span class="op">)</span><span class="op">)</span> 
+<span class="va">katagami_area</span> <span class="op">=</span> <span class="va">kyushu</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">N03_001</span>, <span class="st">"長崎"</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crop.html">st_crop</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="va">katagami</span><span class="op">)</span><span class="op">)</span> </code></pre></div>
+<p>アマモの被度データの simple features データを準備します。</p>
+<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">zostera</span> <span class="op">=</span> <span class="va">zostera</span> |&gt;
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"long"</span>, <span class="st">"lat"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">kyushu</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>coverage <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"cover"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>rank <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span><span class="op">(</span><span class="va">coverage</span>, 
+                    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="cn">Inf</span>, <span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">40</span>, <span class="fl">70</span>, <span class="cn">Inf</span><span class="op">)</span>,
+                    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"E"</span>, <span class="st">"D"</span>, <span class="st">"C"</span>, <span class="st">"B"</span>, <span class="st">"A"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>rank <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">rank</span>, 
+                       levels <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span>,
+                       labels <span class="op">=</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>九州の図を先につくります。</p>
+<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># The main plot of kyushu</span>
+<span class="va">pmain</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">kyushu</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">fillme</span><span class="op">)</span>, color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_fill_viridis_d</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>panel.grid <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,
+        panel.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"lightblue"</span>, color <span class="op">=</span><span class="st">"black"</span><span class="op">)</span>,
+        panel.border  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span><span class="st">"black"</span><span class="op">)</span>,
+        plot.background <span class="op">=</span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span><span class="cn">NA</span><span class="op">)</span>,
+        axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,
+        axis.line <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>大村湾と形上湾の図を次に作りますが、先にラベルの tibble を準備します。
+<code>tibble</code> の <code>long</code> と <code>lat</code> のデータは試行錯誤で来ました。
+もっといい方法はあるはずです。</p>
+<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Build plots for Omura Bay and Katagami Bay.</span>
+<span class="va">tmp1</span> <span class="op">=</span> <span class="va">omurabay_area</span> |&gt; <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="fl">6677</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">tmp2</span> <span class="op">=</span> <span class="va">katagami_area</span> |&gt; <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="fl">6677</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co"># tibble for labeling figures. The long and lat are by trial-and-error.</span>
+<span class="co"># Need to find a better method.</span>
+<span class="va">label1</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="va">tmp1</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span> <span class="op">-</span><span class="fl">2500</span>,
+                lat <span class="op">=</span> <span class="va">tmp1</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">+</span><span class="fl">1700</span>,
+                label <span class="op">=</span> <span class="st">"Omura Bay, Nagasaki, Japan"</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"long"</span>, <span class="st">"lat"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="fl">6677</span><span class="op">)</span>, agr <span class="op">=</span> <span class="st">"constant"</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">omurabay_area</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">label2</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="va">tmp2</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span><span class="fl">800</span>,
+                lat <span class="op">=</span> <span class="va">tmp2</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span> <span class="op">-</span><span class="fl">150</span>,
+                label <span class="op">=</span> <span class="st">"Katagami Bay, Nagasaki, Japan"</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"long"</span>, <span class="st">"lat"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="fl">6677</span><span class="op">)</span>, agr <span class="op">=</span> <span class="st">"constant"</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">omurabay_area</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>では、大村湾と形上湾の地図をつくります。</p>
+<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pomura</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"grey50"</span>, data <span class="op">=</span> <span class="va">omurabay_area</span>, size <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">label</span><span class="op">)</span>, 
+               data <span class="op">=</span> <span class="va">label1</span>,
+               color <span class="op">=</span> <span class="st">"white"</span>,
+               family <span class="op">=</span> <span class="st">"notosans"</span>, 
+               fontface <span class="op">=</span> <span class="st">"bold"</span>,
+               vjust <span class="op">=</span> <span class="fl">1</span>, hjust <span class="op">=</span> <span class="fl">1</span>,
+               size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>  <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://paleolimbot.github.io/ggspatial/reference/annotation_north_arrow.html">annotation_north_arrow</a></span><span class="op">(</span>style <span class="op">=</span> <span class="fu"><a href="https://paleolimbot.github.io/ggspatial/reference/north_arrow_orienteering.html">north_arrow_minimal</a></span><span class="op">(</span>text_family <span class="op">=</span> <span class="st">"notosans"</span>, 
+                                                     text_face <span class="op">=</span> <span class="st">"bold"</span>,
+                                                     line_width <span class="op">=</span> <span class="fl">2</span>,
+                                                     text_size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>,
+                         pad_y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="st">"npc"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>panel.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"lightblue"</span>, color <span class="op">=</span><span class="st">"black"</span><span class="op">)</span>,
+        panel.border  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span><span class="st">"black"</span><span class="op">)</span>,
+        plot.background <span class="op">=</span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"white"</span>, color <span class="op">=</span><span class="cn">NA</span><span class="op">)</span>,
+        axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,
+        axis.line <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,
+        axis.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,
+        axis.ticks <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">pkatagami</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"grey50"</span>, data <span class="op">=</span> <span class="va">katagami_area</span>, size <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">rank</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">zostera</span>,
+          pch <span class="op">=</span> <span class="fl">21</span>, size <span class="op">=</span> <span class="fl">3</span>,
+          color <span class="op">=</span> <span class="st">"white"</span>, stroke <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>label <span class="op">=</span> <span class="va">label</span><span class="op">)</span>, 
+               data <span class="op">=</span> <span class="va">label2</span>,
+               color <span class="op">=</span> <span class="st">"white"</span>,
+               family <span class="op">=</span> <span class="st">"notosans"</span>, 
+               fontface <span class="op">=</span> <span class="st">"bold"</span>,
+               vjust <span class="op">=</span> <span class="fl">1.0</span>, hjust <span class="op">=</span> <span class="fl">0.0</span>,
+               size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>  <span class="op">+</span> 
+  <span class="fu"><a href="https://paleolimbot.github.io/ggspatial/reference/annotation_north_arrow.html">annotation_north_arrow</a></span><span class="op">(</span>style <span class="op">=</span> <span class="fu"><a href="https://paleolimbot.github.io/ggspatial/reference/north_arrow_orienteering.html">north_arrow_minimal</a></span><span class="op">(</span>text_family <span class="op">=</span> <span class="st">"notosans"</span>, 
+                                                     text_face <span class="op">=</span> <span class="st">"bold"</span>,
+                                                     line_width <span class="op">=</span> <span class="fl">2</span>,
+                                                     text_size <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>expand <span class="op">=</span> <span class="cn">FALSE</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">katagami_area</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_fill_viridis_d</a></span><span class="op">(</span>end <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>panel.grid <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,
+        panel.background <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"lightblue"</span>, color <span class="op">=</span><span class="st">"black"</span><span class="op">)</span>,
+        panel.border  <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span><span class="st">"black"</span><span class="op">)</span>,
+        plot.background <span class="op">=</span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"white"</span>, color <span class="op">=</span><span class="cn">NA</span><span class="op">)</span>,
+        axis.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,
+        axis.line <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,
+        axis.text <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span>,
+        axis.ticks <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><code>patchwork</code> のパッケージをつかって、図を組み立てます。
+図は PDF に保存したら、<code>magick</code> を使って、PNGにも変換します。</p>
+<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pout</span> <span class="op">=</span> <span class="va">pmain</span> <span class="op">+</span> <span class="op">(</span><span class="va">pomura</span> <span class="op">/</span> <span class="va">pkatagami</span><span class="op">)</span>
+<span class="va">pdfname</span> <span class="op">=</span> <span class="st">"katagami-map-v1.pdf"</span>
+<span class="va">pngname</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">pdfname</span>, <span class="st">"pdf"</span>, <span class="st">"png"</span><span class="op">)</span>
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="va">pdfname</span>, plot<span class="op">=</span> <span class="va">pout</span>, width <span class="op">=</span> <span class="fl">300</span>, height <span class="op">=</span> <span class="fl">300</span>, units <span class="op">=</span> <span class="st">"mm"</span><span class="op">)</span>
+<span class="fu"><a href="https://docs.ropensci.org/magick/reference/editing.html">image_read_pdf</a></span><span class="op">(</span><span class="va">pdfname</span>, density <span class="op">=</span> <span class="fl">600</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://docs.ropensci.org/magick/reference/editing.html">image_write</a></span><span class="op">(</span><span class="va">pngname</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html">include_graphics</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="st">"./"</span>, <span class="va">pngname</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="katagami-map-v1.png" width="50%" style="display: block; margin: auto;"></div>
+</div>
+<div id="sesssion-information" class="section level2" number="11.6">
+<h2>
+<span class="header-section-number">11.6</span> Sesssion information<a class="anchor" aria-label="anchor" href="#sesssion-information"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
+<span class="co">#&gt; R version 4.1.3 (2022-03-10)</span>
+<span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span>
+<span class="co">#&gt; Running under: Debian GNU/Linux 11 (bullseye)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Matrix products: default</span>
+<span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/atlas/libblas.so.3.10.3</span>
+<span class="co">#&gt; LAPACK: /usr/lib/x86_64-linux-gnu/atlas/liblapack.so.3.10.3</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; locale:</span>
+<span class="co">#&gt;  [1] LC_CTYPE=en_US.utf8        LC_NUMERIC=C              </span>
+<span class="co">#&gt;  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.utf8     </span>
+<span class="co">#&gt;  [5] LC_MONETARY=ja_JP.UTF-8    LC_MESSAGES=en_US.utf8    </span>
+<span class="co">#&gt;  [7] LC_PAPER=ja_JP.UTF-8       LC_NAME=C                 </span>
+<span class="co">#&gt;  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span>
+<span class="co">#&gt; [11] LC_MEASUREMENT=ja_JP.UTF-8 LC_IDENTIFICATION=C       </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; attached base packages:</span>
+<span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets </span>
+<span class="co">#&gt; [6] methods   base     </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; other attached packages:</span>
+<span class="co">#&gt;  [1] sf_1.0-7         ggspatial_1.1.5  kableExtra_1.3.4</span>
+<span class="co">#&gt;  [4] patchwork_1.1.1  magick_2.7.3     ggpubr_0.4.0    </span>
+<span class="co">#&gt;  [7] showtext_0.9-5   showtextdb_3.0   sysfonts_0.8.5  </span>
+<span class="co">#&gt; [10] forcats_0.5.1    stringr_1.4.0    dplyr_1.0.8     </span>
+<span class="co">#&gt; [13] purrr_0.3.4      readr_2.1.2      tidyr_1.2.0     </span>
+<span class="co">#&gt; [16] tibble_3.1.6     ggplot2_3.3.5    tidyverse_1.3.1 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; loaded via a namespace (and not attached):</span>
+<span class="co">#&gt;  [1] fs_1.5.2           bit64_4.0.5       </span>
+<span class="co">#&gt;  [3] lubridate_1.8.0    webshot_0.5.2     </span>
+<span class="co">#&gt;  [5] httr_1.4.2         tools_4.1.3       </span>
+<span class="co">#&gt;  [7] backports_1.4.1    bslib_0.3.1       </span>
+<span class="co">#&gt;  [9] utf8_1.2.2         R6_2.5.1          </span>
+<span class="co">#&gt; [11] KernSmooth_2.23-20 DBI_1.1.2         </span>
+<span class="co">#&gt; [13] colorspace_2.0-3   withr_2.5.0       </span>
+<span class="co">#&gt; [15] tidyselect_1.1.2   downlit_0.4.0     </span>
+<span class="co">#&gt; [17] bit_4.0.4          curl_4.3.2        </span>
+<span class="co">#&gt; [19] compiler_4.1.3     textshaping_0.3.6 </span>
+<span class="co">#&gt; [21] cli_3.2.0          rvest_1.0.2       </span>
+<span class="co">#&gt; [23] xml2_1.3.3         bookdown_0.24     </span>
+<span class="co">#&gt; [25] sass_0.4.0         scales_1.1.1      </span>
+<span class="co">#&gt; [27] classInt_0.4-3     askpass_1.1       </span>
+<span class="co">#&gt; [29] proxy_0.4-26       systemfonts_1.0.4 </span>
+<span class="co">#&gt; [31] digest_0.6.29      rmarkdown_2.12    </span>
+<span class="co">#&gt; [33] svglite_2.1.0      pkgconfig_2.0.3   </span>
+<span class="co">#&gt; [35] htmltools_0.5.2    highr_0.9         </span>
+<span class="co">#&gt; [37] dbplyr_2.1.1       fastmap_1.1.0     </span>
+<span class="co">#&gt; [39] rlang_1.0.2        readxl_1.3.1      </span>
+<span class="co">#&gt; [41] rstudioapi_0.13    farver_2.1.0      </span>
+<span class="co">#&gt; [43] jquerylib_0.1.4    generics_0.1.2    </span>
+<span class="co">#&gt; [45] jsonlite_1.8.0     vroom_1.5.7       </span>
+<span class="co">#&gt; [47] car_3.0-12         magrittr_2.0.2    </span>
+<span class="co">#&gt; [49] s2_1.0.7           Rcpp_1.0.8        </span>
+<span class="co">#&gt; [51] munsell_0.5.0      fansi_1.0.2       </span>
+<span class="co">#&gt; [53] abind_1.4-5        lifecycle_1.0.1   </span>
+<span class="co">#&gt; [55] stringi_1.7.6      yaml_2.3.5        </span>
+<span class="co">#&gt; [57] carData_3.0-5      grid_4.1.3        </span>
+<span class="co">#&gt; [59] parallel_4.1.3     crayon_1.5.0      </span>
+<span class="co">#&gt; [61] haven_2.4.3        hms_1.1.1         </span>
+<span class="co">#&gt; [63] knitr_1.37         pillar_1.7.0      </span>
+<span class="co">#&gt; [65] ggsignif_0.6.3     codetools_0.2-18  </span>
+<span class="co">#&gt; [67] wk_0.6.0           reprex_2.0.1      </span>
+<span class="co">#&gt; [69] glue_1.6.2         evaluate_0.15     </span>
+<span class="co">#&gt; [71] pdftools_3.1.1     qpdf_1.1          </span>
+<span class="co">#&gt; [73] modelr_0.1.8       vctrs_0.3.8       </span>
+<span class="co">#&gt; [75] tzdb_0.2.0         cellranger_1.1.0  </span>
+<span class="co">#&gt; [77] gtable_0.3.0       assertthat_0.2.1  </span>
+<span class="co">#&gt; [79] cachem_1.0.6       xfun_0.30         </span>
+<span class="co">#&gt; [81] broom_0.7.12       e1071_1.7-9       </span>
+<span class="co">#&gt; [83] rstatix_0.7.0      ragg_1.2.2        </span>
+<span class="co">#&gt; [85] class_7.3-20       viridisLite_0.4.0 </span>
+<span class="co">#&gt; [87] memoise_2.0.1      units_0.8-0       </span>
+<span class="co">#&gt; [89] ellipsis_0.3.2</span></code></pre></div>
+
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="chapter-nav">
+<div class="prev"><a href="ggplot.html"><span class="header-section-number">10</span> ggplot</a></div>
+<div class="empty"></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#maps"><span class="header-section-number">11</span> 地図の作り方</a></li>
+<li><a class="nav-link" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-6"><span class="header-section-number">11.1</span> 必要なパッケージ</a></li>
+<li><a class="nav-link" href="#%E3%82%B7%E3%82%A7%E3%83%BC%E3%83%97%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF"><span class="header-section-number">11.2</span> シェープファイルの読み込み</a></li>
+<li><a class="nav-link" href="#%E8%AA%BF%E6%9F%BB%E5%9C%B0%E7%82%B9%E3%81%AE%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E6%BA%96%E5%82%99%E3%81%99%E3%82%8B"><span class="header-section-number">11.3</span> 調査地点のデータを準備する</a></li>
+<li><a class="nav-link" href="#%E4%B9%9D%E5%B7%9E%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%8A%BD%E5%87%BA"><span class="header-section-number">11.4</span> 九州データの抽出</a></li>
+<li><a class="nav-link" href="#%E8%AA%BF%E6%9F%BB%E5%9C%B0%E7%82%B9%E3%81%AE%E5%9B%B3"><span class="header-section-number">11.5</span> 調査地点の図</a></li>
+<li><a class="nav-link" href="#sesssion-information"><span class="header-section-number">11.6</span> Sesssion information</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/rstudio/bookdown-demo/blob/master/50-maps.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/rstudio/bookdown-demo/edit/master/50-maps.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室. It was last built on 2022-04-26.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>
