@@ -1,1 +1,161 @@
 # ロガーからの読み込み {#data-logger-input}
+
+研究室のデータロガーは主に [Onset Computer Corporation (リンクは国内代理店に飛びます)](https://www.pacico.co.jp/) と [Dataflow Systems Inc. (リンクはメーカーに飛びます)](http://odysseydatarecording.com/) の商品を使っています。
+
+* ティドビットV2 (TidBit V2, UTBI-001)
+* ウォーターテンププロ V2 (U22-001)
+* U20 ウォーターレベルロガー(標準型・9m) (U20-001-01)
+* U26 溶存酸素ロガー (U26-001)
+* USBマイクロステーションロガー (H21-USB)
+  * 風速センサー (S-WSB-M003)
+  * PAR 光量子センサー (S-LIA-M003)
+  * 気圧センサー (S-BPB-CM50)
+* Odyssey PAR Light logger (旧バージョン)
+
+## 必要なパッケージ
+
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(gnnlab)
+```
+
+`gnnlab` は研究室用のパッケージです。
+ここにデータロガー読み取り専用関数が入っています。
+パッケージのURLは (https://github.com/gnishihara/gnnlab) です。
+もちろん、研究室サーバの場合はインストール済みですが、
+個人のパソコンにインストールしたいなら、`remote` のパッケージでできます。
+
+```{r, eval = FALSE}
+remotes::install_github("https://github.com/gnishihara/gnnlab")
+```
+
+Onsetのロガー用関数は `read_onset()` です。
+これで、上で紹介したすべてのロガーのCSVファイルからデータの読み込みができます。
+Microstation の場合は、風速、PAR、気圧センサーだけに対応しています。
+他のセンサーを追加したい場合、データファイル送ってくれると追加できるとおもいます。
+Dataflow systems のロガーは `read_odyssey()` です。
+
+```{r, eval = FALSE}
+read_onset()
+```
+
+この関数は `read_csv()` のラッパーなので、`tidyverse` パッケージも必要です。
+
+## 使い方
+
+
+```{r}
+labdata = "~/Lab_Data/kawatea/Temperature/Temp_03_ecser_surface_210326.csv"
+ecser = read_onset(labdata)
+```
+
+```{r}
+ecser
+```
+
+`read_onset()` は読み込んだデータが負の値または、水温と溶存酸素濃度の値が 40 を超えた場合、`NA` とします。
+不都合の場合は、次のように読み込んでくださし。
+
+```{r}
+ecser = read_csv(labdata, skip = 1)
+ecser
+```
+
+使いにくい列名なので、`select()` をつかって作り直します。
+
+```{r}
+ecser = ecser |> 
+  select(datetime = matches("GMT"),
+         temperature = matches("温度"))
+ecser
+```
+
+次は、`datetime`  の修正です。
+`chr` から `dttm` の変換します。
+このとき、`lubridate` の `parse_date_time()` をつかいます。
+
+```{r}
+locale = Sys.setlocale("LC_TIME", "ja_JP.UTF-8")
+ecser |> mutate(datetime = parse_date_time(datetime, "mdyT", locale = locale))
+```
+
+`locale`はパソコンの環境によって異なりますが、研究室のサーバの場合は
+`locale = Sys.setlocale("LC_TIME", "ja_JP.UTF-8")` にしてください。
+
+**研究室のサーバで解析をするなら、`read_onset()` を使うこと！**
+
+## 複数データの読み込み
+
+一度に複数の似たようなデータを読み込むなら、`map()`シリーズの関数でします。
+
+```{r}
+labfolder = "~/Lab_Data/kawatea/Temperature/"
+fnames = dir(labfolder, pattern = "Temp_.*arikawa.*surface.*csv", full = TRUE)
+```
+
+
+データ読んで、一つの`tibble` として返す場合は `map_dfr()` をつかう。
+
+```{r}
+map_dfr(fnames, read_onset)
+```
+
+
+研究室のデータファイルは、次のように作っているので、ファイル名も`tibble` に残して読んだほうがいい。
+
+`Temp_856_arikawaamamo_surface_200819.csv` は
+
+`観測するデータの種類_ロガー番号_調査地点_場所_設置日.csv` として定義しています。
+
+```{r}
+dout = tibble(fnames) |> mutate(data = map(fnames, read_onset))
+dout
+```
+
+あとはファイル名から情報を抜き出して、`data` をアンネストするだけです。
+
+```{r}
+dout = dout |> 
+  mutate(fnames = basename(fnames)) |> 
+  mutate(fnames = str_remove(fnames, ".csv")) |> 
+  separate(fnames, 
+           c("type", "id", "location", "position", "surveydate"),
+           sep = "_") |> 
+  unnest(data)
+dout
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
