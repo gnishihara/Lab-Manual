@@ -2,14 +2,10 @@
 
 ## 必要なパッケージ
 
-::: {.rmdnote}
-
 ```{r}
 library(tidyverse)
 library(readxl)
 ```
-
-:::
 
 ## データの確認
 

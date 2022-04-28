@@ -8,9 +8,10 @@ knitr::opts_chunk$set(
   echo = TRUE, 
   warning = FALSE, 
   message = FALSE, 
-  fig.width = 10, 
-  fig.height = 10, 
+  fig.width = 8, 
+  fig.height = 8, 
   fig.align = "center", 
+  out.width = "90%",
   fig.pos = "H")
 
 

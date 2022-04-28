@@ -345,21 +345,25 @@ pkatagami = ggplot() +
 `patchwork` のパッケージをつかって、図を組み立てます。
 図は PDF に保存したら、`magick` を使って、PNGにも変換します。
 
-```{r}
+```{r, eval = FALSE}
 pout = pmain + (pomura / pkatagami)
-pdfname = "katagami-map-v1.pdf"
+pdfname = "Images/katagami-map-v1.pdf"
 pngname = str_replace(pdfname, "pdf", "png")
 ggsave(pdfname, plot= pout, width = 300, height = 300, units = "mm")
-image_read_pdf(pdfname, density = 600) |> image_write(pngname)
+image_read_pdf(pdfname, density = 600) |> image_trim() |> image_border(color = "white") |> image_write(pngname)
 ```
 
-```{r final-figure, out.width="50%"}
-knitr::include_graphics(str_c("./", pngname))
+```{r, echo = FALSE}
+pout = pmain + (pomura / pkatagami)
+proot = rprojroot::find_rstudio_root_file("Images/")
+pdfname = "katagami-map-v1.pdf"
+pngname = str_replace(pdfname, "pdf", "png")
+ggsave(str_c(proot, pdfname), plot= pout, width = 300, height = 300, units = "mm")
+image_read_pdf(str_c(proot, pdfname), density = 600) |> 
+  image_trim() |> image_border(color = "white") |> image_write(str_c(proot, pdfname))
 ```
 
-## Sesssion information
-
-```{r}
-sessionInfo()
+```{r final-figure, echo = FALSE}
+knitr::include_graphics(str_c(proot, pngname))
 ```
 

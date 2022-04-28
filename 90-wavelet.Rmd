@@ -462,10 +462,11 @@ CAP = "
 
 ```
 
-```{r, fig.cap = CAP, echo = FALSE, out.width="90%"}
+```{r, fig.cap = CAP, echo = FALSE}
 fn = rprojroot::find_rstudio_root_file("_wavelet_plots") |> 
   dir(full = TRUE, pattern = "png")
-str_subset(fn, "arikawagaramo_0m_20180517*") |> magick::image_read()
+fn = str_subset(fn, "arikawagaramo_0m_20180517*") 
+knitr::include_graphics(fn)
 ```
 
 ## SNR の求め方

@@ -5,3 +5,8 @@
 *.rds
 _wavelet_plots/
 _book/
+Data/
+Images/
+_bookdown_files/
+katagami-map-v1.pdf
+katagami-map-v1.png
