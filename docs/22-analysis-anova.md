@@ -434,7 +434,7 @@ plot(mall, which = 1)
 ```
 
 <div class="figure" style="text-align: center">
-<img src="22-analysis-anova_files/figure-html/rfplot-1.png" alt="残渣 vs. 期待値" width="576" />
+<img src="22-analysis-anova_files/figure-html/rfplot-1.png" alt="残渣 vs. 期待値" width="90%" />
 <p class="caption">(\#fig:rfplot)残渣 vs. 期待値</p>
 </div>
 
@@ -449,7 +449,7 @@ plot(mall, which = 3)
 ```
 
 <div class="figure" style="text-align: center">
-<img src="22-analysis-anova_files/figure-html/slplot-1.png" alt="スケール・位置プロット" width="576" />
+<img src="22-analysis-anova_files/figure-html/slplot-1.png" alt="スケール・位置プロット" width="90%" />
 <p class="caption">(\#fig:slplot)スケール・位置プロット</p>
 </div>
 
@@ -470,7 +470,7 @@ plot(mall, which = 2)
 ```
 
 <div class="figure" style="text-align: center">
-<img src="22-analysis-anova_files/figure-html/qqplot-1.png" alt="QQプロット" width="576" />
+<img src="22-analysis-anova_files/figure-html/qqplot-1.png" alt="QQプロット" width="90%" />
 <p class="caption">(\#fig:qqplot)QQプロット</p>
 </div>
 
@@ -483,7 +483,7 @@ plot(mall, which = 5)
 ```
 
 <div class="figure" style="text-align: center">
-<img src="22-analysis-anova_files/figure-html/cookplot-1.png" alt="クックの距離とてこ比" width="576" />
+<img src="22-analysis-anova_files/figure-html/cookplot-1.png" alt="クックの距離とてこ比" width="90%" />
 <p class="caption">(\#fig:cookplot)クックの距離とてこ比</p>
 </div>
 

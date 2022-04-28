@@ -50,7 +50,7 @@ iris |> pivot_longer(cols = matches("Sepal|Petal")) |>
              cols = vars(measurement))
 ```
 
-<img src="20-analysis-ttest_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" />
+<img src="20-analysis-ttest_files/figure-html/unnamed-chunk-3-1.png" width="90%" style="display: block; margin: auto;" />
 
 
 ## Petal と Sepal の長さの比較

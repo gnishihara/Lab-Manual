@@ -1,4 +1,4 @@
-# 一般化線形モデル {#glm}
+# 線形モデル {#linear-models}
 
 ## 必要なパッケージ
 
@@ -361,7 +361,7 @@ ggplot(firis) +
 ```
 
 <div class="figure" style="text-align: center">
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-10-1.png" alt="残渣のヒストグラムと正規分布。" width="672" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-10-1.png" alt="残渣のヒストグラムと正規分布。" width="90%" />
 <p class="caption">(\#fig:unnamed-chunk-10)残渣のヒストグラムと正規分布。</p>
 </div>
 
@@ -374,7 +374,7 @@ ggplot(firis) +
 ```
 
 <div class="figure" style="text-align: center">
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-11-1.png" alt="QQプロット" width="672" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-11-1.png" alt="QQプロット" width="90%" />
 <p class="caption">(\#fig:unnamed-chunk-11)QQプロット</p>
 </div>
 
@@ -400,7 +400,7 @@ firis |>
 ```
 
 <div class="figure" style="text-align: center">
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-12-1.png" alt="標準化残渣と応答変数、それぞれの説明変数との関係。" width="672" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-12-1.png" alt="標準化残渣と応答変数、それぞれの説明変数との関係。" width="90%" />
 <p class="caption">(\#fig:unnamed-chunk-12)標準化残渣と応答変数、それぞれの説明変数との関係。</p>
 </div>
 
@@ -418,7 +418,7 @@ firis |>
 ```
 
 <div class="figure" style="text-align: center">
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-13-1.png" alt="標準化残渣と期待値の関係。" width="672" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-13-1.png" alt="標準化残渣と期待値の関係。" width="90%" />
 <p class="caption">(\#fig:unnamed-chunk-13)標準化残渣と期待値の関係。</p>
 </div>
 
@@ -435,7 +435,7 @@ firis |>
 ```
 
 <div class="figure" style="text-align: center">
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-14-1.png" alt="標準化残渣の平方根と期待値の関係。" width="672" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-14-1.png" alt="標準化残渣の平方根と期待値の関係。" width="90%" />
 <p class="caption">(\#fig:unnamed-chunk-14)標準化残渣の平方根と期待値の関係。</p>
 </div>
 
@@ -453,7 +453,7 @@ firis |>
   geom_hline(yintercept = thold, color = "red", linetype = "dashed")
 ```
 
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-15-1.png" width="90%" style="display: block; margin: auto;" />
 
 診断図から問題ないと判断できたら、説明変数の多重鏡線性を確認しましょう。
 まず，説明変数がお互いに相関があるかを確認します。
@@ -532,7 +532,7 @@ gala %>% print(n = 3) # 最初の 3 行を表示
 
 解析する前に、データの可視化をします。
 
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-20-1.png" width="576" style="display: block; margin: auto;" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-20-1.png" width="90%" style="display: block; margin: auto;" />
 
 説明変数 (explanatory variable)、または予測子 (Predictor) に対する種数の変動は予測子によって変わることがわかります。
 
@@ -601,7 +601,7 @@ p2 = ggplot(fgala) +
 p1 | p2
 ```
 
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-24-1.png" width="90%" style="display: block; margin: auto;" />
 
 データ数は少ないが，残差は 0 を中心にしていて左右対称です。
 殆どの残差はQQプロットの直線に沿っています。
@@ -619,7 +619,7 @@ fgala |>
   facet_wrap(vars(name), scales = "free")
 ```
 
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-25-1.png" width="90%" style="display: block; margin: auto;" />
 
 
 予測子に対する残差の分布を確認すると，均等に分布していないように見えます。
@@ -641,7 +641,7 @@ p2 = fgala |>
 p1 | p2
 ```
 
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-26-1.png" width="90%" style="display: block; margin: auto;" />
 
 残差のばらつきは期待値と関係性が有るように見えます (Residual vs. Fitted Values Plot)。
 Scale--Location Plot では，その関係が明確です。
@@ -660,7 +660,7 @@ fgala |>
   geom_hline(yintercept = thold, color = "red", linetype = "dashed")
 ```
 
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-27-1.png" width="90%" style="display: block; margin: auto;" />
 
 クックの距離が $P(F_{(p, n-p)}=0.5)$ を超えれば，影響力の高い点だと考えられます。
 このとき，16番目のデータが明らかに超えています。
@@ -780,7 +780,7 @@ p2 = ggplot(fgala) +
 p1 | p2
 ```
 
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-32-1.png" width="672" style="display: block; margin: auto;" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-32-1.png" width="90%" style="display: block; margin: auto;" />
 
 ログ変換なしの結果よりちょっと良くなったと思います。
 
@@ -795,7 +795,7 @@ fgala |>
   facet_wrap(vars(name), scales = "free")
 ```
 
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-33-1.png" width="672" style="display: block; margin: auto;" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-33-1.png" width="90%" style="display: block; margin: auto;" />
 
 説明変数が上昇すると残差のばらつきが減少する傾向があるので，残差のばらつきに問題があります。
 
@@ -814,7 +814,7 @@ p2 = fgala |>
 p1 | p2
 ```
 
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-34-1.png" width="672" style="display: block; margin: auto;" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-34-1.png" width="90%" style="display: block; margin: auto;" />
 
 期待値に対しても，残差のばらつきの均一性が問題です。さらに Scale - Location Plot には明らか傾向があります。
 
@@ -831,7 +831,7 @@ fgala |>
   geom_hline(yintercept = thold, color = "red", linetype = "dashed")
 ```
 
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-35-1.png" width="672" style="display: block; margin: auto;" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-35-1.png" width="90%" style="display: block; margin: auto;" />
 
 
 
@@ -942,7 +942,7 @@ p6 = fgala |>
 p1 + p2 + p3 + p4 + p5 + p6
 ```
 
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-40-1.png" width="672" style="display: block; margin: auto;" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-40-1.png" width="90%" style="display: block; margin: auto;" />
 
 残差のばらつきや正規性は良くなったが，クックの距離の問題が残っています。
 
@@ -1014,7 +1014,7 @@ p6 = fgala |>
 p1 + p2 + p3 + p4 + p5 + p6
 ```
 
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-42-1.png" width="672" style="display: block; margin: auto;" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-42-1.png" width="90%" style="display: block; margin: auto;" />
 
 残差のばらつき，正規性，クックの距離の問題は解決できました。
 
@@ -1039,7 +1039,6 @@ logSF2 %>% Anova(type = "III") %>% print(signif.stars = F)
 ところが，この結果まで導くには，5 種類のモデルを検証しました。$\alpha_\text{fwer}$ は
 $1 - (1-0.05)^5 = 0.2262$ ですので，$\alpha_\text{fwer}=0.05$ にしたければ，$\alpha = 0.0102$ に設定しなければなりません。このとき，`logArea` 以外の要因の効果は有意ではありません。
 
-################################################################################
 
 ## 一般化線形モデル
 
@@ -1554,7 +1553,7 @@ p2 = gg_qq(H2_negbinom)
 p1 | p2
 ```
 
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-58-1.png" width="672" style="display: block; margin: auto;" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-58-1.png" width="90%" style="display: block; margin: auto;" />
 
 ### η に対するランダム化残差のばらつき
 
@@ -1571,7 +1570,7 @@ p2 = gg_scalelocation(H2_negbinom)
 p1 | p2
 ```
 
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-59-1.png" width="672" style="display: block; margin: auto;" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-59-1.png" width="90%" style="display: block; margin: auto;" />
 
 全てクックの距離は$P(F_{(n, n-p)}=0.5)$ より低いので，モデルを引っ張る点はありません。
 
@@ -1681,7 +1680,7 @@ p4 = gg_cooksd(H2_negbinom4)
 p1 + p2 + p3 + p4
 ```
 
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-65-1.png" width="672" style="display: block; margin: auto;" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-65-1.png" width="90%" style="display: block; margin: auto;" />
 
 モデル診断図を確認したら，残差の問題はないですので，$E(\text{Species})\sim b_0 + b_1\text{logArea}$ のモデルを採択することになりました。
 
@@ -1742,5 +1741,5 @@ gala %>%
   geom_line(aes(y = expect), data = ndata)
 ```
 
-<img src="24-analysis-glm_files/figure-html/unnamed-chunk-68-1.png" width="672" style="display: block; margin: auto;" />
+<img src="24-analysis-glm_files/figure-html/unnamed-chunk-68-1.png" width="90%" style="display: block; margin: auto;" />
 

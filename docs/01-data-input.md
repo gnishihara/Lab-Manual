@@ -2,15 +2,11 @@
 
 ## 必要なパッケージ
 
-::: {.rmdnote}
-
 
 ```r
 library(tidyverse)
 library(readxl)
 ```
-
-:::
 
 ## データの確認
 
@@ -33,7 +29,7 @@ excel_sheets(path) # シート名を確認する
 確認はスプレッドシートソフト（MS Office、 Google Sheets、 Open Office、 Apple Numbers、 など）で行います。
 
 <div class="figure" style="text-align: center">
-<img src="01-data-input_files/figure-html/seto1-1.png" alt="瀬戸内海藻場データ.xlsx の FY1990 シートに入力されているデータは縦長の形式です。" width="706" />
+<img src="01-data-input_files/figure-html/seto1-1.png" alt="瀬戸内海藻場データ.xlsx の FY1990 シートに入力されているデータは縦長の形式です。" width="90%" />
 <p class="caption">(\#fig:seto1)瀬戸内海藻場データ.xlsx の FY1990 シートに入力されているデータは縦長の形式です。</p>
 </div>
 
@@ -41,7 +37,7 @@ FY1990 のデータの構造は縦長なので、読み込みは比較的に楽�
 **それぞれの変数は一つの列**^[基本的には一行に 1 サンプル、一列に 1 変数にしましょう。]に入力されているから、読み込みが簡単です。
 
 <div class="figure" style="text-align: center">
-<img src="01-data-input_files/figure-html/seto2-1.png" alt="瀬戸内海藻場データ.xlsx の FY2018 シートに入力されているデータは横長の形式です。" width="766" />
+<img src="01-data-input_files/figure-html/seto2-1.png" alt="瀬戸内海藻場データ.xlsx の FY2018 シートに入力されているデータは横長の形式です。" width="90%" />
 <p class="caption">(\#fig:seto2)瀬戸内海藻場データ.xlsx の FY2018 シートに入力されているデータは横長の形式です。</p>
 </div>
 

@@ -6,14 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 1 データの読み込み | データ解析マニュアル</title>
 <meta name="author" content="水圏植物生態学研究室">
-<meta name="description" content="1.1 必要なパッケージ  library(tidyverse) library(readxl)   1.2 データの確認 データは環境省の「瀬戸内海における藻場・干潟分布状況調査（概要）」からまとめました。 もとのファイルは環境省平成３０年９月スライドデッキ からダウンロードできます。 XLSXファイルは readxl パッケージの read_xlsx() 関数で読み込みます。...">
+<meta name="description" content="1.1 必要なパッケージ library(tidyverse) library(readxl)  1.2 データの確認 データは環境省の「瀬戸内海における藻場・干潟分布状況調査（概要）」からまとめました。 もとのファイルは環境省平成３０年９月スライドデッキ からダウンロードできます。 XLSXファイルは readxl パッケージの read_xlsx() 関数で読み込みます。...">
 <meta name="generator" content="bookdown 0.24 with bs4_book()">
 <meta property="og:title" content="Chapter 1 データの読み込み | データ解析マニュアル">
 <meta property="og:type" content="book">
-<meta property="og:description" content="1.1 必要なパッケージ  library(tidyverse) library(readxl)   1.2 データの確認 データは環境省の「瀬戸内海における藻場・干潟分布状況調査（概要）」からまとめました。 もとのファイルは環境省平成３０年９月スライドデッキ からダウンロードできます。 XLSXファイルは readxl パッケージの read_xlsx() 関数で読み込みます。...">
+<meta property="og:description" content="1.1 必要なパッケージ library(tidyverse) library(readxl)  1.2 データの確認 データは環境省の「瀬戸内海における藻場・干潟分布状況調査（概要）」からまとめました。 もとのファイルは環境省平成３０年９月スライドデッキ からダウンロードできます。 XLSXファイルは readxl パッケージの read_xlsx() 関数で読み込みます。...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 1 データの読み込み | データ解析マニュアル">
-<meta name="twitter:description" content="1.1 必要なパッケージ  library(tidyverse) library(readxl)   1.2 データの確認 データは環境省の「瀬戸内海における藻場・干潟分布状況調査（概要）」からまとめました。 もとのファイルは環境省平成３０年９月スライドデッキ からダウンロードできます。 XLSXファイルは readxl パッケージの read_xlsx() 関数で読み込みます。...">
+<meta name="twitter:description" content="1.1 必要なパッケージ library(tidyverse) library(readxl)  1.2 データの確認 データは環境省の「瀬戸内海における藻場・干潟分布状況調査（概要）」からまとめました。 もとのファイルは環境省平成３０年９月スライドデッキ からダウンロードできます。 XLSXファイルは readxl パッケージの read_xlsx() 関数で読み込みます。...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.12/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -48,12 +48,12 @@
 <li><a class="" href="map-function.html"><span class="header-section-number">5</span> map 関数ってすごい</a></li>
 <li><a class="" href="t-test.html"><span class="header-section-number">6</span> t 検定</a></li>
 <li><a class="" href="anova.html"><span class="header-section-number">7</span> 分散分析</a></li>
-<li><a class="" href="glm.html"><span class="header-section-number">8</span> 一般化線形モデル</a></li>
+<li><a class="" href="linear-models.html"><span class="header-section-number">8</span> 線形モデル</a></li>
 <li><a class="" href="gam.html"><span class="header-section-number">9</span> 一般化加法モデル</a></li>
 <li><a class="" href="model-selection.html"><span class="header-section-number">10</span> モデル選択</a></li>
 <li><a class="" href="ggplot.html"><span class="header-section-number">11</span> ggplot</a></li>
 <li><a class="" href="maps.html"><span class="header-section-number">12</span> 地図の作り方</a></li>
-<li><a class="" href="wavelet.html"><span class="header-section-number">13</span> Wavlet 解析</a></li>
+<li><a class="" href="wavelet.html"><span class="header-section-number">13</span> Wavelet 解析</a></li>
 </ul>
 
         <div class="book-extra">
@@ -69,11 +69,9 @@
 <h2>
 <span class="header-section-number">1.1</span> 必要なパッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8"><i class="fas fa-link"></i></a>
 </h2>
-<div class="rmdnote">
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span></code></pre></div>
-</div>
 </div>
 <div id="データの確認" class="section level2" number="1.2">
 <h2>
@@ -94,7 +92,7 @@ XLSXファイルは <code>readxl</code> パッケージの <code><a href="https:
 確認はスプレッドシートソフト（MS Office、 Google Sheets、 Open Office、 Apple Numbers、 など）で行います。</p>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:seto1"></span>
-<img src="01-data-input_files/figure-html/seto1-1.png" alt="瀬戸内海藻場データ.xlsx の FY1990 シートに入力されているデータは縦長の形式です。" width="706"><p class="caption">
+<img src="01-data-input_files/figure-html/seto1-1.png" alt="瀬戸内海藻場データ.xlsx の FY1990 シートに入力されているデータは縦長の形式です。" width="90%"><p class="caption">
 Figure 1.1: 瀬戸内海藻場データ.xlsx の FY1990 シートに入力されているデータは縦長の形式です。
 </p>
 </div>
@@ -102,7 +100,7 @@ Figure 1.1: 瀬戸内海藻場データ.xlsx の FY1990 シートに入力され
 <strong>それぞれの変数は一つの列</strong><a href="wavelet.html#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>に入力されているから、読み込みが簡単です。</p>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:seto2"></span>
-<img src="01-data-input_files/figure-html/seto2-1.png" alt="瀬戸内海藻場データ.xlsx の FY2018 シートに入力されているデータは横長の形式です。" width="766"><p class="caption">
+<img src="01-data-input_files/figure-html/seto2-1.png" alt="瀬戸内海藻場データ.xlsx の FY2018 シートに入力されているデータは横長の形式です。" width="90%"><p class="caption">
 Figure 1.2: 瀬戸内海藻場データ.xlsx の FY2018 シートに入力されているデータは横長の形式です。
 </p>
 </div>

@@ -360,7 +360,7 @@ pdfname = "katagami-map-v1.pdf"
 pngname = str_replace(pdfname, "pdf", "png")
 ggsave(str_c(proot, pdfname), plot= pout, width = 300, height = 300, units = "mm")
 image_read_pdf(str_c(proot, pdfname), density = 600) |> 
-  image_trim() |> image_border(color = "white") |> image_write(str_c(proot, pdfname))
+  image_trim() |> image_border(color = "white") |> image_write(str_c(proot, pngname))
 ```
 
 ```{r final-figure, echo = FALSE}

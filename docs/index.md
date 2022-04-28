@@ -33,7 +33,7 @@ csl: chicago-fullnote-bibliography.csl
 
 **研究室の皆さん：**研究室用のデータは RStudio の `~/Lab_Data/` に入っています。
 
-マニュアルの更新日：04/28/2022 11:40:13 JST
+マニュアルの更新日：04/28/2022 12:32:58 JST
 
 ## サーバ環境 {-}
 

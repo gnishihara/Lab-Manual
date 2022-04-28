@@ -55,7 +55,7 @@ anova
 等分散性の確認に使うプロット
 正規性の確認に使うプロット
 飛び値異常値の確認プロット
-glm
+linear-models
 必要なパッケージ-7
 線形モデルとは
 線型モデルは直線じゃなくてもいい
@@ -117,7 +117,6 @@ maps
 調査地点のデータを準備する
 九州データの抽出
 調査地点の図
-sesssion-information
 wavelet
 必要なパッケージ-10
 解析に使う関数
@@ -125,4 +124,3 @@ wavelet
 データの前処理
 wavelet-の図
 snr-の求め方
-url-your-book-url-like-httpsbookdown.orgyihuibookdown

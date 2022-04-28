@@ -14,7 +14,7 @@ library(biwavelet)
 
 
 
-<img src="90-wavelet_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" />
+<img src="90-wavelet_files/figure-html/unnamed-chunk-3-1.png" width="90%" style="display: block; margin: auto;" />
 
 
 ウェーブレット変換は時系列データから時間的変化の特徴と周波数成分を調べるために使います。
@@ -66,7 +66,7 @@ ggplot(z) + geom_line(aes(x = t, y = y)) +
   scale_y_continuous("y")
 ```
 
-<img src="90-wavelet_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" />
+<img src="90-wavelet_files/figure-html/unnamed-chunk-5-1.png" width="90%" style="display: block; margin: auto;" />
 
 `biwavelet` の `wt()` 関数でウェーブレット解析をします。
 `wt()` に渡すデータは行列としてわたしましょう。
@@ -95,7 +95,7 @@ plot(wtout)
 白くなっているところは cone of influence (COI) です。
 COIは解析アルゴリズムの精度が落ちているところを示しているので、
 示されたパワーは両端から $e^{-2}$ に従って下がります。
-" width="672" />
+" width="90%" />
 <p class="caption">(\#fig:unnamed-chunk-8)
 これはウェーブレット解析のパワーを示す図です。
 パワーの低いところは青色、パワーの高いところは赤色です。
@@ -499,7 +499,7 @@ wtplots |>
 
 
 <div class="figure" style="text-align: center">
-<img src="90-wavelet_files/figure-html/unnamed-chunk-29-1.png" alt="
+<img src="/home/Lab_Data/Analytic-Methods/_wavelet_plots/arikawagaramo_0m_20180517_20180616_7_03.png" alt="
 有川湾鯨見山地先におけるガラモ場の水温に対するウェーブレット解析。
 観測期間は2018年5月17日から6月17日でしました。
 水温は海底で記録しました。
@@ -508,7 +508,7 @@ wtplots |>
 5月17日から25日、5月31日から6月2日、6月9日,　6月12日から17日の期間には強い24時間の周期があります。
 ところどころ強い12時間の周期もあります。12時間の周期は潮汐と関係していると考えますね。
 12時間より短い周期でも比較的に強いパワーが示されています。
-" width="1749" />
+" width="90%" />
 <p class="caption">(\#fig:unnamed-chunk-29)
 有川湾鯨見山地先におけるガラモ場の水温に対するウェーブレット解析。
 観測期間は2018年5月17日から6月17日でしました。
@@ -587,7 +587,7 @@ ggplot(snrdata) +
 ```
 
 <div class="figure" style="text-align: center">
-<img src="90-wavelet_files/figure-html/unnamed-chunk-33-1.png" alt="SNRは日周期と高周期の比率です。" width="672" />
+<img src="90-wavelet_files/figure-html/unnamed-chunk-33-1.png" alt="SNRは日周期と高周期の比率です。" width="90%" />
 <p class="caption">(\#fig:unnamed-chunk-33)SNRは日周期と高周期の比率です。</p>
 </div>
 
@@ -694,7 +694,7 @@ ggplot() +
 ```
 
 <div class="figure" style="text-align: center">
-<img src="90-wavelet_files/figure-html/unnamed-chunk-38-1.png" alt="SNRの傾向に線形モデルを当てはめたが、線形モデルのF検定に統計学的に有意な結果はありませんでした。" width="672" />
+<img src="90-wavelet_files/figure-html/unnamed-chunk-38-1.png" alt="SNRの傾向に線形モデルを当てはめたが、線形モデルのF検定に統計学的に有意な結果はありませんでした。" width="90%" />
 <p class="caption">(\#fig:unnamed-chunk-38)SNRの傾向に線形モデルを当てはめたが、線形モデルのF検定に統計学的に有意な結果はありませんでした。</p>
 </div>
 

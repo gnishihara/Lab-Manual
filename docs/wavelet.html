@@ -4,16 +4,16 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Chapter 14 Wavelet 解析 | データ解析マニュアル</title>
+<title>Chapter 13 Wavelet 解析 | データ解析マニュアル</title>
 <meta name="author" content="水圏植物生態学研究室">
-<meta name="description" content="14.1 必要なパッケージ library(tidyverse) library(lubridate) library(gnnlab) library(furrr) library(biwavelet) ウェーブレット変換は時系列データから時間的変化の特徴と周波数成分を調べるために使います。 細かい説明はいつか追加します。 本章を完成するまでは、次の論文を参考にしてください。...">
+<meta name="description" content="13.1 必要なパッケージ library(tidyverse) library(lubridate) library(gnnlab) library(furrr) library(biwavelet) ウェーブレット変換は時系列データから時間的変化の特徴と周波数成分を調べるために使います。 細かい説明はいつか追加します。 本章を完成するまでは、次の論文を参考にしてください。...">
 <meta name="generator" content="bookdown 0.24 with bs4_book()">
-<meta property="og:title" content="Chapter 14 Wavelet 解析 | データ解析マニュアル">
+<meta property="og:title" content="Chapter 13 Wavelet 解析 | データ解析マニュアル">
 <meta property="og:type" content="book">
-<meta property="og:description" content="14.1 必要なパッケージ library(tidyverse) library(lubridate) library(gnnlab) library(furrr) library(biwavelet) ウェーブレット変換は時系列データから時間的変化の特徴と周波数成分を調べるために使います。 細かい説明はいつか追加します。 本章を完成するまでは、次の論文を参考にしてください。...">
+<meta property="og:description" content="13.1 必要なパッケージ library(tidyverse) library(lubridate) library(gnnlab) library(furrr) library(biwavelet) ウェーブレット変換は時系列データから時間的変化の特徴と周波数成分を調べるために使います。 細かい説明はいつか追加します。 本章を完成するまでは、次の論文を参考にしてください。...">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Chapter 14 Wavelet 解析 | データ解析マニュアル">
-<meta name="twitter:description" content="14.1 必要なパッケージ library(tidyverse) library(lubridate) library(gnnlab) library(furrr) library(biwavelet) ウェーブレット変換は時系列データから時間的変化の特徴と周波数成分を調べるために使います。 細かい説明はいつか追加します。 本章を完成するまでは、次の論文を参考にしてください。...">
+<meta name="twitter:title" content="Chapter 13 Wavelet 解析 | データ解析マニュアル">
+<meta name="twitter:description" content="13.1 必要なパッケージ library(tidyverse) library(lubridate) library(gnnlab) library(furrr) library(biwavelet) ウェーブレット変換は時系列データから時間的変化の特徴と周波数成分を調べるために使います。 細かい説明はいつか追加します。 本章を完成するまでは、次の論文を参考にしてください。...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.12/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -39,28 +39,43 @@
 </form>
 
       <nav aria-label="Table of contents"><h2>Table of contents</h2>
-        <ul class="book-toc list-unstyled"><li><a class="" href="index.html"><span class="header-section-number">Chapter 14</span> Wavelet 解析</a></li></ul>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">このマニュアルについて</a></li>
+<li><a class="" href="data-input.html"><span class="header-section-number">1</span> データの読み込み</a></li>
+<li><a class="" href="data-wrangling.html"><span class="header-section-number">2</span> データの処理</a></li>
+<li><a class="" href="data-logger-input.html"><span class="header-section-number">3</span> ロガーからの読み込み</a></li>
+<li><a class="" href="data-summary.html"><span class="header-section-number">4</span> データの集計</a></li>
+<li><a class="" href="map-function.html"><span class="header-section-number">5</span> map 関数ってすごい</a></li>
+<li><a class="" href="t-test.html"><span class="header-section-number">6</span> t 検定</a></li>
+<li><a class="" href="anova.html"><span class="header-section-number">7</span> 分散分析</a></li>
+<li><a class="" href="linear-models.html"><span class="header-section-number">8</span> 線形モデル</a></li>
+<li><a class="" href="gam.html"><span class="header-section-number">9</span> 一般化加法モデル</a></li>
+<li><a class="" href="model-selection.html"><span class="header-section-number">10</span> モデル選択</a></li>
+<li><a class="" href="ggplot.html"><span class="header-section-number">11</span> ggplot</a></li>
+<li><a class="" href="maps.html"><span class="header-section-number">12</span> 地図の作り方</a></li>
+<li><a class="active" href="wavelet.html"><span class="header-section-number">13</span> Wavelet 解析</a></li>
+</ul>
 
         <div class="book-extra">
           <p><a id="book-repo" href="https://github.com/gnishihara/Lab-Manual">View book source <i class="fab fa-github"></i></a></p>
         </div>
       </nav>
 </div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="wavelet" class="section level1" number="14">
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="wavelet" class="section level1" number="13">
 <h1>
-<span class="header-section-number">14</span> Wavelet 解析<a class="anchor" aria-label="anchor" href="#wavelet"><i class="fas fa-link"></i></a>
+<span class="header-section-number">13</span> Wavelet 解析<a class="anchor" aria-label="anchor" href="#wavelet"><i class="fas fa-link"></i></a>
 </h1>
-<div id="必要なパッケージ-10" class="section level2" number="14.1">
+<div id="必要なパッケージ-10" class="section level2" number="13.1">
 <h2>
-<span class="header-section-number">14.1</span> 必要なパッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-10"><i class="fas fa-link"></i></a>
+<span class="header-section-number">13.1</span> 必要なパッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-10"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb222"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org">lubridate</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">gnnlab</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/DavisVaughan/furrr">furrr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tgouhier/biwavelet">biwavelet</a></span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="90-wavelet_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;"></div>
+<div class="inline-figure"><img src="90-wavelet_files/figure-html/unnamed-chunk-3-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p>ウェーブレット変換は時系列データから時間的変化の特徴と周波数成分を調べるために使います。
 <strong>細かい説明はいつか追加します。</strong>
 本章を完成するまでは、次の論文を参考にしてください。</p>
@@ -83,24 +98,24 @@ y &amp;= \sin(2 \pi \omega) \\
 \end{aligned}
 \]</span>
 この波形の角周波数 <span class="math inline">\((\omega)\)</span> は徐々に高くなります。</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb223"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ft</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">f</span> <span class="op">=</span> <span class="fl">50</span> <span class="op">*</span> <span class="va">t</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">10</span>
   <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">pi</span> <span class="op">*</span> <span class="va">f</span> <span class="op">)</span>
 <span class="op">}</span>
 <span class="va">z</span> <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu">ft</span><span class="op">(</span><span class="va">t</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb224"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">t</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span><span class="st">"t"</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span><span class="st">"y"</span><span class="op">)</span></code></pre></div>
-<div class="inline-figure"><img src="90-wavelet_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;"></div>
+<div class="inline-figure"><img src="90-wavelet_files/figure-html/unnamed-chunk-5-1.png" width="90%" style="display: block; margin: auto;"></div>
 <p><code>biwavelet</code> の <code><a href="https://rdrr.io/pkg/biwavelet/man/wt.html">wt()</a></code> 関数でウェーブレット解析をします。
 <code><a href="https://rdrr.io/pkg/biwavelet/man/wt.html">wt()</a></code> に渡すデータは行列としてわたしましょう。
 行列の1列目には時間情報、2列名には解析したい値です。</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb225"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">wtout</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/biwavelet/man/wt.html">wt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span>, mother <span class="op">=</span> <span class="st">"morlet"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">wtout</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb226"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://r-spatial.github.io/sf/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">wtout</span><span class="op">)</span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:unnamed-chunk-8"></span>
 <img src="90-wavelet_files/figure-html/unnamed-chunk-8-1.png" alt="
@@ -112,8 +127,8 @@ y &amp;= \sin(2 \pi \omega) \\
 白くなっているところは cone of influence (COI) です。
 COIは解析アルゴリズムの精度が落ちているところを示しているので、
 示されたパワーは両端から $e^{-2}$ に従って下がります。
-" width="672"><p class="caption">
-Figure 14.1: 
+" width="90%"><p class="caption">
+Figure 13.1: 
 これはウェーブレット解析のパワーを示す図です。
 パワーの低いところは青色、パワーの高いところは赤色です。
 黒線は統計学的に優位な領域を示しています。
@@ -125,15 +140,15 @@ COIは解析アルゴリズムの精度が落ちているところを示して�
 </p>
 </div>
 </div>
-<div id="解析に使う関数" class="section level2" number="14.2">
+<div id="解析に使う関数" class="section level2" number="13.2">
 <h2>
-<span class="header-section-number">14.2</span> 解析に使う関数<a class="anchor" aria-label="anchor" href="#%E8%A7%A3%E6%9E%90%E3%81%AB%E4%BD%BF%E3%81%86%E9%96%A2%E6%95%B0"><i class="fas fa-link"></i></a>
+<span class="header-section-number">13.2</span> 解析に使う関数<a class="anchor" aria-label="anchor" href="#%E8%A7%A3%E6%9E%90%E3%81%AB%E4%BD%BF%E3%81%86%E9%96%A2%E6%95%B0"><i class="fas fa-link"></i></a>
 </h2>
 <p>Wavelet を求めるための関数です。
 コアは <code>biwavelet</code> パッケージの <code><a href="https://rdrr.io/pkg/biwavelet/man/wt.html">wt()</a></code> 関数です。
 マザー・ウェーブレット (mother wavelet) はモレーウェーブレット (Morlet wavelet) に固定しています。
 <code><a href="https://rdrr.io/pkg/biwavelet/man/wt.html">wt()</a></code> には DoG (derivative of gaussian) と Paul ウェーブレットも使えます。</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb227"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">calculate_wavelet</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span>, <span class="va">obs</span>, <span class="va">tau</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">fs</span> <span class="op">=</span> <span class="fl">6</span>, <span class="va">dB</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">pad_cname</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">w</span><span class="op">)</span> <span class="op">{</span>
     <span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_pad.html">str_pad</a></span><span class="op">(</span><span class="va">x</span>, width <span class="op">=</span> <span class="va">w</span>, pad <span class="op">=</span> <span class="st">"0"</span><span class="op">)</span>
@@ -184,14 +199,14 @@ COIは解析アルゴリズムの精度が落ちているところを示して�
 <p>関数を適応した場合、エラーがでたらスクリプトはエラーが発生したところで止まります。
 関数を <code><a href="https://purrr.tidyverse.org/reference/safely.html">possibly()</a></code>のラッパーにとおせば、エラーがでたとき、<code>NULL</code> を返すようにする。
 これで、スクリプトは止まりません。</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb228"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">calc_wt</span> <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/safely.html">possibly</a></span><span class="op">(</span><span class="va">calculate_wavelet</span>, <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="補足関数" class="section level2" number="14.3">
+<div id="補足関数" class="section level2" number="13.3">
 <h2>
-<span class="header-section-number">14.3</span> 補足関数<a class="anchor" aria-label="anchor" href="#%E8%A3%9C%E8%B6%B3%E9%96%A2%E6%95%B0"><i class="fas fa-link"></i></a>
+<span class="header-section-number">13.3</span> 補足関数<a class="anchor" aria-label="anchor" href="#%E8%A3%9C%E8%B6%B3%E9%96%A2%E6%95%B0"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb229"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">se</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">na.rm</span><span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span>
   <span class="co"># 標準誤差</span>
   <span class="va">N</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>
@@ -232,13 +247,13 @@ COIは解析アルゴリズムの精度が落ちているところを示して�
     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 </div>
-<div id="データの前処理" class="section level2" number="14.4">
+<div id="データの前処理" class="section level2" number="13.4">
 <h2>
-<span class="header-section-number">14.4</span> データの前処理<a class="anchor" aria-label="anchor" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%89%8D%E5%87%A6%E7%90%86"><i class="fas fa-link"></i></a>
+<span class="header-section-number">13.4</span> データの前処理<a class="anchor" aria-label="anchor" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%89%8D%E5%87%A6%E7%90%86"><i class="fas fa-link"></i></a>
 </h2>
 <p>データの読み込みは並列で行うので、<code><a href="https://purrr.tidyverse.org/reference/map.html">map()</a></code> じゃなくて <code><a href="https://rdrr.io/pkg/furrr/man/future_map.html">future_map()</a></code> を使います。
 <code><a href="https://rdrr.io/pkg/gnnlab/man/read_onset.html">read_onset()</a></code> は 研究室の <code>gnnlab</code> パッケージの関数です。</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb230"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">labdatafolder</span> <span class="op">=</span> <span class="st">"~/Lab_Data/kawatea/Oxygen"</span>
 <span class="va">dset</span> <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>fnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">dir</a></span><span class="op">(</span><span class="va">labdatafolder</span>, pattern <span class="op">=</span> <span class="st">"DO.*arikawa.*csv"</span>, full <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">fnames</span>, <span class="st">"calib"</span>, negate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
@@ -260,14 +275,14 @@ COIは解析アルゴリズムの精度が落ちているところを示して�
 <span class="co">#&gt; 10 /home/gnishihara/Lab_Data/kawatea/Oxygen/DO_03_… &lt;tibble&gt;</span>
 <span class="co">#&gt; # … with 317 more rows</span></code></pre></div>
 <p>次はファイル名の処理をします。</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb231"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dset</span> <span class="op">=</span> <span class="va">dset</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">fnames</span>, <span class="st">"edge|sand"</span>, negate <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>fnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/basename.html">basename</a></span><span class="op">(</span><span class="va">fnames</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>fnames <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html">str_remove</a></span><span class="op">(</span><span class="va">fnames</span>, <span class="st">".csv"</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html">separate</a></span><span class="op">(</span><span class="va">fnames</span>, into <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"type"</span>, <span class="st">"id"</span>, <span class="st">"location"</span>, <span class="st">"position"</span>, <span class="st">"surveydate"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">dset</span> <span class="op">=</span> <span class="va">dset</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></code></pre></div>
 <p>観測期間のデータを読み込んで、観測インターバルを設定します。</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb232"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">surveyperiod</span> <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span><span class="st">"~/Lab_Data/kawatea/period_info_220422.csv"</span><span class="op">)</span>
 <span class="va">surveyperiod</span>
 <span class="co">#&gt; # A tibble: 185 × 5</span>
@@ -284,7 +299,7 @@ COIは解析アルゴリズムの精度が落ちているところを示して�
 <span class="co">#&gt;  9 tainoura  2017-07-20 00:00:00 2017-08-18 00:00:00 &lt;NA&gt;   </span>
 <span class="co">#&gt; 10 arikawaa… 2017-08-09 00:00:00 2017-08-18 00:00:00 &lt;NA&gt;   </span>
 <span class="co">#&gt; # … with 175 more rows, and 1 more variable: remarks &lt;chr&gt;</span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb233"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">surveyperiod</span> <span class="op">=</span> <span class="va">surveyperiod</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>interval <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/interval.html">interval</a></span><span class="op">(</span>start <span class="op">=</span> <span class="va">start_date</span>, end <span class="op">=</span> <span class="va">end_date</span><span class="op">)</span><span class="op">)</span>
 <span class="va">surveyperiod</span>
 <span class="co">#&gt; # A tibble: 185 × 6</span>
@@ -304,13 +319,13 @@ COIは解析アルゴリズムの精度が落ちているところを示して�
 <span class="co">#&gt; #   remarks &lt;chr&gt;, interval &lt;Interval&gt;</span></code></pre></div>
 <p>観測インストールをつかて、データをフィルタにかけます。
 インストール以外のデータはここで外します。</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb234"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ints</span> <span class="op">=</span> <span class="va">surveyperiod</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">interval</span><span class="op">)</span>
 <span class="va">dset</span> <span class="op">=</span> <span class="va">dset</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">datetime</span> <span class="op"><a href="https://lubridate.tidyverse.org/reference/within-interval.html">%within%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span><span class="op">(</span><span class="va">ints</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>さらに、データの数を求めてフィルタにかけます。
 10分間隔で測定しているので、一日あたりに 144 のデータがあります。
 条件に合わないデータは外します。</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb235"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dset</span> <span class="op">=</span> <span class="va">dset</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>date <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html">as_date</a></span><span class="op">(</span><span class="va">datetime</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">location</span>, <span class="va">position</span><span class="op">)</span> |&gt; 
@@ -336,7 +351,7 @@ COIは解析アルゴリズムの精度が落ちているところを示して�
 <p>Wavelet 解析を実施するときは、データが隣接しているかを確認しましょう。
 隣接しているデータをグループ化してから解析をします。
 ここでは、<code>contiguous()</code> 関数に <code>datetime</code> をわたして、必要な情報を加えます。</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb236"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dset</span> <span class="op">=</span> <span class="va">dset</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>datetime <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html">floor_date</a></span><span class="op">(</span><span class="va">datetime</span>, <span class="st">"10 mins"</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">location</span>, <span class="va">position</span>, <span class="va">id</span><span class="op">)</span> |&gt; 
@@ -344,11 +359,11 @@ COIは解析アルゴリズムの精度が落ちているところを示して�
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></code></pre></div>
 <p>グループ化が完了したら、wavelet 解析をします。</p>
 <p>ウェーブレット解析はとても重いので、研究室のサーバなら並列処理で解析します。</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb237"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">number_of_cpu_cores</span> <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span><span class="op">(</span><span class="op">)</span>
 <span class="fu"><a href="https://future.futureverse.org/reference/plan.html">plan</a></span><span class="op">(</span><span class="va">multisession</span>, workers <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></code></pre></div>
 <p>では、<code><a href="https://rdrr.io/pkg/furrr/man/future_map.html">future_map()</a></code> を使って並列処理で解散をします。</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb238"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">wtout</span> <span class="op">=</span> <span class="va">dset</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">datetime</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">group</span>, <span class="va">location</span>, <span class="va">id</span>, <span class="va">position</span><span class="op">)</span> |&gt; 
@@ -356,7 +371,7 @@ COIは解析アルゴリズムの精度が落ちているところを示して�
     <span class="va">df</span> |&gt; <span class="fu">calc_wt</span><span class="op">(</span><span class="va">temperature</span>, <span class="va">datetime</span><span class="op">)</span>
   <span class="op">}</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>普通に逐次処理のときは、<code><a href="https://purrr.tidyverse.org/reference/map.html">map()</a></code> で実行しましょう。</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb239"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">wtout</span> <span class="op">=</span> <span class="va">dset</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">datetime</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">group</span>, <span class="va">location</span>, <span class="va">id</span>, <span class="va">position</span><span class="op">)</span> |&gt; 
@@ -364,14 +379,14 @@ COIは解析アルゴリズムの精度が落ちているところを示して�
     <span class="va">df</span> |&gt; <span class="fu">calc_wt</span><span class="op">(</span><span class="va">temperature</span>, <span class="va">datetime</span><span class="op">)</span>
   <span class="op">}</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="wavelet-の図" class="section level2" number="14.5">
+<div id="wavelet-の図" class="section level2" number="13.5">
 <h2>
-<span class="header-section-number">14.5</span> Wavelet の図<a class="anchor" aria-label="anchor" href="#wavelet-%E3%81%AE%E5%9B%B3"><i class="fas fa-link"></i></a>
+<span class="header-section-number">13.5</span> Wavelet の図<a class="anchor" aria-label="anchor" href="#wavelet-%E3%81%AE%E5%9B%B3"><i class="fas fa-link"></i></a>
 </h2>
 <p>ウェーブレットの図も関数を設計して、作ります。
 <code>wavelet_plot()</code> は作図用の関数です。
 これは、<code><a href="https://purrr.tidyverse.org/reference/map.html">map()</a></code> を通して作図します。</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb240"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">wavelet_plot</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">wtout</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">ylabel</span> <span class="op">=</span> <span class="st">"Period (hrs)"</span>
   <span class="va">xlabel</span> <span class="op">=</span> <span class="st">"Date"</span>
@@ -411,19 +426,19 @@ COIは解析アルゴリズムの精度が落ちているところを示して�
     <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 <p>ここで作図をします。</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb241"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">wtplots</span> <span class="op">=</span> <span class="va">wtout</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">group</span>, <span class="va">wtout</span>, <span class="va">location</span>, <span class="va">position</span>, <span class="va">id</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ggplot <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">wtout</span>, <span class="va">wavelet_plot</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>そのままコードを実行すると RStudio には図のアウトプットはないです。
 図を見るためには、ファイルに保存したほうがいい。</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb242"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plots</span> <span class="op">=</span> <span class="va">wtplots</span><span class="op">$</span><span class="va">ggplot</span>
 <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">plots</span><span class="op">)</span>
 <span class="co">#&gt; [1] 324</span></code></pre></div>
 <p>合計 324 のファイルを書き出すことになりそうなので、
 フォルダを作って保存します。</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb243"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dname</span> <span class="op">=</span> <span class="st">"_wavelet_plots"</span>
 <span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.exists</a></span><span class="op">(</span><span class="va">dname</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="va">dname</span><span class="op">)</span>
@@ -433,7 +448,7 @@ COIは解析アルゴリズムの精度が落ちているところを示して�
 PDFを変換すると、確実に選んだフォントが埋め込まれるので、
 PNGファイルのフォントも綺麗です。
 ファイルの変換は <code>magick</code> パッケージをつかいます。</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb244"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">save_wavelets</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">l</span>,<span class="va">p</span>,<span class="va">d</span>,<span class="va">g</span>,<span class="va">i</span>,<span class="va">plot</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">pdfname</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="va">dname</span>, <span class="st">"/"</span>, <span class="va">l</span>, <span class="st">"_"</span>, <span class="va">p</span>, <span class="st">"_"</span>, <span class="va">d</span>, <span class="st">"_"</span>, <span class="va">g</span>,<span class="st">"_"</span>, <span class="va">i</span>, <span class="st">".pdf"</span><span class="op">)</span>
   <span class="va">pngname</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">pdfname</span>, <span class="st">"pdf"</span>, <span class="st">"png"</span><span class="op">)</span>
@@ -451,7 +466,7 @@ PNGファイルのフォントも綺麗です。
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>out <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html">pmap</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">location</span>, <span class="va">position</span>, <span class="va">period</span>, <span class="va">group</span>, <span class="va">id</span>, <span class="va">ggplot</span><span class="op">)</span>, <span class="va">save_wavelets</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:unnamed-chunk-29"></span>
-<img src="90-wavelet_files/figure-html/unnamed-chunk-29-1.png" alt="
+<img src="_wavelet_plots/arikawagaramo_0m_20180517_20180616_7_03.png" alt="
 有川湾鯨見山地先におけるガラモ場の水温に対するウェーブレット解析。
 観測期間は2018年5月17日から6月17日でしました。
 水温は海底で記録しました。
@@ -460,8 +475,8 @@ PNGファイルのフォントも綺麗です。
 5月17日から25日、5月31日から6月2日、6月9日,　6月12日から17日の期間には強い24時間の周期があります。
 ところどころ強い12時間の周期もあります。12時間の周期は潮汐と関係していると考えますね。
 12時間より短い周期でも比較的に強いパワーが示されています。
-" width="1749"><p class="caption">
-Figure 14.2: 
+" width="90%"><p class="caption">
+Figure 13.2: 
 有川湾鯨見山地先におけるガラモ場の水温に対するウェーブレット解析。
 観測期間は2018年5月17日から6月17日でしました。
 水温は海底で記録しました。
@@ -473,15 +488,15 @@ Figure 14.2:
 </p>
 </div>
 </div>
-<div id="snr-の求め方" class="section level2" number="14.6">
+<div id="snr-の求め方" class="section level2" number="13.6">
 <h2>
-<span class="header-section-number">14.6</span> SNR の求め方<a class="anchor" aria-label="anchor" href="#snr-%E3%81%AE%E6%B1%82%E3%82%81%E6%96%B9"><i class="fas fa-link"></i></a>
+<span class="header-section-number">13.6</span> SNR の求め方<a class="anchor" aria-label="anchor" href="#snr-%E3%81%AE%E6%B1%82%E3%82%81%E6%96%B9"><i class="fas fa-link"></i></a>
 </h2>
 <p>日周期 (diurnal) と高周期 (high) の比率を求めて、一日内の水温の安定性を調べてみましょう。
 ウェーブレットで検出した周期情報を High (0 ~ 7 hr), Tidal (7 = 13 hrs), Diurnal (13 ~ 25 hrs), Low (&gt; 25 hrs) に分類します。
 分離したら、一日あたりの平均パワー (power) と平均値の 95% 信頼区間を求めます。
 <strong>この解析はまだ未熟ですが、もっといい方法に気づいたら紹介します。</strong></p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb245"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">calculate_mean_power</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">wt</span><span class="op">)</span> <span class="op">{</span>
     <span class="va">wt</span> |&gt; 
       <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">datetime</span>, <span class="va">power</span><span class="op">)</span> |&gt; 
@@ -500,7 +515,7 @@ Figure 14.2:
 <p>次に、<code>wtout2</code> に隠れている <code>tibble</code> を縦長から横長に変換します。
 つづいて、SNRを求めますが、power はログスケールで求めたので、
 SNR比は <code>snr = Diurnal - High</code> です。</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb246"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">calculate_snr</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">wt</span><span class="op">)</span>  <span class="op">{</span>
   <span class="va">wt</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> |&gt; 
     <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">datetime</span>, <span class="va">ftype</span>, <span class="va">power_mean</span><span class="op">)</span> |&gt; 
@@ -511,14 +526,14 @@ SNR比は <code>snr = Diurnal - High</code> です。</p>
 <span class="va">wtout</span> <span class="op">=</span> <span class="va">wtout</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>wtout3 <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">wtout2</span>, <span class="va">calculate_snr</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>SNR比を <code>date</code>, <code>location</code>, <code>position</code> ごとにまとめます。</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb247"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">snrdata</span> <span class="op">=</span> 
   <span class="va">wtout</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">wtout3</span>, <span class="va">location</span>, <span class="va">position</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">wtout3</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>date <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html">floor_date</a></span><span class="op">(</span><span class="va">datetime</span>, <span class="st">"month"</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">location</span>, <span class="va">position</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>snr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">snr</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></code></pre></div>
 <p>SNR比に2020年あたりに怪しい値はあるが、<code>position</code> ごとに傾向有るのかな？</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb248"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ylabel</span> <span class="op">=</span> <span class="st">"Period (h)"</span>
 <span class="va">xlabel</span> <span class="op">=</span> <span class="st">"Date"</span>
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">snrdata</span><span class="op">)</span> <span class="op">+</span> 
@@ -526,19 +541,19 @@ SNR比は <code>snr = Diurnal - High</code> です。</p>
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/vars.html">vars</a></span><span class="op">(</span><span class="va">location</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:unnamed-chunk-33"></span>
-<img src="90-wavelet_files/figure-html/unnamed-chunk-33-1.png" alt="SNRは日周期と高周期の比率です。" width="672"><p class="caption">
-Figure 14.3: SNRは日周期と高周期の比率です。
+<img src="90-wavelet_files/figure-html/unnamed-chunk-33-1.png" alt="SNRは日周期と高周期の比率です。" width="90%"><p class="caption">
+Figure 13.3: SNRは日周期と高周期の比率です。
 </p>
 </div>
 <p>SNRの傾向を解析して、図に追加します。
 <code>location</code>と<code>position</code> 間の比較に興味がないので、次のようなモデルを当てはめます。</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb249"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fit_model</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">snr</span> <span class="op">~</span> <span class="va">date</span>, data <span class="op">=</span> <span class="va">df</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 <p><strong>解析の結果</strong></p>
 <p>一般線形モデルのF検定の結果、すべてのモデルのP値は 0.05 より大きいですね。</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb250"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">snrdata</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>date <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html">as_date</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">location</span>, <span class="va">position</span><span class="op">)</span> |&gt; 
@@ -559,8 +574,8 @@ Figure 14.3: SNRは日周期と高周期の比率です。
 <span class="co">#&gt; #   p.value &lt;dbl&gt;, df &lt;dbl&gt;, logLik &lt;dbl&gt;, AIC &lt;dbl&gt;,</span>
 <span class="co">#&gt; #   BIC &lt;dbl&gt;, deviance &lt;dbl&gt;, df.residual &lt;int&gt;,</span>
 <span class="co">#&gt; #   nobs &lt;int&gt;</span></code></pre></div>
-<p>モデル係数の結果は <code>broom</code> パッケージの <code>tidy()</code> 関数で確認できます。</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<p>モデル係数の結果は <code>broom</code> パッケージの <code><a href="https://generics.r-lib.org/reference/tidy.html">tidy()</a></code> 関数で確認できます。</p>
+<div class="sourceCode" id="cb251"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">snrdata</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>date <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html">as_date</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">location</span>, <span class="va">position</span><span class="op">)</span> |&gt; 
@@ -591,7 +606,7 @@ Wald’s 検定の結果、すべての P値は 0.05 より大きいです。</p
 <p>帰無仮説検定論によると、0 との統計学的な有意差がなかったので、
 係数が 0 ではないという仮説は棄却できない。</p>
 <p>それにしても、とりあえずデータを図に追加してみよう。</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb252"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">return_fit</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">model</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">nd</span> <span class="op">=</span> <span class="va">data</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html">expand</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span><span class="op">(</span><span class="va">nd</span>, <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">model</span>, newdata <span class="op">=</span> <span class="va">nd</span>, se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> |&gt; 
@@ -604,30 +619,59 @@ Wald’s 検定の結果、すべての P値は 0.05 より大きいです。</p
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">location</span>, <span class="va">position</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">fit_model</span><span class="op">)</span><span class="op">)</span> |&gt;
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ndata <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html">map2</a></span><span class="op">(</span><span class="va">data</span>,<span class="va">model</span>, <span class="va">return_fit</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb253"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">date</span>, y <span class="op">=</span> <span class="va">fit</span>, color <span class="op">=</span> <span class="va">position</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">snrdata</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">ndata</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">date</span>, y <span class="op">=</span> <span class="va">snr</span>, color <span class="op">=</span> <span class="va">position</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">snrdata</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/vars.html">vars</a></span><span class="op">(</span><span class="va">location</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:unnamed-chunk-38"></span>
-<img src="90-wavelet_files/figure-html/unnamed-chunk-38-1.png" alt="SNRの傾向に線形モデルを当てはめたが、線形モデルのF検定に統計学的に有意な結果はありませんでした。" width="672"><p class="caption">
-Figure 14.4: SNRの傾向に線形モデルを当てはめたが、線形モデルのF検定に統計学的に有意な結果はありませんでした。
+<img src="90-wavelet_files/figure-html/unnamed-chunk-38-1.png" alt="SNRの傾向に線形モデルを当てはめたが、線形モデルのF検定に統計学的に有意な結果はありませんでした。" width="90%"><p class="caption">
+Figure 13.4: SNRの傾向に線形モデルを当てはめたが、線形モデルのF検定に統計学的に有意な結果はありませんでした。
 </p>
 </div>
 
 </div>
 </div>
+<div class="footnotes footnotes-end-of-document">
+<hr>
+<ol>
+<li id="fn1"><p>基礎統計学<a href="index.html#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>t検定、一元配置分散分析、二元配置分散分析のチャプターに使うデータはここで処理しています。<a href="data-input.html#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>基本的には一行に 1 サンプル、一列に 1 変数にしましょう。<a href="data-input.html#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>一行に複数サンプルがあるので、そのまま R の関数にわたせない。<a href="data-input.html#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>他に: &lt;lgl&gt; logical、 論理値；&lt;int&gt; integer、 整数；&lt;dttm&gt; datetime、日時 などもあります。<a href="data-input.html#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>ちなみに R バージョン 4.1.0 (2021-05-18) からは <code>|&gt;</code> が追加されました。これは R のネーティブパイプ演算子です。使い方は tidyverse の <code>%&gt;%</code> とほとんど同じです。<a href="data-wrangling.html#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>iris: アヤメ<a href="map-function.html#fnref7" class="footnote-back">↩︎</a></p></li>
+<li id="fn8"><p>iris: アヤメ<a href="t-test.html#fnref8" class="footnote-back">↩︎</a></p></li>
+<li id="fn9"><p>assumption of homogeneity of variance<a href="anova.html#fnref9" class="footnote-back">↩︎</a></p></li>
+<li id="fn10"><p>assumption normality<a href="anova.html#fnref10" class="footnote-back">↩︎</a></p></li>
+<li id="fn11"><p>residual<a href="anova.html#fnref11" class="footnote-back">↩︎</a></p></li>
+<li id="fn12"><p>fitted values<a href="anova.html#fnref12" class="footnote-back">↩︎</a></p></li>
+<li id="fn13"><p>scale<a href="anova.html#fnref13" class="footnote-back">↩︎</a></p></li>
+<li id="fn14"><p>location<a href="anova.html#fnref14" class="footnote-back">↩︎</a></p></li>
+<li id="fn15"><p>fitted values<a href="anova.html#fnref15" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
   <div class="chapter-nav">
-<div class="empty"></div>
+<div class="prev"><a href="maps.html"><span class="header-section-number">12</span> 地図の作り方</a></div>
 <div class="empty"></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
-      <div id="book-on-this-page"></div>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#wavelet"><span class="header-section-number">13</span> Wavelet 解析</a></li>
+<li><a class="nav-link" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-10"><span class="header-section-number">13.1</span> 必要なパッケージ</a></li>
+<li><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%E3%81%AB%E4%BD%BF%E3%81%86%E9%96%A2%E6%95%B0"><span class="header-section-number">13.2</span> 解析に使う関数</a></li>
+<li><a class="nav-link" href="#%E8%A3%9C%E8%B6%B3%E9%96%A2%E6%95%B0"><span class="header-section-number">13.3</span> 補足関数</a></li>
+<li><a class="nav-link" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%89%8D%E5%87%A6%E7%90%86"><span class="header-section-number">13.4</span> データの前処理</a></li>
+<li><a class="nav-link" href="#wavelet-%E3%81%AE%E5%9B%B3"><span class="header-section-number">13.5</span> Wavelet の図</a></li>
+<li><a class="nav-link" href="#snr-%E3%81%AE%E6%B1%82%E3%82%81%E6%96%B9"><span class="header-section-number">13.6</span> SNR の求め方</a></li>
+</ul>
 
       <div class="book-extra">
         <ul class="list-unstyled">
-          
+<li><a id="book-source" href="https://github.com/gnishihara/Lab-Manual/blob/master/90-wavelet.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/gnishihara/Lab-Manual/edit/master/90-wavelet.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
         </ul>
 </div>
     </nav>

@@ -143,7 +143,7 @@ mlit = tibble(folder = dir("~/Lab_Data/Japan_map_data/Coastline/", full = TRUE))
 mlit |> ggplot() + geom_sf()
 ```
 
-<img src="50-maps_files/figure-html/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" />
+<img src="50-maps_files/figure-html/unnamed-chunk-9-1.png" width="90%" style="display: block; margin: auto;" />
 
 `mlit` のデータは細かい政策区域まで分けられているので、全国スケールの図には向いていません。
 `st_union()` をつかって、都道府県ごとに polygon を結合したファイルは、`~/Lab_Data/Japan_map_data/Japan/todofuken.rds` に保存しています。
@@ -171,7 +171,7 @@ mlit1 = read_rds("~/Lab_Data/Japan_map_data/Japan/todofuken.rds")
 mlit1 |> ggplot() + geom_sf()
 ```
 
-<img src="50-maps_files/figure-html/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" />
+<img src="50-maps_files/figure-html/unnamed-chunk-12-1.png" width="90%" style="display: block; margin: auto;" />
 
 ## 調査地点のデータを準備する
 
@@ -245,7 +245,7 @@ nagasaki = mlit |> filter(str_detect(C23_001, str_c(codes, collapse = "|")))
 ggplot() + geom_sf(data = nagasaki)
 ```
 
-<img src="50-maps_files/figure-html/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" />
+<img src="50-maps_files/figure-html/unnamed-chunk-18-1.png" width="90%" style="display: block; margin: auto;" />
 
 九州は `mlit1` から抽出したので、都道府県政策区域として作図されます。
 
@@ -254,7 +254,7 @@ ggplot() + geom_sf(data = nagasaki)
 ggplot() + geom_sf(data = kyushu)
 ```
 
-<img src="50-maps_files/figure-html/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" />
+<img src="50-maps_files/figure-html/unnamed-chunk-19-1.png" width="90%" style="display: block; margin: auto;" />
 
 長崎をハイライトしましょう。
 
@@ -269,7 +269,7 @@ kyushu |>
         axis.line = element_blank())
 ```
 
-<img src="50-maps_files/figure-html/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" />
+<img src="50-maps_files/figure-html/unnamed-chunk-20-1.png" width="90%" style="display: block; margin: auto;" />
 
 この図には、違和感を感じるので、山口、島根、愛媛、広島と高知も追加します。
 そしれ、最初に作った `kyushu` の範囲を抽出しておきます。
@@ -312,7 +312,7 @@ ggplot(kyushu) +
         axis.line = element_blank())
 ```
 
-<img src="50-maps_files/figure-html/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" />
+<img src="50-maps_files/figure-html/unnamed-chunk-24-1.png" width="90%" style="display: block; margin: auto;" />
 
 
 ## 調査地点の図
@@ -457,97 +457,13 @@ pkatagami = ggplot() +
 
 ```r
 pout = pmain + (pomura / pkatagami)
-pdfname = "katagami-map-v1.pdf"
+pdfname = "Images/katagami-map-v1.pdf"
 pngname = str_replace(pdfname, "pdf", "png")
 ggsave(pdfname, plot= pout, width = 300, height = 300, units = "mm")
-image_read_pdf(pdfname, density = 600) |> image_write(pngname)
+image_read_pdf(pdfname, density = 600) |> image_trim() |> image_border(color = "white") |> image_write(pngname)
 ```
 
 
-```r
-knitr::include_graphics(str_c("./", pngname))
-```
 
-<img src="./katagami-map-v1.png" width="50%" style="display: block; margin: auto;" />
-
-## Sesssion information
-
-
-```r
-sessionInfo()
-#> R version 4.1.3 (2022-03-10)
-#> Platform: x86_64-pc-linux-gnu (64-bit)
-#> Running under: Debian GNU/Linux 11 (bullseye)
-#> 
-#> Matrix products: default
-#> BLAS:   /usr/lib/x86_64-linux-gnu/atlas/libblas.so.3.10.3
-#> LAPACK: /usr/lib/x86_64-linux-gnu/atlas/liblapack.so.3.10.3
-#> 
-#> locale:
-#>  [1] LC_CTYPE=en_US.utf8        LC_NUMERIC=C              
-#>  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.utf8     
-#>  [5] LC_MONETARY=ja_JP.UTF-8    LC_MESSAGES=en_US.utf8    
-#>  [7] LC_PAPER=ja_JP.UTF-8       LC_NAME=C                 
-#>  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-#> [11] LC_MEASUREMENT=ja_JP.UTF-8 LC_IDENTIFICATION=C       
-#> 
-#> attached base packages:
-#> [1] stats     graphics  grDevices utils     datasets 
-#> [6] methods   base     
-#> 
-#> other attached packages:
-#>  [1] sf_1.0-7         ggspatial_1.1.5  kableExtra_1.3.4
-#>  [4] patchwork_1.1.1  magick_2.7.3     ggpubr_0.4.0    
-#>  [7] showtext_0.9-5   showtextdb_3.0   sysfonts_0.8.5  
-#> [10] forcats_0.5.1    stringr_1.4.0    dplyr_1.0.8     
-#> [13] purrr_0.3.4      readr_2.1.2      tidyr_1.2.0     
-#> [16] tibble_3.1.6     ggplot2_3.3.5    tidyverse_1.3.1 
-#> 
-#> loaded via a namespace (and not attached):
-#>  [1] fs_1.5.2           bit64_4.0.5       
-#>  [3] lubridate_1.8.0    webshot_0.5.2     
-#>  [5] httr_1.4.2         tools_4.1.3       
-#>  [7] backports_1.4.1    bslib_0.3.1       
-#>  [9] utf8_1.2.2         R6_2.5.1          
-#> [11] KernSmooth_2.23-20 DBI_1.1.2         
-#> [13] colorspace_2.0-3   withr_2.5.0       
-#> [15] tidyselect_1.1.2   downlit_0.4.0     
-#> [17] bit_4.0.4          curl_4.3.2        
-#> [19] compiler_4.1.3     textshaping_0.3.6 
-#> [21] cli_3.2.0          rvest_1.0.2       
-#> [23] xml2_1.3.3         bookdown_0.24     
-#> [25] sass_0.4.0         scales_1.1.1      
-#> [27] classInt_0.4-3     askpass_1.1       
-#> [29] proxy_0.4-26       systemfonts_1.0.4 
-#> [31] digest_0.6.29      rmarkdown_2.12    
-#> [33] svglite_2.1.0      pkgconfig_2.0.3   
-#> [35] htmltools_0.5.2    highr_0.9         
-#> [37] dbplyr_2.1.1       fastmap_1.1.0     
-#> [39] rlang_1.0.2        readxl_1.3.1      
-#> [41] rstudioapi_0.13    farver_2.1.0      
-#> [43] jquerylib_0.1.4    generics_0.1.2    
-#> [45] jsonlite_1.8.0     vroom_1.5.7       
-#> [47] car_3.0-12         magrittr_2.0.2    
-#> [49] s2_1.0.7           Rcpp_1.0.8        
-#> [51] munsell_0.5.0      fansi_1.0.2       
-#> [53] abind_1.4-5        lifecycle_1.0.1   
-#> [55] stringi_1.7.6      yaml_2.3.5        
-#> [57] carData_3.0-5      grid_4.1.3        
-#> [59] parallel_4.1.3     crayon_1.5.0      
-#> [61] haven_2.4.3        hms_1.1.1         
-#> [63] knitr_1.37         pillar_1.7.0      
-#> [65] ggsignif_0.6.3     codetools_0.2-18  
-#> [67] wk_0.6.0           reprex_2.0.1      
-#> [69] glue_1.6.2         evaluate_0.15     
-#> [71] pdftools_3.1.1     qpdf_1.1          
-#> [73] modelr_0.1.8       vctrs_0.3.8       
-#> [75] tzdb_0.2.0         cellranger_1.1.0  
-#> [77] gtable_0.3.0       assertthat_0.2.1  
-#> [79] cachem_1.0.6       xfun_0.30         
-#> [81] broom_0.7.12       e1071_1.7-9       
-#> [83] rstatix_0.7.0      ragg_1.2.2        
-#> [85] class_7.3-20       viridisLite_0.4.0 
-#> [87] memoise_2.0.1      units_0.8-0       
-#> [89] ellipsis_0.3.2
-```
+<img src="/home/Lab_Data/Analytic-Methods/Images/katagami-map-v1.png" width="90%" style="display: block; margin: auto;" />
 
