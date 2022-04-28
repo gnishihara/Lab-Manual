@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 14 Wavelet 解析 | データ解析マニュアル</title>
+<meta name="author" content="水圏植物生態学研究室">
+<meta name="description" content="14.1 必要なパッケージ library(tidyverse) library(lubridate) library(gnnlab) library(furrr) library(biwavelet) ウェーブレット変換は時系列データから時間的変化の特徴と周波数成分を調べるために使います。 細かい説明はいつか追加します。 本章を完成するまでは、次の論文を参考にしてください。...">
+<meta name="generator" content="bookdown 0.24 with bs4_book()">
+<meta property="og:title" content="Chapter 14 Wavelet 解析 | データ解析マニュアル">
+<meta property="og:type" content="book">
+<meta property="og:description" content="14.1 必要なパッケージ library(tidyverse) library(lubridate) library(gnnlab) library(furrr) library(biwavelet) ウェーブレット変換は時系列データから時間的変化の特徴と周波数成分を調べるために使います。 細かい説明はいつか追加します。 本章を完成するまでは、次の論文を参考にしてください。...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 14 Wavelet 解析 | データ解析マニュアル">
+<meta name="twitter:description" content="14.1 必要なパッケージ library(tidyverse) library(lubridate) library(gnnlab) library(furrr) library(biwavelet) ウェーブレット変換は時系列データから時間的変化の特徴と周波数成分を調べるために使います。 細かい説明はいつか追加します。 本章を完成するまでは、次の論文を参考にしてください。...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.12/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="bs4_style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">データ解析マニュアル</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled"><li><a class="" href="index.html"><span class="header-section-number">Chapter 14</span> Wavelet 解析</a></li></ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/gnishihara/Lab-Manual">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="wavelet" class="section level1" number="14">
+<h1>
+<span class="header-section-number">14</span> Wavelet 解析<a class="anchor" aria-label="anchor" href="#wavelet"><i class="fas fa-link"></i></a>
+</h1>
+<div id="必要なパッケージ-10" class="section level2" number="14.1">
+<h2>
+<span class="header-section-number">14.1</span> 必要なパッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-10"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org">lubridate</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">gnnlab</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/DavisVaughan/furrr">furrr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tgouhier/biwavelet">biwavelet</a></span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="90-wavelet_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;"></div>
+<p>ウェーブレット変換は時系列データから時間的変化の特徴と周波数成分を調べるために使います。
+<strong>細かい説明はいつか追加します。</strong>
+本章を完成するまでは、次の論文を参考にしてください。</p>
+<p>Cazelles B., Chavez M., Berteaux D., Menard F., Vik J.O., Jenouvrier S., and Stenseth N.C. 2008. Wavelet analysis of ecological time series. Oecologia 156: 287-304.</p>
+<p>Grinsted A., Moore J.C., and Jevrejeva S. 2004. Application of the cross wavelet transform and wavelet coherence to geophysical time series. Nonlinear Processes in Geophysics 11: 561-566.</p>
+<p>Torrence C. and Compo G.P. 1998. A practical guide to wavelet analysis. Bulletin of the American Meteorological Society 79: 61-78.</p>
+<p>Torrence C and Webster P.J. 1998. The annual cycle of persistence in the El Nino/Southern Oscillation. Quarterly Journal of the Royal Meteorological Society 124: 1985-2004.</p>
+<p><span class="math display">\[
+\psi(\eta) = \frac{1}{\sqrt[\leftroot{-2}\uproot{3}4]{\pi}}\;e^{\eta^2/2}\;e^{ik\eta}
+\]</span>
+パラメータ <span class="math inline">\(\eta\)</span> は時間 <span class="math inline">\((t)\)</span> と ウェーブレットスケール <span class="math inline">\((s)\)</span> の比率です。
+ウェーブレットスケールを下げると時間軸方向の分解能が上がります。
+ウェーブレットパラメータ <span class="math inline">\(k\)</span> はモレー・ウェーブレットの振動数（山の数）を制御しています。
+よって、<span class="math inline">\(k\)</span> を上げると、周波数分解能が上がります。</p>
+<p>では、<code>biwavelet</code> パッケージで次の波形を解析してみましょう。</p>
+<p><span class="math display">\[
+\begin{aligned}
+y &amp;= \sin(2 \pi \omega) \\
+\omega &amp;= 50 t^2 + 10
+\end{aligned}
+\]</span>
+この波形の角周波数 <span class="math inline">\((\omega)\)</span> は徐々に高くなります。</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ft</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">f</span> <span class="op">=</span> <span class="fl">50</span> <span class="op">*</span> <span class="va">t</span><span class="op">^</span><span class="fl">2</span> <span class="op">+</span> <span class="fl">10</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">pi</span> <span class="op">*</span> <span class="va">f</span> <span class="op">)</span>
+<span class="op">}</span>
+<span class="va">z</span> <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length <span class="op">=</span> <span class="fl">3000</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>y <span class="op">=</span> <span class="fu">ft</span><span class="op">(</span><span class="va">t</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">t</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span><span class="st">"t"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span><span class="st">"y"</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="90-wavelet_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;"></div>
+<p><code>biwavelet</code> の <code><a href="https://rdrr.io/pkg/biwavelet/man/wt.html">wt()</a></code> 関数でウェーブレット解析をします。
+<code><a href="https://rdrr.io/pkg/biwavelet/man/wt.html">wt()</a></code> に渡すデータは行列としてわたしましょう。
+行列の1列目には時間情報、2列名には解析したい値です。</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">wtout</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/biwavelet/man/wt.html">wt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span>, mother <span class="op">=</span> <span class="st">"morlet"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">wtout</span><span class="op">)</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:unnamed-chunk-8"></span>
+<img src="90-wavelet_files/figure-html/unnamed-chunk-8-1.png" alt="
+これはウェーブレット解析のパワーを示す図です。
+パワーの低いところは青色、パワーの高いところは赤色です。
+黒線は統計学的に優位な領域を示しています。
+赤色の部分が時間につれ、周期が上昇しています。
+ウェーブレット解析で角周波数の傾向を十分抽出できたとおもいます。
+白くなっているところは cone of influence (COI) です。
+COIは解析アルゴリズムの精度が落ちているところを示しているので、
+示されたパワーは両端から $e^{-2}$ に従って下がります。
+" width="672"><p class="caption">
+Figure 14.1: 
+これはウェーブレット解析のパワーを示す図です。
+パワーの低いところは青色、パワーの高いところは赤色です。
+黒線は統計学的に優位な領域を示しています。
+赤色の部分が時間につれ、周期が上昇しています。
+ウェーブレット解析で角周波数の傾向を十分抽出できたとおもいます。
+白くなっているところは cone of influence (COI) です。
+COIは解析アルゴリズムの精度が落ちているところを示しているので、
+示されたパワーは両端から <span class="math inline">\(e^{-2}\)</span> に従って下がります。
+</p>
+</div>
+</div>
+<div id="解析に使う関数" class="section level2" number="14.2">
+<h2>
+<span class="header-section-number">14.2</span> 解析に使う関数<a class="anchor" aria-label="anchor" href="#%E8%A7%A3%E6%9E%90%E3%81%AB%E4%BD%BF%E3%81%86%E9%96%A2%E6%95%B0"><i class="fas fa-link"></i></a>
+</h2>
+<p>Wavelet を求めるための関数です。
+コアは <code>biwavelet</code> パッケージの <code><a href="https://rdrr.io/pkg/biwavelet/man/wt.html">wt()</a></code> 関数です。
+マザー・ウェーブレット (mother wavelet) はモレーウェーブレット (Morlet wavelet) に固定しています。
+<code><a href="https://rdrr.io/pkg/biwavelet/man/wt.html">wt()</a></code> には DoG (derivative of gaussian) と Paul ウェーブレットも使えます。</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">calculate_wavelet</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span>, <span class="va">obs</span>, <span class="va">tau</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">fs</span> <span class="op">=</span> <span class="fl">6</span>, <span class="va">dB</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">pad_cname</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">w</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_pad.html">str_pad</a></span><span class="op">(</span><span class="va">x</span>, width <span class="op">=</span> <span class="va">w</span>, pad <span class="op">=</span> <span class="st">"0"</span><span class="op">)</span>
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="st">"V"</span>,<span class="va">x</span><span class="op">)</span>
+  <span class="op">}</span>
+  
+  <span class="co"># </span>
+  <span class="va">N</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span>
+  <span class="va">datetime</span>  <span class="op">=</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="op">{</span><span class="op">{</span><span class="va">tau</span><span class="op">}</span><span class="op">}</span><span class="op">)</span>
+  <span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/near.html">near</a></span><span class="op">(</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/day.html">day</a></span><span class="op">(</span><span class="va">datetime</span><span class="op">[</span><span class="va">N</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://lubridate.tidyverse.org/reference/day.html">day</a></span><span class="op">(</span><span class="va">datetime</span><span class="op">[</span><span class="va">N</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">df</span> <span class="op">=</span> <span class="va">df</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="op">(</span><span class="va">N</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>
+    <span class="va">datetime</span>  <span class="op">=</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="op">{</span><span class="op">{</span><span class="va">tau</span><span class="op">}</span><span class="op">}</span><span class="op">)</span>
+  <span class="op">}</span>
+  
+  <span class="va">hours</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">datetime</span> <span class="op">-</span> <span class="va">datetime</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, units <span class="op">=</span> <span class="st">"hours"</span><span class="op">)</span>
+  <span class="va">observation</span> <span class="op">=</span> <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="op">{</span><span class="op">{</span><span class="va">obs</span><span class="op">}</span><span class="op">}</span><span class="op">)</span>
+  <span class="va">wtout</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/biwavelet/man/wt.html">wt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">hours</span>, <span class="va">observation</span><span class="op">)</span>, mother <span class="op">=</span> <span class="st">"morlet"</span><span class="op">)</span>
+  
+  <span class="va">xval</span> <span class="op">=</span> <span class="va">wtout</span><span class="op">$</span><span class="va">t</span>        <span class="co"># Vector of times</span>
+  <span class="va">yval</span> <span class="op">=</span> <span class="va">wtout</span><span class="op">$</span><span class="va">period</span>   <span class="co"># Vector of periods</span>
+  <span class="va">sigma2</span> <span class="op">=</span> <span class="va">wtout</span><span class="op">$</span><span class="va">sigma2</span> <span class="co"># Vector of variance of time series</span>
+  <span class="va">coi</span> <span class="op">=</span> <span class="va">wtout</span><span class="op">$</span><span class="va">coi</span>       <span class="co"># Vector of cone of influence</span>
+  <span class="va">signif</span> <span class="op">=</span> <span class="va">wtout</span><span class="op">$</span><span class="va">signif</span> <span class="co"># Matrix of significance levels</span>
+  <span class="co"># Matrix of bias-corrected power</span>
+  <span class="kw">if</span><span class="op">(</span><span class="va">dB</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">Z</span> <span class="op">=</span> <span class="fl">10</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">wtout</span><span class="op">$</span><span class="va">power.corr</span> <span class="op">/</span> <span class="va">sigma2</span><span class="op">)</span><span class="op">)</span>
+  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
+    <span class="va">Z</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">wtout</span><span class="op">$</span><span class="va">power.corr</span> <span class="op">/</span> <span class="va">sigma2</span><span class="op">)</span><span class="op">)</span>
+  <span class="op">}</span>
+  
+  <span class="va">zlim</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">Z</span><span class="op">[</span><span class="va">Z</span> <span class="op">&lt;</span> <span class="va">zlim</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">=</span> <span class="va">zlim</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>
+  <span class="va">n</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">Z</span><span class="op">)</span>
+  <span class="va">tmp1</span> <span class="op">=</span> <span class="va">signif</span> |&gt; <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span>.name_repair <span class="op">=</span> <span class="op">~</span><span class="fu">pad_cname</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/nchar.html">nchar</a></span><span class="op">(</span><span class="va">n</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>period <span class="op">=</span> <span class="va">yval</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"V"</span><span class="op">)</span>, values_to <span class="op">=</span> <span class="st">"signif"</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">name</span>, .key <span class="op">=</span> <span class="st">"signif"</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">datetime</span><span class="op">)</span>
+  <span class="va">tmp2</span> <span class="op">=</span> <span class="va">Z</span> |&gt; <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span>.name_repair <span class="op">=</span>  <span class="op">~</span><span class="fu">pad_cname</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/nchar.html">nchar</a></span><span class="op">(</span><span class="va">n</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>period <span class="op">=</span> <span class="va">yval</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"V"</span><span class="op">)</span>, values_to <span class="op">=</span> <span class="st">"power"</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">name</span>, .key <span class="op">=</span> <span class="st">"power"</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">datetime</span><span class="op">)</span>
+  
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">full_join</a></span><span class="op">(</span><span class="va">tmp1</span>, <span class="va">tmp2</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"name"</span>, <span class="st">"datetime"</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">coi</span>, hours <span class="op">=</span> <span class="va">xval</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">datetime</span>, <span class="va">hours</span>, <span class="va">coi</span>, <span class="va">power</span>, <span class="va">signif</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
+<p>関数を適応した場合、エラーがでたらスクリプトはエラーが発生したところで止まります。
+関数を <code><a href="https://purrr.tidyverse.org/reference/safely.html">possibly()</a></code>のラッパーにとおせば、エラーがでたとき、<code>NULL</code> を返すようにする。
+これで、スクリプトは止まりません。</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">calc_wt</span> <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/safely.html">possibly</a></span><span class="op">(</span><span class="va">calculate_wavelet</span>, <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="補足関数" class="section level2" number="14.3">
+<h2>
+<span class="header-section-number">14.3</span> 補足関数<a class="anchor" aria-label="anchor" href="#%E8%A3%9C%E8%B6%B3%E9%96%A2%E6%95%B0"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">se</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">na.rm</span><span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span>
+  <span class="co"># 標準誤差</span>
+  <span class="va">N</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">na.rm</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">N</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span>
+<span class="op">}</span> 
+
+<span class="va">date_gnn</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
+  <span class="co"># ggplot の時間軸のlabel 関数</span>
+  <span class="va">tmp0</span> <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/year.html">year</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+  <span class="va">tmp1</span> <span class="op">=</span> <span class="va">month.abb</span><span class="op">[</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/month.html">month</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">]</span>
+  <span class="va">tmp2</span> <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/day.html">day</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+  <span class="va">tmp0</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span><span class="op">(</span><span class="va">tmp0</span><span class="op">)</span><span class="op">]</span> <span class="op">=</span> <span class="st">""</span>
+  
+  <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="va">tmp2</span>, <span class="st">"\n"</span> ,<span class="va">tmp1</span>, <span class="st">"\n"</span>,<span class="va">tmp0</span><span class="op">)</span> 
+<span class="op">}</span>
+
+<span class="va">date_gnn2</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
+  <span class="co"># ggplot の時間軸のlabel 関数</span>
+  <span class="va">tmp0</span> <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/year.html">year</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+  <span class="va">tmp1</span> <span class="op">=</span> <span class="va">month.abb</span><span class="op">[</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/month.html">month</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">]</span>
+  <span class="va">tmp2</span> <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/day.html">day</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+  <span class="va">tmp0</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span><span class="op">(</span><span class="va">tmp0</span><span class="op">)</span><span class="op">]</span> <span class="op">=</span> <span class="st">""</span>
+  
+  <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="va">tmp1</span>, <span class="st">"\n"</span>,<span class="va">tmp0</span><span class="op">)</span> 
+<span class="op">}</span>
+<span class="co"># ggplot 用の関数</span>
+<span class="va">log2reverse</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log2</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">}</span>
+<span class="va">log2reverseinv</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span><span class="fl">2</span><span class="op">^</span><span class="op">(</span><span class="op">-</span><span class="va">x</span><span class="op">)</span><span class="op">}</span>
+
+<span class="va">contiguous</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span>, <span class="va">tau</span>, <span class="va">deltaT</span> <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> <span class="op">{</span>
+  <span class="co"># 隣接データを確認するための関数</span>
+  <span class="va">x</span> <span class="op">=</span> <span class="va">df</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="op">{</span><span class="op">{</span><span class="va">tau</span><span class="op">}</span><span class="op">}</span><span class="op">)</span>
+  <span class="va">xout</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html">lag</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, units <span class="op">=</span> <span class="st">"mins"</span><span class="op">)</span>
+  <span class="va">df</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>contig <span class="op">=</span> <span class="va">xout</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/near.html">near</a></span><span class="op">(</span><span class="va">contig</span>, <span class="va">deltaT</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>group <span class="op">=</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/replace_na.html">replace_na</a></span><span class="op">(</span><span class="va">group</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
+</div>
+<div id="データの前処理" class="section level2" number="14.4">
+<h2>
+<span class="header-section-number">14.4</span> データの前処理<a class="anchor" aria-label="anchor" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%89%8D%E5%87%A6%E7%90%86"><i class="fas fa-link"></i></a>
+</h2>
+<p>データの読み込みは並列で行うので、<code><a href="https://purrr.tidyverse.org/reference/map.html">map()</a></code> じゃなくて <code><a href="https://rdrr.io/pkg/furrr/man/future_map.html">future_map()</a></code> を使います。
+<code><a href="https://rdrr.io/pkg/gnnlab/man/read_onset.html">read_onset()</a></code> は 研究室の <code>gnnlab</code> パッケージの関数です。</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">labdatafolder</span> <span class="op">=</span> <span class="st">"~/Lab_Data/kawatea/Oxygen"</span>
+<span class="va">dset</span> <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>fnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">dir</a></span><span class="op">(</span><span class="va">labdatafolder</span>, pattern <span class="op">=</span> <span class="st">"DO.*arikawa.*csv"</span>, full <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">fnames</span>, <span class="st">"calib"</span>, negate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+<span class="va">dset</span> <span class="op">=</span> <span class="va">dset</span> |&gt;
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/furrr/man/future_map.html">future_map</a></span><span class="op">(</span><span class="va">fnames</span>, <span class="va">read_onset</span><span class="op">)</span><span class="op">)</span> 
+<span class="va">dset</span>
+<span class="co">#&gt; # A tibble: 327 × 2</span>
+<span class="co">#&gt;    fnames                                           data    </span>
+<span class="co">#&gt;    &lt;chr&gt;                                            &lt;list&gt;  </span>
+<span class="co">#&gt;  1 /home/gnishihara/Lab_Data/kawatea/Oxygen/DO_02_… &lt;tibble&gt;</span>
+<span class="co">#&gt;  2 /home/gnishihara/Lab_Data/kawatea/Oxygen/DO_02_… &lt;tibble&gt;</span>
+<span class="co">#&gt;  3 /home/gnishihara/Lab_Data/kawatea/Oxygen/DO_03_… &lt;tibble&gt;</span>
+<span class="co">#&gt;  4 /home/gnishihara/Lab_Data/kawatea/Oxygen/DO_03_… &lt;tibble&gt;</span>
+<span class="co">#&gt;  5 /home/gnishihara/Lab_Data/kawatea/Oxygen/DO_03_… &lt;tibble&gt;</span>
+<span class="co">#&gt;  6 /home/gnishihara/Lab_Data/kawatea/Oxygen/DO_03_… &lt;tibble&gt;</span>
+<span class="co">#&gt;  7 /home/gnishihara/Lab_Data/kawatea/Oxygen/DO_03_… &lt;tibble&gt;</span>
+<span class="co">#&gt;  8 /home/gnishihara/Lab_Data/kawatea/Oxygen/DO_03_… &lt;tibble&gt;</span>
+<span class="co">#&gt;  9 /home/gnishihara/Lab_Data/kawatea/Oxygen/DO_03_… &lt;tibble&gt;</span>
+<span class="co">#&gt; 10 /home/gnishihara/Lab_Data/kawatea/Oxygen/DO_03_… &lt;tibble&gt;</span>
+<span class="co">#&gt; # … with 317 more rows</span></code></pre></div>
+<p>次はファイル名の処理をします。</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dset</span> <span class="op">=</span> <span class="va">dset</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">fnames</span>, <span class="st">"edge|sand"</span>, negate <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>fnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/basename.html">basename</a></span><span class="op">(</span><span class="va">fnames</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>fnames <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html">str_remove</a></span><span class="op">(</span><span class="va">fnames</span>, <span class="st">".csv"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html">separate</a></span><span class="op">(</span><span class="va">fnames</span>, into <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"type"</span>, <span class="st">"id"</span>, <span class="st">"location"</span>, <span class="st">"position"</span>, <span class="st">"surveydate"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">dset</span> <span class="op">=</span> <span class="va">dset</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></code></pre></div>
+<p>観測期間のデータを読み込んで、観測インターバルを設定します。</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">surveyperiod</span> <span class="op">=</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span><span class="st">"~/Lab_Data/kawatea/period_info_220422.csv"</span><span class="op">)</span>
+<span class="va">surveyperiod</span>
+<span class="co">#&gt; # A tibble: 185 × 5</span>
+<span class="co">#&gt;    location  start_date          end_date            comment</span>
+<span class="co">#&gt;    &lt;chr&gt;     &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt;  </span>
+<span class="co">#&gt;  1 arikawaa… 2017-04-09 00:00:00 2017-05-21 00:00:00 &lt;NA&gt;   </span>
+<span class="co">#&gt;  2 arikawag… 2017-04-09 00:00:00 2017-05-21 00:00:00 &lt;NA&gt;   </span>
+<span class="co">#&gt;  3 tainoura  2017-04-09 00:00:00 2017-05-21 00:00:00 &lt;NA&gt;   </span>
+<span class="co">#&gt;  4 arikawaa… 2017-05-25 00:00:00 2017-06-13 00:00:00 &lt;NA&gt;   </span>
+<span class="co">#&gt;  5 arikawag… 2017-05-25 00:00:00 2017-06-13 00:00:00 &lt;NA&gt;   </span>
+<span class="co">#&gt;  6 tainoura  2017-05-25 00:00:00 2017-06-13 00:00:00 &lt;NA&gt;   </span>
+<span class="co">#&gt;  7 arikawaa… 2017-07-20 00:00:00 2017-08-04 00:00:00 台風の…</span>
+<span class="co">#&gt;  8 arikawag… 2017-07-20 00:00:00 2017-08-04 00:00:00 台風の…</span>
+<span class="co">#&gt;  9 tainoura  2017-07-20 00:00:00 2017-08-18 00:00:00 &lt;NA&gt;   </span>
+<span class="co">#&gt; 10 arikawaa… 2017-08-09 00:00:00 2017-08-18 00:00:00 &lt;NA&gt;   </span>
+<span class="co">#&gt; # … with 175 more rows, and 1 more variable: remarks &lt;chr&gt;</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">surveyperiod</span> <span class="op">=</span> <span class="va">surveyperiod</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>interval <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/interval.html">interval</a></span><span class="op">(</span>start <span class="op">=</span> <span class="va">start_date</span>, end <span class="op">=</span> <span class="va">end_date</span><span class="op">)</span><span class="op">)</span>
+<span class="va">surveyperiod</span>
+<span class="co">#&gt; # A tibble: 185 × 6</span>
+<span class="co">#&gt;    location  start_date          end_date            comment</span>
+<span class="co">#&gt;    &lt;chr&gt;     &lt;dttm&gt;              &lt;dttm&gt;              &lt;chr&gt;  </span>
+<span class="co">#&gt;  1 arikawaa… 2017-04-09 00:00:00 2017-05-21 00:00:00 &lt;NA&gt;   </span>
+<span class="co">#&gt;  2 arikawag… 2017-04-09 00:00:00 2017-05-21 00:00:00 &lt;NA&gt;   </span>
+<span class="co">#&gt;  3 tainoura  2017-04-09 00:00:00 2017-05-21 00:00:00 &lt;NA&gt;   </span>
+<span class="co">#&gt;  4 arikawaa… 2017-05-25 00:00:00 2017-06-13 00:00:00 &lt;NA&gt;   </span>
+<span class="co">#&gt;  5 arikawag… 2017-05-25 00:00:00 2017-06-13 00:00:00 &lt;NA&gt;   </span>
+<span class="co">#&gt;  6 tainoura  2017-05-25 00:00:00 2017-06-13 00:00:00 &lt;NA&gt;   </span>
+<span class="co">#&gt;  7 arikawaa… 2017-07-20 00:00:00 2017-08-04 00:00:00 台風の…</span>
+<span class="co">#&gt;  8 arikawag… 2017-07-20 00:00:00 2017-08-04 00:00:00 台風の…</span>
+<span class="co">#&gt;  9 tainoura  2017-07-20 00:00:00 2017-08-18 00:00:00 &lt;NA&gt;   </span>
+<span class="co">#&gt; 10 arikawaa… 2017-08-09 00:00:00 2017-08-18 00:00:00 &lt;NA&gt;   </span>
+<span class="co">#&gt; # … with 175 more rows, and 2 more variables:</span>
+<span class="co">#&gt; #   remarks &lt;chr&gt;, interval &lt;Interval&gt;</span></code></pre></div>
+<p>観測インストールをつかて、データをフィルタにかけます。
+インストール以外のデータはここで外します。</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ints</span> <span class="op">=</span> <span class="va">surveyperiod</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">interval</span><span class="op">)</span>
+<span class="va">dset</span> <span class="op">=</span> <span class="va">dset</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">datetime</span> <span class="op"><a href="https://lubridate.tidyverse.org/reference/within-interval.html">%within%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span><span class="op">(</span><span class="va">ints</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>さらに、データの数を求めてフィルタにかけます。
+10分間隔で測定しているので、一日あたりに 144 のデータがあります。
+条件に合わないデータは外します。</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dset</span> <span class="op">=</span> <span class="va">dset</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>date <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html">as_date</a></span><span class="op">(</span><span class="va">datetime</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">location</span>, <span class="va">position</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/near.html">near</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">144</span><span class="op">)</span><span class="op">)</span>
+<span class="va">dset</span>
+<span class="co">#&gt; # A tibble: 1,239,696 × 9</span>
+<span class="co">#&gt; # Groups:   date, location, position [8,609]</span>
+<span class="co">#&gt;    type  id    location      position surveydate</span>
+<span class="co">#&gt;    &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;         &lt;chr&gt;    &lt;chr&gt;     </span>
+<span class="co">#&gt;  1 DO    02    arikawagaramo 0m       170523    </span>
+<span class="co">#&gt;  2 DO    02    arikawagaramo 0m       170523    </span>
+<span class="co">#&gt;  3 DO    02    arikawagaramo 0m       170523    </span>
+<span class="co">#&gt;  4 DO    02    arikawagaramo 0m       170523    </span>
+<span class="co">#&gt;  5 DO    02    arikawagaramo 0m       170523    </span>
+<span class="co">#&gt;  6 DO    02    arikawagaramo 0m       170523    </span>
+<span class="co">#&gt;  7 DO    02    arikawagaramo 0m       170523    </span>
+<span class="co">#&gt;  8 DO    02    arikawagaramo 0m       170523    </span>
+<span class="co">#&gt;  9 DO    02    arikawagaramo 0m       170523    </span>
+<span class="co">#&gt; 10 DO    02    arikawagaramo 0m       170523    </span>
+<span class="co">#&gt; # … with 1,239,686 more rows, and 4 more variables:</span>
+<span class="co">#&gt; #   datetime &lt;dttm&gt;, mgl &lt;dbl&gt;, temperature &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   date &lt;date&gt;</span></code></pre></div>
+<p>Wavelet 解析を実施するときは、データが隣接しているかを確認しましょう。
+隣接しているデータをグループ化してから解析をします。
+ここでは、<code>contiguous()</code> 関数に <code>datetime</code> をわたして、必要な情報を加えます。</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dset</span> <span class="op">=</span> <span class="va">dset</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>datetime <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html">floor_date</a></span><span class="op">(</span><span class="va">datetime</span>, <span class="st">"10 mins"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">location</span>, <span class="va">position</span>, <span class="va">id</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">contiguous</span>, tau <span class="op">=</span> <span class="va">datetime</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></code></pre></div>
+<p>グループ化が完了したら、wavelet 解析をします。</p>
+<p>ウェーブレット解析はとても重いので、研究室のサーバなら並列処理で解析します。</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">number_of_cpu_cores</span> <span class="op">=</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html">detectCores</a></span><span class="op">(</span><span class="op">)</span>
+<span class="fu"><a href="https://future.futureverse.org/reference/plan.html">plan</a></span><span class="op">(</span><span class="va">multisession</span>, workers <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></code></pre></div>
+<p>では、<code><a href="https://rdrr.io/pkg/furrr/man/future_map.html">future_map()</a></code> を使って並列処理で解散をします。</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">wtout</span> <span class="op">=</span> <span class="va">dset</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">datetime</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">group</span>, <span class="va">location</span>, <span class="va">id</span>, <span class="va">position</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>wtout <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/furrr/man/future_map.html">future_map</a></span><span class="op">(</span><span class="va">data</span>, \<span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">df</span> |&gt; <span class="fu">calc_wt</span><span class="op">(</span><span class="va">temperature</span>, <span class="va">datetime</span><span class="op">)</span>
+  <span class="op">}</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>普通に逐次処理のときは、<code><a href="https://purrr.tidyverse.org/reference/map.html">map()</a></code> で実行しましょう。</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">wtout</span> <span class="op">=</span> <span class="va">dset</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">datetime</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">group</span>, <span class="va">location</span>, <span class="va">id</span>, <span class="va">position</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>wtout <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">data</span>, \<span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">df</span> |&gt; <span class="fu">calc_wt</span><span class="op">(</span><span class="va">temperature</span>, <span class="va">datetime</span><span class="op">)</span>
+  <span class="op">}</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="wavelet-の図" class="section level2" number="14.5">
+<h2>
+<span class="header-section-number">14.5</span> Wavelet の図<a class="anchor" aria-label="anchor" href="#wavelet-%E3%81%AE%E5%9B%B3"><i class="fas fa-link"></i></a>
+</h2>
+<p>ウェーブレットの図も関数を設計して、作ります。
+<code>wavelet_plot()</code> は作図用の関数です。
+これは、<code><a href="https://purrr.tidyverse.org/reference/map.html">map()</a></code> を通して作図します。</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">wavelet_plot</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">wtout</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">ylabel</span> <span class="op">=</span> <span class="st">"Period (hrs)"</span>
+  <span class="va">xlabel</span> <span class="op">=</span> <span class="st">"Date"</span>
+  <span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">wtout</span>, <span class="va">datetime</span>, <span class="va">power</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">power</span><span class="op">)</span>
+  <span class="va">s</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">wtout</span>, <span class="va">datetime</span>, <span class="va">signif</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">signif</span><span class="op">)</span>
+  <span class="va">rng</span> <span class="op">=</span> <span class="va">x</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">period</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_tile</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">datetime</span>,
+                  y <span class="op">=</span> <span class="va">period</span>, 
+                  fill <span class="op">=</span> <span class="va">power</span><span class="op">)</span>,
+              data <span class="op">=</span> <span class="va">x</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_contour.html">geom_contour</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">datetime</span>,
+                     y <span class="op">=</span> <span class="va">period</span>,
+                     z <span class="op">=</span> <span class="va">signif</span><span class="op">)</span>,
+                 data <span class="op">=</span> <span class="va">s</span>,
+                 color <span class="op">=</span> <span class="st">"black"</span>,
+                 size <span class="op">=</span> <span class="fl">1</span>, 
+                 breaks <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">datetime</span>,
+                  y <span class="op">=</span> <span class="va">coi</span><span class="op">)</span>,
+              data <span class="op">=</span> <span class="va">wtout</span>,
+              color <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">6</span>, <span class="fl">12</span>, <span class="fl">24</span><span class="op">)</span>,
+               linetype <span class="op">=</span> <span class="st">"dashed"</span>, color <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span><span class="va">ylabel</span>,
+                       trans <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/trans_new.html">trans_new</a></span><span class="op">(</span><span class="st">"log2reverse"</span>,
+                                                 <span class="va">log2reverse</span>,
+                                                 <span class="va">log2reverseinv</span>,
+                                                 domain <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="cn">Inf</span><span class="op">)</span><span class="op">)</span>,
+                       limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rev.html">rev</a></span><span class="op">(</span><span class="va">rng</span><span class="op">)</span>,
+                       breaks <span class="op">=</span> <span class="fl">2</span><span class="op">^</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">6</span>, <span class="fl">12</span>, <span class="fl">16</span>, <span class="fl">24</span>, <span class="fl">64</span><span class="op">)</span><span class="op">)</span>,
+                       expand <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html">expansion</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>  <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_date.html">scale_x_datetime</a></span><span class="op">(</span><span class="va">xlabel</span>, 
+                     date_breaks <span class="op">=</span> <span class="st">"2 days"</span>,
+                     labels <span class="op">=</span> <span class="va">date_gnn</span><span class="op">)</span>  <span class="op">+</span>
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span> <span class="op">+</span> 
+    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_fill_viridis_c</a></span><span class="op">(</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
+<p>ここで作図をします。</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">wtplots</span> <span class="op">=</span> <span class="va">wtout</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">group</span>, <span class="va">wtout</span>, <span class="va">location</span>, <span class="va">position</span>, <span class="va">id</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ggplot <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">wtout</span>, <span class="va">wavelet_plot</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>そのままコードを実行すると RStudio には図のアウトプットはないです。
+図を見るためには、ファイルに保存したほうがいい。</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">plots</span> <span class="op">=</span> <span class="va">wtplots</span><span class="op">$</span><span class="va">ggplot</span>
+<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">plots</span><span class="op">)</span>
+<span class="co">#&gt; [1] 324</span></code></pre></div>
+<p>合計 324 のファイルを書き出すことになりそうなので、
+フォルダを作って保存します。</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dname</span> <span class="op">=</span> <span class="st">"_wavelet_plots"</span>
+<span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.exists</a></span><span class="op">(</span><span class="va">dname</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="va">dname</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
+<p>ここでファイル名と保存するための関数をつくります。
+ファイルはPDFとして保存するが、同時にPDFをPNGに変換します。
+PDFを変換すると、確実に選んだフォントが埋め込まれるので、
+PNGファイルのフォントも綺麗です。
+ファイルの変換は <code>magick</code> パッケージをつかいます。</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">save_wavelets</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">l</span>,<span class="va">p</span>,<span class="va">d</span>,<span class="va">g</span>,<span class="va">i</span>,<span class="va">plot</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">pdfname</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="va">dname</span>, <span class="st">"/"</span>, <span class="va">l</span>, <span class="st">"_"</span>, <span class="va">p</span>, <span class="st">"_"</span>, <span class="va">d</span>, <span class="st">"_"</span>, <span class="va">g</span>,<span class="st">"_"</span>, <span class="va">i</span>, <span class="st">".pdf"</span><span class="op">)</span>
+  <span class="va">pngname</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">pdfname</span>, <span class="st">"pdf"</span>, <span class="st">"png"</span><span class="op">)</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsave.html">ggsave</a></span><span class="op">(</span><span class="va">pdfname</span>, plot <span class="op">=</span> <span class="va">plot</span>, width <span class="op">=</span> <span class="fl">300</span>, height <span class="op">=</span> <span class="fl">200</span>, units <span class="op">=</span> <span class="st">"mm"</span><span class="op">)</span>
+  <span class="fu">magick</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/magick/reference/editing.html">image_read_pdf</a></span><span class="op">(</span><span class="va">pdfname</span>, density <span class="op">=</span> <span class="fl">300</span><span class="op">)</span> |&gt; 
+    <span class="fu">magick</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/magick/reference/transform.html">image_trim</a></span><span class="op">(</span><span class="op">)</span> |&gt; <span class="fu">magick</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/magick/reference/editing.html">image_write</a></span><span class="op">(</span><span class="va">pngname</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="va">wtplots</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>period <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_chr</a></span><span class="op">(</span><span class="va">wtout</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">z</span> <span class="op">=</span> <span class="va">x</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">datetime</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html">as_date</a></span><span class="op">(</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="op">)</span>
+    <span class="va">z</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html">str_remove_all</a></span><span class="op">(</span><span class="va">z</span>, <span class="st">"-"</span><span class="op">)</span>
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="va">z</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="st">"_"</span>, <span class="va">z</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>
+  <span class="op">}</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>out <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html">pmap</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">location</span>, <span class="va">position</span>, <span class="va">period</span>, <span class="va">group</span>, <span class="va">id</span>, <span class="va">ggplot</span><span class="op">)</span>, <span class="va">save_wavelets</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:unnamed-chunk-29"></span>
+<img src="90-wavelet_files/figure-html/unnamed-chunk-29-1.png" alt="
+有川湾鯨見山地先におけるガラモ場の水温に対するウェーブレット解析。
+観測期間は2018年5月17日から6月17日でしました。
+水温は海底で記録しました。
+パワーの強い所は明るい色（黄色）で示していて、パワーの弱い所は暗い色（青色）で示しています。
+白線はCOIを示しています。
+5月17日から25日、5月31日から6月2日、6月9日,　6月12日から17日の期間には強い24時間の周期があります。
+ところどころ強い12時間の周期もあります。12時間の周期は潮汐と関係していると考えますね。
+12時間より短い周期でも比較的に強いパワーが示されています。
+" width="1749"><p class="caption">
+Figure 14.2: 
+有川湾鯨見山地先におけるガラモ場の水温に対するウェーブレット解析。
+観測期間は2018年5月17日から6月17日でしました。
+水温は海底で記録しました。
+パワーの強い所は明るい色（黄色）で示していて、パワーの弱い所は暗い色（青色）で示しています。
+白線はCOIを示しています。
+5月17日から25日、5月31日から6月2日、6月9日,　6月12日から17日の期間には強い24時間の周期があります。
+ところどころ強い12時間の周期もあります。12時間の周期は潮汐と関係していると考えますね。
+12時間より短い周期でも比較的に強いパワーが示されています。
+</p>
+</div>
+</div>
+<div id="snr-の求め方" class="section level2" number="14.6">
+<h2>
+<span class="header-section-number">14.6</span> SNR の求め方<a class="anchor" aria-label="anchor" href="#snr-%E3%81%AE%E6%B1%82%E3%82%81%E6%96%B9"><i class="fas fa-link"></i></a>
+</h2>
+<p>日周期 (diurnal) と高周期 (high) の比率を求めて、一日内の水温の安定性を調べてみましょう。
+ウェーブレットで検出した周期情報を High (0 ~ 7 hr), Tidal (7 = 13 hrs), Diurnal (13 ~ 25 hrs), Low (&gt; 25 hrs) に分類します。
+分離したら、一日あたりの平均パワー (power) と平均値の 95% 信頼区間を求めます。
+<strong>この解析はまだ未熟ですが、もっといい方法に気づいたら紹介します。</strong></p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">calculate_mean_power</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">wt</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">wt</span> |&gt; 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">datetime</span>, <span class="va">power</span><span class="op">)</span> |&gt; 
+      <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">power</span><span class="op">)</span> |&gt; 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>datetime <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html">floor_date</a></span><span class="op">(</span><span class="va">datetime</span>, <span class="st">"day"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> |&gt; 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ftype <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cut.html">cut</a></span><span class="op">(</span><span class="va">period</span>, breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="cn">Inf</span>, <span class="fl">7</span>, <span class="fl">13</span>, <span class="fl">25</span>, <span class="cn">Inf</span><span class="op">)</span>,
+                         labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"High"</span>, <span class="st">"Tidal"</span>, <span class="st">"Diurnal"</span>, <span class="st">"Low"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> |&gt; 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">datetime</span>, <span class="va">ftype</span><span class="op">)</span> |&gt; 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="va">power</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>mean <span class="op">=</span><span class="va">mean</span>, se <span class="op">=</span> <span class="va">se</span><span class="op">)</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> |&gt; 
+      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">power_mean</span> <span class="op">-</span> <span class="fl">1.96</span><span class="op">*</span><span class="va">power_se</span>,
+             upper <span class="op">=</span> <span class="va">power_mean</span> <span class="op">+</span> <span class="fl">1.96</span><span class="op">*</span><span class="va">power_se</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="va">wtout</span> <span class="op">=</span> <span class="va">wtout</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>wtout2 <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">wtout</span>, <span class="va">calculate_mean_power</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>次に、<code>wtout2</code> に隠れている <code>tibble</code> を縦長から横長に変換します。
+つづいて、SNRを求めますが、power はログスケールで求めたので、
+SNR比は <code>snr = Diurnal - High</code> です。</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">calculate_snr</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">wt</span><span class="op">)</span>  <span class="op">{</span>
+  <span class="va">wt</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">datetime</span>, <span class="va">ftype</span>, <span class="va">power_mean</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">datetime</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span><span class="va">ftype</span>, values_from <span class="op">=</span> <span class="va">power_mean</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>snr <span class="op">=</span> <span class="va">Diurnal</span> <span class="op">-</span> <span class="va">High</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="va">wtout</span> <span class="op">=</span> <span class="va">wtout</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>wtout3 <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">wtout2</span>, <span class="va">calculate_snr</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>SNR比を <code>date</code>, <code>location</code>, <code>position</code> ごとにまとめます。</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">snrdata</span> <span class="op">=</span> 
+  <span class="va">wtout</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">wtout3</span>, <span class="va">location</span>, <span class="va">position</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">wtout3</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>date <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html">floor_date</a></span><span class="op">(</span><span class="va">datetime</span>, <span class="st">"month"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">date</span>, <span class="va">location</span>, <span class="va">position</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>snr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">snr</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></code></pre></div>
+<p>SNR比に2020年あたりに怪しい値はあるが、<code>position</code> ごとに傾向有るのかな？</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ylabel</span> <span class="op">=</span> <span class="st">"Period (h)"</span>
+<span class="va">xlabel</span> <span class="op">=</span> <span class="st">"Date"</span>
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">snrdata</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">date</span>, y <span class="op">=</span> <span class="va">snr</span>, color <span class="op">=</span> <span class="va">position</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/vars.html">vars</a></span><span class="op">(</span><span class="va">location</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:unnamed-chunk-33"></span>
+<img src="90-wavelet_files/figure-html/unnamed-chunk-33-1.png" alt="SNRは日周期と高周期の比率です。" width="672"><p class="caption">
+Figure 14.3: SNRは日周期と高周期の比率です。
+</p>
+</div>
+<p>SNRの傾向を解析して、図に追加します。
+<code>location</code>と<code>position</code> 間の比較に興味がないので、次のようなモデルを当てはめます。</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fit_model</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">snr</span> <span class="op">~</span> <span class="va">date</span>, data <span class="op">=</span> <span class="va">df</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
+<p><strong>解析の結果</strong></p>
+<p>一般線形モデルのF検定の結果、すべてのモデルのP値は 0.05 より大きいですね。</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">snrdata</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>date <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html">as_date</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">location</span>, <span class="va">position</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">fit_model</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>summary <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">model</span>, <span class="fu">broom</span><span class="fu">::</span><span class="va"><a href="https://generics.r-lib.org/reference/glance.html">glance</a></span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">summary</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 7 × 16</span>
+<span class="co">#&gt;   location   position     data model r.squared adj.r.squared</span>
+<span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;    &lt;list&lt;t&gt; &lt;lis&gt;     &lt;dbl&gt;         &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 arikawaam… 0m       [46 × 2] &lt;lm&gt;    0.0131       -0.0128 </span>
+<span class="co">#&gt; 2 arikawaam… 1m       [46 × 2] &lt;lm&gt;    0.0210       -0.00623</span>
+<span class="co">#&gt; 3 arikawaam… 2m       [41 × 2] &lt;lm&gt;    0.0357        0.00731</span>
+<span class="co">#&gt; 4 arikawaam… surface  [46 × 2] &lt;lm&gt;    0.0196       -0.00271</span>
+<span class="co">#&gt; 5 arikawaga… 0m       [59 × 2] &lt;lm&gt;    0.00124      -0.0163 </span>
+<span class="co">#&gt; 6 arikawaga… 1m       [60 × 2] &lt;lm&gt;    0.00538      -0.0124 </span>
+<span class="co">#&gt; 7 arikawaga… surface  [60 × 2] &lt;lm&gt;    0.00406      -0.0151 </span>
+<span class="co">#&gt; # … with 10 more variables: sigma &lt;dbl&gt;, statistic &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   p.value &lt;dbl&gt;, df &lt;dbl&gt;, logLik &lt;dbl&gt;, AIC &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   BIC &lt;dbl&gt;, deviance &lt;dbl&gt;, df.residual &lt;int&gt;,</span>
+<span class="co">#&gt; #   nobs &lt;int&gt;</span></code></pre></div>
+<p>モデル係数の結果は <code>broom</code> パッケージの <code>tidy()</code> 関数で確認できます。</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">snrdata</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>date <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html">as_date</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">location</span>, <span class="va">position</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">fit_model</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>summary <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">model</span>, <span class="fu">broom</span><span class="fu">::</span><span class="va"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">summary</span><span class="op">)</span> 
+<span class="co">#&gt; # A tibble: 14 × 9</span>
+<span class="co">#&gt;    location position     data model term  estimate std.error</span>
+<span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;    &lt;list&lt;t&gt; &lt;lis&gt; &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 arikawa… 0m       [46 × 2] &lt;lm&gt;  (Int…  3.80e+1 20.8     </span>
+<span class="co">#&gt;  2 arikawa… 0m       [46 × 2] &lt;lm&gt;  date  -8.03e-4  0.00113 </span>
+<span class="co">#&gt;  3 arikawa… 1m       [46 × 2] &lt;lm&gt;  (Int… -1.19e+0 25.8     </span>
+<span class="co">#&gt;  4 arikawa… 1m       [46 × 2] &lt;lm&gt;  date   1.23e-3  0.00140 </span>
+<span class="co">#&gt;  5 arikawa… 2m       [41 × 2] &lt;lm&gt;  (Int… -4.24e-1 19.4     </span>
+<span class="co">#&gt;  6 arikawa… 2m       [41 × 2] &lt;lm&gt;  date   1.19e-3  0.00106 </span>
+<span class="co">#&gt;  7 arikawa… surface  [46 × 2] &lt;lm&gt;  (Int…  2.07e+0 21.4     </span>
+<span class="co">#&gt;  8 arikawa… surface  [46 × 2] &lt;lm&gt;  date   1.09e-3  0.00116 </span>
+<span class="co">#&gt;  9 arikawa… 0m       [59 × 2] &lt;lm&gt;  (Int…  1.53e+1 14.7     </span>
+<span class="co">#&gt; 10 arikawa… 0m       [59 × 2] &lt;lm&gt;  date   2.16e-4  0.000811</span>
+<span class="co">#&gt; 11 arikawa… 1m       [60 × 2] &lt;lm&gt;  (Int…  1.12e+1 14.5     </span>
+<span class="co">#&gt; 12 arikawa… 1m       [60 × 2] &lt;lm&gt;  date   4.40e-4  0.000799</span>
+<span class="co">#&gt; 13 arikawa… surface  [60 × 2] &lt;lm&gt;  (Int…  1.51e+1 13.6     </span>
+<span class="co">#&gt; 14 arikawa… surface  [60 × 2] &lt;lm&gt;  date   3.45e-4  0.000750</span>
+<span class="co">#&gt; # … with 2 more variables: statistic &lt;dbl&gt;, p.value &lt;dbl&gt;</span></code></pre></div>
+<p><code>date</code> はモデル傾きのパラメータです。
+<code>arikawaamamo</code> <code>0m</code> 以外の <code>date</code> 係数は正の値をとっていますが、
+Wald’s 検定の結果、すべての P値は 0.05 より大きいです。</p>
+<p>帰無仮説検定論によると、0 との統計学的な有意差がなかったので、
+係数が 0 ではないという仮説は棄却できない。</p>
+<p>それにしても、とりあえずデータを図に追加してみよう。</p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">return_fit</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">model</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">nd</span> <span class="op">=</span> <span class="va">data</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/expand.html">expand</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span><span class="op">(</span><span class="va">nd</span>, <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">model</span>, newdata <span class="op">=</span> <span class="va">nd</span>, se.fit <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> |&gt; 
+    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="va">fit</span> <span class="op">-</span> <span class="fl">1.96</span><span class="op">*</span><span class="va">se.fit</span>,
+           upper <span class="op">=</span> <span class="va">fit</span> <span class="op">+</span> <span class="fl">1.96</span><span class="op">*</span><span class="va">se.fit</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="va">snrdata</span> <span class="op">=</span> <span class="va">snrdata</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>date <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/as_date.html">as_date</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">location</span>, <span class="va">position</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">fit_model</span><span class="op">)</span><span class="op">)</span> |&gt;
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ndata <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html">map2</a></span><span class="op">(</span><span class="va">data</span>,<span class="va">model</span>, <span class="va">return_fit</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">date</span>, y <span class="op">=</span> <span class="va">fit</span>, color <span class="op">=</span> <span class="va">position</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">snrdata</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">ndata</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">date</span>, y <span class="op">=</span> <span class="va">snr</span>, color <span class="op">=</span> <span class="va">position</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">snrdata</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/vars.html">vars</a></span><span class="op">(</span><span class="va">location</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:unnamed-chunk-38"></span>
+<img src="90-wavelet_files/figure-html/unnamed-chunk-38-1.png" alt="SNRの傾向に線形モデルを当てはめたが、線形モデルのF検定に統計学的に有意な結果はありませんでした。" width="672"><p class="caption">
+Figure 14.4: SNRの傾向に線形モデルを当てはめたが、線形モデルのF検定に統計学的に有意な結果はありませんでした。
+</p>
+</div>
+
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="empty"></div>
+<div class="empty"></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <div id="book-on-this-page"></div>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室. It was last built on 2022-04-28.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

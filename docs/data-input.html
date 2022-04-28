@@ -50,12 +50,14 @@
 <li><a class="" href="anova.html"><span class="header-section-number">7</span> 分散分析</a></li>
 <li><a class="" href="glm.html"><span class="header-section-number">8</span> 一般化線形モデル</a></li>
 <li><a class="" href="gam.html"><span class="header-section-number">9</span> 一般化加法モデル</a></li>
-<li><a class="" href="ggplot.html"><span class="header-section-number">10</span> ggplot</a></li>
-<li><a class="" href="maps.html"><span class="header-section-number">11</span> 地図の作り方</a></li>
+<li><a class="" href="model-selection.html"><span class="header-section-number">10</span> モデル選択</a></li>
+<li><a class="" href="ggplot.html"><span class="header-section-number">11</span> ggplot</a></li>
+<li><a class="" href="maps.html"><span class="header-section-number">12</span> 地図の作り方</a></li>
+<li><a class="" href="wavelet.html"><span class="header-section-number">13</span> Wavlet 解析</a></li>
 </ul>
 
         <div class="book-extra">
-          <p><a id="book-repo" href="https://github.com/rstudio/bookdown-demo">View book source <i class="fab fa-github"></i></a></p>
+          <p><a id="book-repo" href="https://github.com/gnishihara/Lab-Manual">View book source <i class="fab fa-github"></i></a></p>
         </div>
       </nav>
 </div>
@@ -68,7 +70,7 @@
 <span class="header-section-number">1.1</span> 必要なパッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8"><i class="fas fa-link"></i></a>
 </h2>
 <div class="rmdnote">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span></code></pre></div>
 </div>
@@ -80,8 +82,8 @@
 <p>データは環境省の「瀬戸内海における藻場・干潟分布状況調査（概要）」からまとめました。
 もとのファイルは<a href="http://www.env.go.jp/water/totalresult.pdf">環境省平成３０年９月スライドデッキ</a> からダウンロードできます。
 XLSXファイルは <code>readxl</code> パッケージの <code><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx()</a></code> 関数で読み込みます。
-では、XLSXファイルに存在するシートの確認をしましょう<a href="maps.html#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>。</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+では、XLSXファイルに存在するシートの確認をしましょう<a href="wavelet.html#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>。</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rootdatafolder</span> <span class="op">=</span> <span class="fu">rprojroot</span><span class="fu">::</span><span class="fu"><a href="https://rprojroot.r-lib.org/reference/find_root_file.html">find_rstudio_root_file</a></span><span class="op">(</span><span class="st">"Data/"</span><span class="op">)</span>
 <span class="va">filename</span> <span class="op">=</span> <span class="st">'瀬戸内海藻場データ.xlsx'</span>
 <span class="va">path</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="va">rootdatafolder</span>, <span class="va">filename</span><span class="op">)</span>
@@ -97,7 +99,7 @@ Figure 1.1: 瀬戸内海藻場データ.xlsx の FY1990 シートに入力され
 </p>
 </div>
 <p>FY1990 のデータの構造は縦長なので、読み込みは比較的に楽です。
-<strong>それぞれの変数は一つの列</strong><a href="maps.html#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>に入力されているから、読み込みが簡単です。</p>
+<strong>それぞれの変数は一つの列</strong><a href="wavelet.html#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>に入力されているから、読み込みが簡単です。</p>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:seto2"></span>
 <img src="01-data-input_files/figure-html/seto2-1.png" alt="瀬戸内海藻場データ.xlsx の FY2018 シートに入力されているデータは横長の形式です。" width="766"><p class="caption">
@@ -106,7 +108,7 @@ Figure 1.2: 瀬戸内海藻場データ.xlsx の FY2018 シートに入力され
 </div>
 <p>FY2018 のデータの構造は横長です。
 データは海藻と海草にわけられ、それぞれの変数じゃなくて、それぞれの場所の値を列に入力されています。
-この用なデータの読み込みは手間がかかります<a href="maps.html#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>。</p>
+この用なデータの読み込みは手間がかかります<a href="wavelet.html#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>。</p>
 </div>
 <div id="データを読み込む" class="section level2" number="1.3">
 <h2>
@@ -114,12 +116,12 @@ Figure 1.2: 瀬戸内海藻場データ.xlsx の FY2018 シートに入力され
 </h2>
 <p>では、<strong>FY1990 シート</strong>のデータを読み込みます。
 ここでシートから読み込むセルの範囲を指定します。</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">RNG</span> <span class="op">=</span> <span class="st">"A4:C27"</span>   <span class="co"># セルの範囲</span>
 <span class="va">SHEET</span> <span class="op">=</span> <span class="st">"FY1990"</span> <span class="co"># シート名</span>
 <span class="va">d19</span> <span class="op">=</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="va">path</span>, sheet <span class="op">=</span> <span class="va">SHEET</span>, range <span class="op">=</span> <span class="va">RNG</span><span class="op">)</span></code></pre></div>
 <p>データは <code>tibble</code> として読み込まれました。
-データに大きな問題がなければ、各列の型・タイプ (type)<a href="maps.html#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a> は自動的に設定されます。</p>
+データに大きな問題がなければ、各列の型・タイプ (type)<a href="wavelet.html#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> は自動的に設定されます。</p>
 <ul>
 <li>
 <code>調査海域</code> の列は <code>&lt;chr&gt;</code> : character, 文字列</li>
@@ -131,7 +133,7 @@ Figure 1.2: 瀬戸内海藻場データ.xlsx の FY2018 シートに入力され
 <p>変数名が日本語の場合、コードが書きづらくなったり、バグの原因になります。
 最初から英語表記にするのが合理的ですが、R環境内で名前を変換することは難しくないです。
 とりあえず <code>d19</code> の内容をみましょう。</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">d19</span> <span class="co"># FY1990 データの内容</span>
 <span class="co">#&gt; # A tibble: 23 × 3</span>
 <span class="co">#&gt;    調査海域  海藻  海草</span>
@@ -149,7 +151,7 @@ Figure 1.2: 瀬戸内海藻場データ.xlsx の FY2018 シートに入力され
 <span class="co">#&gt; # … with 13 more rows</span></code></pre></div>
 <p><strong>FY2018 シート</strong>の読み込みは、海藻と海草ごとにする必要があります。
 読み込んだ後に、データを縦長に変換し、2 つの tibble を縦に結合します。</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">RNG</span> <span class="op">=</span> <span class="st">"A6:C15"</span>   <span class="co"># 海藻データのセル範囲</span>
 <span class="va">SHEET</span> <span class="op">=</span> <span class="st">"FY2018"</span> <span class="co"># シート名</span>
 <span class="va">seaweed</span> <span class="op">=</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="va">path</span>, sheet <span class="op">=</span> <span class="va">SHEET</span>, range <span class="op">=</span> <span class="va">RNG</span><span class="op">)</span>
@@ -158,7 +160,7 @@ Figure 1.2: 瀬戸内海藻場データ.xlsx の FY2018 シートに入力され
 <p>最初のセル範囲を読み込んで ファイルのコンテンツを <code>seaweed</code> に書き込んだら、<code>RNG</code> を次のセル範囲に書き換えます。
 データは同じシートにあるので、<code>SHEET</code> を変更したり、新たに定義する必要はありません。</p>
 <p><code>seaweed</code> の内容は次のとおりです。</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seaweed</span>
 <span class="co">#&gt; # A tibble: 9 × 3</span>
 <span class="co">#&gt;    東部  中部  西部</span>
@@ -173,7 +175,7 @@ Figure 1.2: 瀬戸内海藻場データ.xlsx の FY2018 シートに入力され
 <span class="co">#&gt; 8    NA     3     0</span>
 <span class="co">#&gt; 9    NA    12    NA</span></code></pre></div>
 <p><code>seagrass</code> の内容は次のとおりです。</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seagrass</span>
 <span class="co">#&gt; # A tibble: 9 × 3</span>
 <span class="co">#&gt;    東部  中部  西部</span>
@@ -206,8 +208,8 @@ Rの場合、存在しないデータ (欠損値) は <code>NA</code> になり�
 
       <div class="book-extra">
         <ul class="list-unstyled">
-<li><a id="book-source" href="https://github.com/rstudio/bookdown-demo/blob/master/01-data-input.Rmd">View source <i class="fab fa-github"></i></a></li>
-          <li><a id="book-edit" href="https://github.com/rstudio/bookdown-demo/edit/master/01-data-input.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+<li><a id="book-source" href="https://github.com/gnishihara/Lab-Manual/blob/master/01-data-input.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/gnishihara/Lab-Manual/edit/master/01-data-input.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
         </ul>
 </div>
     </nav>
@@ -219,7 +221,7 @@ Rの場合、存在しないデータ (欠損値) は <code>NA</code> になり�
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室. It was last built on 2022-04-26.</p>
+    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室. It was last built on 2022-04-28.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

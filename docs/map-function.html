@@ -6,14 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 5 map 関数ってすごい | データ解析マニュアル</title>
 <meta name="author" content="水圏植物生態学研究室">
-<meta name="description" content="5.1 必要なパッケージ library(tidyverse) library(readxl) library(broom)  5.2 データの準備 Rの iris9 データで解析を紹介します。 iris は data.frame として定義されているので、as_tibble() を使って tibble のクラスを追加します。 iris = iris |&gt; as_tibble() iris...">
+<meta name="description" content="5.1 必要なパッケージ library(tidyverse) library(readxl) library(broom)  5.2 データの準備 Rの iris7 データで解析を紹介します。 iris は data.frame として定義されているので、as_tibble() を使って tibble のクラスを追加します。 iris = iris |&gt; as_tibble() iris...">
 <meta name="generator" content="bookdown 0.24 with bs4_book()">
 <meta property="og:title" content="Chapter 5 map 関数ってすごい | データ解析マニュアル">
 <meta property="og:type" content="book">
-<meta property="og:description" content="5.1 必要なパッケージ library(tidyverse) library(readxl) library(broom)  5.2 データの準備 Rの iris9 データで解析を紹介します。 iris は data.frame として定義されているので、as_tibble() を使って tibble のクラスを追加します。 iris = iris |&gt; as_tibble() iris...">
+<meta property="og:description" content="5.1 必要なパッケージ library(tidyverse) library(readxl) library(broom)  5.2 データの準備 Rの iris7 データで解析を紹介します。 iris は data.frame として定義されているので、as_tibble() を使って tibble のクラスを追加します。 iris = iris |&gt; as_tibble() iris...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 5 map 関数ってすごい | データ解析マニュアル">
-<meta name="twitter:description" content="5.1 必要なパッケージ library(tidyverse) library(readxl) library(broom)  5.2 データの準備 Rの iris9 データで解析を紹介します。 iris は data.frame として定義されているので、as_tibble() を使って tibble のクラスを追加します。 iris = iris |&gt; as_tibble() iris...">
+<meta name="twitter:description" content="5.1 必要なパッケージ library(tidyverse) library(readxl) library(broom)  5.2 データの準備 Rの iris7 データで解析を紹介します。 iris は data.frame として定義されているので、as_tibble() を使って tibble のクラスを追加します。 iris = iris |&gt; as_tibble() iris...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.12/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -50,12 +50,14 @@
 <li><a class="" href="anova.html"><span class="header-section-number">7</span> 分散分析</a></li>
 <li><a class="" href="glm.html"><span class="header-section-number">8</span> 一般化線形モデル</a></li>
 <li><a class="" href="gam.html"><span class="header-section-number">9</span> 一般化加法モデル</a></li>
-<li><a class="" href="ggplot.html"><span class="header-section-number">10</span> ggplot</a></li>
-<li><a class="" href="maps.html"><span class="header-section-number">11</span> 地図の作り方</a></li>
+<li><a class="" href="model-selection.html"><span class="header-section-number">10</span> モデル選択</a></li>
+<li><a class="" href="ggplot.html"><span class="header-section-number">11</span> ggplot</a></li>
+<li><a class="" href="maps.html"><span class="header-section-number">12</span> 地図の作り方</a></li>
+<li><a class="" href="wavelet.html"><span class="header-section-number">13</span> Wavlet 解析</a></li>
 </ul>
 
         <div class="book-extra">
-          <p><a id="book-repo" href="https://github.com/rstudio/bookdown-demo">View book source <i class="fab fa-github"></i></a></p>
+          <p><a id="book-repo" href="https://github.com/gnishihara/Lab-Manual">View book source <i class="fab fa-github"></i></a></p>
         </div>
       </nav>
 </div>
@@ -63,11 +65,11 @@
 <h1>
 <span class="header-section-number">5</span> map 関数ってすごい<a class="anchor" aria-label="anchor" href="#map-function"><i class="fas fa-link"></i></a>
 </h1>
-<div id="必要なパッケージ-3" class="section level2" number="5.1">
+<div id="必要なパッケージ-4" class="section level2" number="5.1">
 <h2>
-<span class="header-section-number">5.1</span> 必要なパッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-3"><i class="fas fa-link"></i></a>
+<span class="header-section-number">5.1</span> 必要なパッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-4"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://broom.tidymodels.org/">broom</a></span><span class="op">)</span></code></pre></div>
@@ -76,9 +78,9 @@
 <h2>
 <span class="header-section-number">5.2</span> データの準備<a class="anchor" aria-label="anchor" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%BA%96%E5%82%99-1"><i class="fas fa-link"></i></a>
 </h2>
-<p>Rの <code>iris</code><a href="maps.html#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a> データで解析を紹介します。
+<p>Rの <code>iris</code><a href="wavelet.html#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a> データで解析を紹介します。
 <code>iris</code> は <code>data.frame</code> として定義されているので、<code><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble()</a></code> を使って <code>tibble</code> のクラスを追加します。</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris</span> <span class="op">=</span> <span class="va">iris</span> |&gt; <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">iris</span>
 <span class="co">#&gt; # A tibble: 150 × 5</span>
@@ -122,58 +124,57 @@
 <code>.f</code> は list/vector のそれぞれの要素に適応したい関数です。</li>
 </ul>
 <p>例えば、つぎの list を定義します。</p>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">z</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>a <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>,
          b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>,
          c <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span>
 <span class="va">z</span>
 <span class="co">#&gt; $a</span>
-<span class="co">#&gt;  [1]  0.68376422 -0.94980187 -1.17529152  1.97964189</span>
-<span class="co">#&gt;  [5]  0.20077142 -0.36419853  1.20120953 -0.09045133</span>
-<span class="co">#&gt;  [9] -0.10502512  1.35499167</span>
+<span class="co">#&gt;  [1] -0.31567147  0.30997651 -0.03015133 -0.79015669</span>
+<span class="co">#&gt;  [5] -1.39674297 -0.04564661  0.23929660  0.30392626</span>
+<span class="co">#&gt;  [9] -0.87202375  0.80691731</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $b</span>
-<span class="co">#&gt;  [1] -0.24661541 -1.04568435  2.03721930  0.93663369</span>
-<span class="co">#&gt;  [5] -1.36365152 -0.40764046 -1.09065912 -0.08411995</span>
-<span class="co">#&gt;  [9] -0.32229773  1.54598291</span>
+<span class="co">#&gt;  [1] -0.2149305  0.7508223 -0.9248557 -0.2417357 -1.1590574</span>
+<span class="co">#&gt;  [6]  1.1819923  0.5823451 -1.0557570  0.5167583 -0.4846535</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $c</span>
-<span class="co">#&gt; [1] -0.8991996  0.1591441 -2.8021409 -1.0197964 -1.9705745</span></code></pre></div>
+<span class="co">#&gt; [1]  1.5609375  1.0281312  1.1105081 -1.6117488 -0.6398658</span></code></pre></div>
 <p>それぞれの要素の平均値を出したいなら、次のように <code><a href="https://purrr.tidyverse.org/reference/map.html">map()</a></code> を使います。</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">z</span>, <span class="va">mean</span><span class="op">)</span>
 <span class="co">#&gt; $a</span>
-<span class="co">#&gt; [1] 0.273561</span>
+<span class="co">#&gt; [1] -0.1790276</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $b</span>
-<span class="co">#&gt; [1] -0.004083264</span>
+<span class="co">#&gt; [1] -0.1049072</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $c</span>
-<span class="co">#&gt; [1] -1.306513</span></code></pre></div>
+<span class="co">#&gt; [1] 0.2895924</span></code></pre></div>
 <p><code><a href="https://purrr.tidyverse.org/reference/map.html">map()</a></code>は必ず list として結果を返します。
 ベース　(base) R<code><a href="https://rdrr.io/r/base/lapply.html">lapply()</a></code> と同じですね。</p>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">z</span>, <span class="va">mean</span><span class="op">)</span>
 <span class="co">#&gt; $a</span>
-<span class="co">#&gt; [1] 0.273561</span>
+<span class="co">#&gt; [1] -0.1790276</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $b</span>
-<span class="co">#&gt; [1] -0.004083264</span>
+<span class="co">#&gt; [1] -0.1049072</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $c</span>
-<span class="co">#&gt; [1] -1.306513</span></code></pre></div>
+<span class="co">#&gt; [1] 0.2895924</span></code></pre></div>
 <p>ベースRの <code><a href="https://rdrr.io/r/base/lapply.html">sapply()</a></code> のようにベクトルとして返してほしいなら、<code><a href="https://purrr.tidyverse.org/reference/map.html">map_dbl()</a></code> を使います。</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_dbl</a></span><span class="op">(</span><span class="va">z</span>, <span class="va">mean</span><span class="op">)</span>
-<span class="co">#&gt;            a            b            c </span>
-<span class="co">#&gt;  0.273561038 -0.004083264 -1.306513468</span></code></pre></div>
+<span class="co">#&gt;          a          b          c </span>
+<span class="co">#&gt; -0.1790276 -0.1049072  0.2895924</span></code></pre></div>
 <p>ベースRの <code><a href="https://rdrr.io/r/base/lapply.html">sapply()</a></code> の結果と同じです。</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">z</span>, <span class="va">mean</span><span class="op">)</span>
-<span class="co">#&gt;            a            b            c </span>
-<span class="co">#&gt;  0.273561038 -0.004083264 -1.306513468</span></code></pre></div>
+<span class="co">#&gt;          a          b          c </span>
+<span class="co">#&gt; -0.1790276 -0.1049072  0.2895924</span></code></pre></div>
 <p>ちなみに、for-loop でもできますが、研究室では使用を禁じます。</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># 良い子はループ使わない。</span>
 <span class="va">zout</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">vector</a></span><span class="op">(</span><span class="st">"numeric"</span>, <span class="fl">3</span><span class="op">)</span>
 <span class="va">n</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span>
@@ -181,7 +182,7 @@
   <span class="va">zout</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">z</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
 <span class="op">}</span>
 <span class="va">zout</span>
-<span class="co">#&gt; [1]  0.273561038 -0.004083264 -1.306513468</span></code></pre></div>
+<span class="co">#&gt; [1] -0.1790276 -0.1049072  0.2895924</span></code></pre></div>
 </div>
 <div id="map-の魅力" class="section level2" number="5.4">
 <h2>
@@ -194,7 +195,7 @@
 <code>iris</code> のデータを <code>tibble</code> に変換し、<code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> に渡して縦長に変えます。
 <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> には <code>Sepal</code> と <code>Petal</code> を含む列を <code>cols</code> 引数に渡すようにしています。
 変換したあと、<code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> が作った <code>name</code> の列は <code><a href="https://tidyr.tidyverse.org/reference/separate.html">separate()</a></code> によって <code>part</code> と <code>measurement</code> に分けます。</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris_long</span> <span class="op">=</span> <span class="va">iris</span> |&gt; 
   <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"Sepal|Petal"</span><span class="op">)</span><span class="op">)</span> |&gt; 
@@ -207,7 +208,7 @@
 t 検定の結果を <code>t12</code>、<code>t13</code>、<code>t23</code>の入れます。
 こんど、それらを <code>broom</code> パッケージの <code><a href="https://generics.r-lib.org/reference/tidy.html">tidy()</a></code> に渡し、<code>tibble</code>かします。
 <code><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows()</a></code> を使って、縦に結合し、結合した要素の名前を <code>comparison</code> にします。</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">runmultttest</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">{</span>
   <span class="co">#t12: setosa - versicolor</span>
   <span class="co">#t13: setosa - virginica</span>
@@ -222,7 +223,7 @@ t 検定の結果を <code>t12</code>、<code>t13</code>、<code>t23</code>の�
 <span class="op">}</span></code></pre></div>
 <p>上のコードチャンクで定義した関数は <code>iris_long</code> に適応しますが、
 <code>measurement</code> ごとに <code>data</code> の要素ごとに実施されます。</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris_long</span> <span class="op">=</span> <span class="va">iris_long</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">measurement</span><span class="op">)</span> 
 <span class="va">iris_long</span>
 <span class="co">#&gt; # A tibble: 2 × 2</span>
@@ -231,7 +232,7 @@ t 検定の結果を <code>t12</code>、<code>t13</code>、<code>t23</code>の�
 <span class="co">#&gt; 1 Length               [300 × 3]</span>
 <span class="co">#&gt; 2 Width                [300 × 3]</span></code></pre></div>
 <p>つまり、<code>data</code> は <code><a href="https://purrr.tidyverse.org/reference/map.html">map()</a></code> を通して、 <code>runmultttest()</code> が適応されます。</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris_long</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>tout <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">runmultttest</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">tout</span><span class="op">)</span>
@@ -258,7 +259,7 @@ t 検定の結果を <code>t12</code>、<code>t13</code>、<code>t23</code>の�
 <p><code>\(df) {...}</code> は無名関数と呼びます。
 <code>\(df) {...}</code> は <code>function(df) {...}</code> の諸略です。
 このとき、関数は <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise()</a></code> を通して、<code><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble()</a></code>を返すので、エラーが発生します。</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris_long</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>out <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_dbl</a></span><span class="op">(</span><span class="va">data</span>, \<span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">{</span>
     <span class="va">df</span> |&gt; 
@@ -271,7 +272,7 @@ t 検定の結果を <code>t12</code>、<code>t13</code>、<code>t23</code>の�
 <span class="co">#&gt; ! Result 1 must be a single double, not a vector of class `grouped_df/tbl_df/tbl/data.frame` and of length 3</span></code></pre></div>
 <p>次のコードは <code><a href="https://dplyr.tidyverse.org/reference/pull.html">pull()</a></code> を使って、<code>mean</code> だけ返すようにしたが、
 N &gt; 1 のベクトルなので、エラーが発生した。</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris_long</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>out <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_dbl</a></span><span class="op">(</span><span class="va">data</span>, \<span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">{</span>
     <span class="va">df</span> |&gt; 
@@ -286,7 +287,7 @@ N &gt; 1 のベクトルなので、エラーが発生した。</p>
 <span class="co">#&gt; ℹ It must be numeric or character.</span></code></pre></div>
 <p><code>Species</code>, <code>measurement</code>, <code>part</code> ごとに <code><a href="https://purrr.tidyverse.org/reference/map.html">map_dbl()</a></code> で平均を求めたいので、
 一旦 <code>iris_long</code> の <code>data</code> のネスティングを作り直します。</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris_long</span> |&gt; 
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">Species</span>, <span class="va">measurement</span>, <span class="va">part</span><span class="op">)</span> |&gt; 
@@ -310,7 +311,7 @@ N &gt; 1 のベクトルなので、エラーが発生した。</p>
 <span class="co">#&gt; 11 virginica  Width       Petal           [50 × 1] 2.03 </span>
 <span class="co">#&gt; 12 virginica  Width       Sepal           [50 × 1] 2.97</span></code></pre></div>
 <p>エラーがなくなりましたが、グループごとの平均値をもとめたいなら、<code><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise()</a></code> のほうがいいですね。</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris_long</span> |&gt; 
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Species</span>, <span class="va">measurement</span>, <span class="va">part</span><span class="op">)</span> |&gt; 
@@ -333,7 +334,7 @@ N &gt; 1 のベクトルなので、エラーが発生した。</p>
 <span class="co">#&gt; 12 virginica  Width       Sepal 2.97</span></code></pre></div>
 <p><code><a href="https://purrr.tidyverse.org/reference/map2.html">map2()</a></code> を使えば、 2変数渡せます。
 ここでは <code><a href="https://purrr.tidyverse.org/reference/map2.html">map2_dbl()</a></code> を使っています。</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>LW <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html">map2_dbl</a></span><span class="op">(</span><span class="va">Petal.Length</span>, <span class="va">Petal.Width</span>, \<span class="op">(</span><span class="va">l</span>,<span class="va">w</span><span class="op">)</span> <span class="op">{</span>
     <span class="op">(</span><span class="va">l</span> <span class="op">*</span> <span class="va">w</span><span class="op">)</span>
@@ -353,7 +354,7 @@ N &gt; 1 のベクトルなので、エラーが発生した。</p>
 <span class="co">#&gt; 10          4.9         3.1          1.5         0.1 setosa </span>
 <span class="co">#&gt; # … with 140 more rows, and 1 more variable: LW &lt;dbl&gt;</span></code></pre></div>
 <p><code><a href="https://purrr.tidyverse.org/reference/map2.html">pmap()</a></code> の場合、渡す変数は list にまとめてから渡しましょう。</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>out <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html">pmap_dbl</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">Petal.Length</span>, <span class="va">Petal.Width</span>, 
                              <span class="va">Sepal.Length</span>, <span class="va">Sepal.Width</span><span class="op">)</span>, \<span class="op">(</span><span class="va">pl</span>,<span class="va">pw</span>, <span class="va">sl</span>, <span class="va">sw</span><span class="op">)</span> <span class="op">{</span>
@@ -383,7 +384,7 @@ N &gt; 1 のベクトルなので、エラーが発生した。</p>
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#map-function"><span class="header-section-number">5</span> map 関数ってすごい</a></li>
-<li><a class="nav-link" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-3"><span class="header-section-number">5.1</span> 必要なパッケージ</a></li>
+<li><a class="nav-link" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-4"><span class="header-section-number">5.1</span> 必要なパッケージ</a></li>
 <li><a class="nav-link" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%BA%96%E5%82%99-1"><span class="header-section-number">5.2</span> データの準備</a></li>
 <li><a class="nav-link" href="#%E8%AA%AC%E6%98%8E"><span class="header-section-number">5.3</span> 説明</a></li>
 <li><a class="nav-link" href="#map-%E3%81%AE%E9%AD%85%E5%8A%9B"><span class="header-section-number">5.4</span> map() の魅力</a></li>
@@ -392,8 +393,8 @@ N &gt; 1 のベクトルなので、エラーが発生した。</p>
 
       <div class="book-extra">
         <ul class="list-unstyled">
-<li><a id="book-source" href="https://github.com/rstudio/bookdown-demo/blob/master/08-data-map.Rmd">View source <i class="fab fa-github"></i></a></li>
-          <li><a id="book-edit" href="https://github.com/rstudio/bookdown-demo/edit/master/08-data-map.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+<li><a id="book-source" href="https://github.com/gnishihara/Lab-Manual/blob/master/08-data-map.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/gnishihara/Lab-Manual/edit/master/08-data-map.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
         </ul>
 </div>
     </nav>
@@ -405,7 +406,7 @@ N &gt; 1 のベクトルなので、エラーが発生した。</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室. It was last built on 2022-04-26.</p>
+    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室. It was last built on 2022-04-28.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

@@ -6,14 +6,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 6 t 検定 | データ解析マニュアル</title>
 <meta name="author" content="水圏植物生態学研究室">
-<meta name="description" content="6.1 必要なパッケージ library(tidyverse) library(readxl) library(broom)  6.2 データの準備 Rの iris10 データで解析を紹介します。 iris は data.frame として定義されているので、as_tibble() を使って tibble のクラスを追加します。 iris = iris |&gt; as_tibble()...">
+<meta name="description" content="6.1 必要なパッケージ library(tidyverse) library(readxl) library(broom)  6.2 データの準備 Rの iris8 データで解析を紹介します。 iris は data.frame として定義されているので、as_tibble() を使って tibble のクラスを追加します。 iris = iris |&gt; as_tibble() iris...">
 <meta name="generator" content="bookdown 0.24 with bs4_book()">
 <meta property="og:title" content="Chapter 6 t 検定 | データ解析マニュアル">
 <meta property="og:type" content="book">
-<meta property="og:description" content="6.1 必要なパッケージ library(tidyverse) library(readxl) library(broom)  6.2 データの準備 Rの iris10 データで解析を紹介します。 iris は data.frame として定義されているので、as_tibble() を使って tibble のクラスを追加します。 iris = iris |&gt; as_tibble()...">
+<meta property="og:description" content="6.1 必要なパッケージ library(tidyverse) library(readxl) library(broom)  6.2 データの準備 Rの iris8 データで解析を紹介します。 iris は data.frame として定義されているので、as_tibble() を使って tibble のクラスを追加します。 iris = iris |&gt; as_tibble() iris...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 6 t 検定 | データ解析マニュアル">
-<meta name="twitter:description" content="6.1 必要なパッケージ library(tidyverse) library(readxl) library(broom)  6.2 データの準備 Rの iris10 データで解析を紹介します。 iris は data.frame として定義されているので、as_tibble() を使って tibble のクラスを追加します。 iris = iris |&gt; as_tibble()...">
+<meta name="twitter:description" content="6.1 必要なパッケージ library(tidyverse) library(readxl) library(broom)  6.2 データの準備 Rの iris8 データで解析を紹介します。 iris は data.frame として定義されているので、as_tibble() を使って tibble のクラスを追加します。 iris = iris |&gt; as_tibble() iris...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.12/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -50,12 +50,14 @@
 <li><a class="" href="anova.html"><span class="header-section-number">7</span> 分散分析</a></li>
 <li><a class="" href="glm.html"><span class="header-section-number">8</span> 一般化線形モデル</a></li>
 <li><a class="" href="gam.html"><span class="header-section-number">9</span> 一般化加法モデル</a></li>
-<li><a class="" href="ggplot.html"><span class="header-section-number">10</span> ggplot</a></li>
-<li><a class="" href="maps.html"><span class="header-section-number">11</span> 地図の作り方</a></li>
+<li><a class="" href="model-selection.html"><span class="header-section-number">10</span> モデル選択</a></li>
+<li><a class="" href="ggplot.html"><span class="header-section-number">11</span> ggplot</a></li>
+<li><a class="" href="maps.html"><span class="header-section-number">12</span> 地図の作り方</a></li>
+<li><a class="" href="wavelet.html"><span class="header-section-number">13</span> Wavlet 解析</a></li>
 </ul>
 
         <div class="book-extra">
-          <p><a id="book-repo" href="https://github.com/rstudio/bookdown-demo">View book source <i class="fab fa-github"></i></a></p>
+          <p><a id="book-repo" href="https://github.com/gnishihara/Lab-Manual">View book source <i class="fab fa-github"></i></a></p>
         </div>
       </nav>
 </div>
@@ -63,11 +65,11 @@
 <h1>
 <span class="header-section-number">6</span> t 検定<a class="anchor" aria-label="anchor" href="#t-test"><i class="fas fa-link"></i></a>
 </h1>
-<div id="必要なパッケージ-4" class="section level2" number="6.1">
+<div id="必要なパッケージ-5" class="section level2" number="6.1">
 <h2>
-<span class="header-section-number">6.1</span> 必要なパッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-4"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.1</span> 必要なパッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-5"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://broom.tidymodels.org/">broom</a></span><span class="op">)</span></code></pre></div>
@@ -76,9 +78,9 @@
 <h2>
 <span class="header-section-number">6.2</span> データの準備<a class="anchor" aria-label="anchor" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%BA%96%E5%82%99-2"><i class="fas fa-link"></i></a>
 </h2>
-<p>Rの <code>iris</code><a href="maps.html#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a> データで解析を紹介します。
+<p>Rの <code>iris</code><a href="wavelet.html#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a> データで解析を紹介します。
 <code>iris</code> は <code>data.frame</code> として定義されているので、<code><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble()</a></code> を使って <code>tibble</code> のクラスを追加します。</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris</span> <span class="op">=</span> <span class="va">iris</span> |&gt; <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">iris</span>
 <span class="co">#&gt; # A tibble: 150 × 5</span>
@@ -97,7 +99,7 @@
 <span class="co">#&gt; # … with 140 more rows</span></code></pre></div>
 <p><code>iris</code>には4つの数値データと1つの文字列データが入っています。</p>
 <p>このデータを可視化してから、解析します。</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"Sepal|Petal"</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html">separate</a></span><span class="op">(</span><span class="va">name</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"part"</span>, <span class="st">"measurement"</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
@@ -115,11 +117,11 @@
 <p>種を無視して、アヤメの Petal （花びら）と Sepal (萼片)の長さを比較しています。</p>
 <p>花びらと萼片の平均値、標準偏差、標準誤差を先にもとめます。
 専用の標準誤差の関数はないので、ここで定義します。</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">se</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">irisout</span> <span class="op">=</span> <span class="va">iris</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"Length"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="va">mean</span>, sd <span class="op">=</span> <span class="va">sd</span>, se <span class="op">=</span> <span class="va">se</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="va">irisout</span>
@@ -133,7 +135,7 @@
 <li>H<sub>0</sub>: 花びらと萼片の長さに違いがない</li>
 <li>H<sub>A</sub>: 花びらと萼片の長さに違いがある</li>
 </ul>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Petal.Length</span>, <span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Length</span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  Welch Two Sample t-test</span>
@@ -150,7 +152,7 @@
 関数の出力には、使用したデータ、t値、 自由度、 P値、平均値の差の95%信頼区間、それぞれの平均値の推定量が返ってきました。
 結論から説明すると、P &lt; 0.0001 なので、有意水準が 0.05 のとき、帰無仮説は棄却できます。</p>
 <p><code><a href="https://rdrr.io/r/stats/t.test.html">t.test()</a></code> の結果をオブジェクトに書き込んだら、t値 (t value)、p値 (p value)、自由度 (degrees of freedom) を抽出できます。</p>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">dset_test</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">iris</span><span class="op">$</span><span class="va">Petal.Length</span>, <span class="va">iris</span><span class="op">$</span><span class="va">Sepal.Length</span><span class="op">)</span>
 <span class="va">dset_test</span><span class="op">$</span><span class="va">statistic</span>  <span class="co"># t value</span>
 <span class="co">#&gt;         t </span>
@@ -178,7 +180,7 @@ A Welch’S t-test revealed that there was statistical significance in the diffe
 </h2>
 <p>先程の説明は横長のでデータ解析でしたが、<code>tidy</code> データ（縦長）の場合、もっと簡易に検定のコードをくめます。
 まず、データを縦長に変換します。</p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris_long</span> <span class="op">=</span> <span class="va">iris</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"Sepal|Petal"</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html">separate</a></span><span class="op">(</span><span class="va">name</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"part"</span>, <span class="st">"measurement"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">iris_long</span>
@@ -198,7 +200,7 @@ A Welch’S t-test revealed that there was statistical significance in the diffe
 <span class="co">#&gt; # … with 590 more rows</span></code></pre></div>
 <p>記述統計ととり方も変わります。
 グループ化してから平均値、標準偏差、標準誤差を求めます。</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">irisout</span> <span class="op">=</span> <span class="va">iris_long</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">part</span>, <span class="va">measurement</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="va">value</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="va">mean</span>, sd <span class="op">=</span> <span class="va">sd</span>, se <span class="op">=</span> <span class="va">se</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
@@ -216,7 +218,7 @@ A Welch’S t-test revealed that there was statistical significance in the diffe
 <li>H<sub>A</sub>: 花びらと萼片の幅に違いがある</li>
 </ul>
 <p>長さと幅のデータが混ざっているので、幅のデータのフィルターを掛けてから解析します。</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris_width</span> <span class="op">=</span> <span class="va">iris_long</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">measurement</span>, <span class="st">"Width"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">iris_width</span>
 <span class="co">#&gt; # A tibble: 300 × 4</span>
@@ -233,7 +235,7 @@ A Welch’S t-test revealed that there was statistical significance in the diffe
 <span class="co">#&gt;  9 setosa  Sepal Width         3.6</span>
 <span class="co">#&gt; 10 setosa  Petal Width         0.2</span>
 <span class="co">#&gt; # … with 290 more rows</span></code></pre></div>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">value</span> <span class="op">~</span> <span class="va">part</span>, data <span class="op">=</span> <span class="va">iris_width</span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  Welch Two Sample t-test</span>
@@ -254,11 +256,11 @@ A Welch’S t-test revealed that there was statistical significance in the diffe
 </h2>
 <p>上に紹介した解析は長さと幅に分けてから実施したが、<code>tidyverse</code> の機能を上手につかば最低限のコードでできます。</p>
 <p><code><a href="https://purrr.tidyverse.org/reference/map.html">map()</a></code>関数の詳細は専用の章に説明しています (<a href="map-function.html#map-function">5</a>)。</p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris_long</span> <span class="op">=</span> <span class="va">iris</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"Sepal|Petal"</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html">separate</a></span><span class="op">(</span><span class="va">name</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"part"</span>, <span class="st">"measurement"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><code><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest()</a></code> を使って、データのグループ化とネスティングをします。</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris_long</span> <span class="op">=</span> <span class="va">iris_long</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">measurement</span><span class="op">)</span>
 <span class="va">iris_long</span>
 <span class="co">#&gt; # A tibble: 2 × 2</span>
@@ -268,7 +270,7 @@ A Welch’S t-test revealed that there was statistical significance in the diffe
 <span class="co">#&gt; 2 Width                [300 × 3]</span></code></pre></div>
 <p>これで、<code>iris_long</code> の <code>tibble</code> は2つの 300 x 3 <code>tibble</code>に分離しました。
 解析は <code><a href="https://purrr.tidyverse.org/reference/map.html">map()</a></code> を通して実施します。</p>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">runttest</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/stats/t.test.html">t.test</a></span><span class="op">(</span><span class="va">value</span> <span class="op">~</span> <span class="va">part</span>, data <span class="op">=</span> <span class="va">df</span><span class="op">)</span>
 <span class="op">}</span>
@@ -281,7 +283,7 @@ A Welch’S t-test revealed that there was statistical significance in the diffe
 <span class="co">#&gt; 1 Length               [300 × 3] &lt;htest&gt;</span>
 <span class="co">#&gt; 2 Width                [300 × 3] &lt;htest&gt;</span></code></pre></div>
 <p>結果は <code>tout</code> に入っています。</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://broom.tidymodels.org/">broom</a></span><span class="op">)</span>
 
 <span class="va">iris_long</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>tout <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">tout</span>, <span class="va">tidy</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">tout</span><span class="op">)</span>
@@ -303,7 +305,7 @@ A Welch’S t-test revealed that there was statistical significance in the diffe
 <li>H<sub>0</sub>: 種間の花びらの長さに違いがないまたは、萼片の幅に違いがない</li>
 <li>H<sub>A</sub>: 種間の花びらの長さに違いがあるまたは、萼片の幅に違いがある</li>
 </ul>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">iris_long</span> <span class="op">=</span> <span class="va">iris</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"Sepal|Petal"</span><span class="op">)</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html">separate</a></span><span class="op">(</span><span class="va">name</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"part"</span>, <span class="st">"measurement"</span><span class="op">)</span><span class="op">)</span>
 
@@ -370,7 +372,7 @@ A Welch’S t-test revealed that there was statistical significance in the diffe
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#t-test"><span class="header-section-number">6</span> t 検定</a></li>
-<li><a class="nav-link" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-4"><span class="header-section-number">6.1</span> 必要なパッケージ</a></li>
+<li><a class="nav-link" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-5"><span class="header-section-number">6.1</span> 必要なパッケージ</a></li>
 <li><a class="nav-link" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%BA%96%E5%82%99-2"><span class="header-section-number">6.2</span> データの準備</a></li>
 <li><a class="nav-link" href="#petal-%E3%81%A8-sepal-%E3%81%AE%E9%95%B7%E3%81%95%E3%81%AE%E6%AF%94%E8%BC%83"><span class="header-section-number">6.3</span> Petal と Sepal の長さの比較</a></li>
 <li><a class="nav-link" href="#petal-%E3%81%A8-sepal-%E3%81%AE%E5%B9%85%E3%81%AE%E6%AF%94%E8%BC%83"><span class="header-section-number">6.4</span> Petal と Sepal の幅の比較</a></li>
@@ -380,8 +382,8 @@ A Welch’S t-test revealed that there was statistical significance in the diffe
 
       <div class="book-extra">
         <ul class="list-unstyled">
-<li><a id="book-source" href="https://github.com/rstudio/bookdown-demo/blob/master/20-analysis-ttest.Rmd">View source <i class="fab fa-github"></i></a></li>
-          <li><a id="book-edit" href="https://github.com/rstudio/bookdown-demo/edit/master/20-analysis-ttest.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+<li><a id="book-source" href="https://github.com/gnishihara/Lab-Manual/blob/master/20-analysis-ttest.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/gnishihara/Lab-Manual/edit/master/20-analysis-ttest.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
         </ul>
 </div>
     </nav>
@@ -393,7 +395,7 @@ A Welch’S t-test revealed that there was statistical significance in the diffe
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室. It was last built on 2022-04-26.</p>
+    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室. It was last built on 2022-04-28.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

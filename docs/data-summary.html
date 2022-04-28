@@ -50,12 +50,14 @@
 <li><a class="" href="anova.html"><span class="header-section-number">7</span> 分散分析</a></li>
 <li><a class="" href="glm.html"><span class="header-section-number">8</span> 一般化線形モデル</a></li>
 <li><a class="" href="gam.html"><span class="header-section-number">9</span> 一般化加法モデル</a></li>
-<li><a class="" href="ggplot.html"><span class="header-section-number">10</span> ggplot</a></li>
-<li><a class="" href="maps.html"><span class="header-section-number">11</span> 地図の作り方</a></li>
+<li><a class="" href="model-selection.html"><span class="header-section-number">10</span> モデル選択</a></li>
+<li><a class="" href="ggplot.html"><span class="header-section-number">11</span> ggplot</a></li>
+<li><a class="" href="maps.html"><span class="header-section-number">12</span> 地図の作り方</a></li>
+<li><a class="" href="wavelet.html"><span class="header-section-number">13</span> Wavlet 解析</a></li>
 </ul>
 
         <div class="book-extra">
-          <p><a id="book-repo" href="https://github.com/rstudio/bookdown-demo">View book source <i class="fab fa-github"></i></a></p>
+          <p><a id="book-repo" href="https://github.com/gnishihara/Lab-Manual">View book source <i class="fab fa-github"></i></a></p>
         </div>
       </nav>
 </div>
@@ -63,11 +65,11 @@
 <h1>
 <span class="header-section-number">4</span> データの集計<a class="anchor" aria-label="anchor" href="#data-summary"><i class="fas fa-link"></i></a>
 </h1>
-<div id="必要なパッケージ-2" class="section level2" number="4.1">
+<div id="必要なパッケージ-3" class="section level2" number="4.1">
 <h2>
-<span class="header-section-number">4.1</span> 必要なパッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-2"><i class="fas fa-link"></i></a>
+<span class="header-section-number">4.1</span> 必要なパッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-3"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span></code></pre></div>
 </div>
@@ -76,7 +78,7 @@
 <span class="header-section-number">4.2</span> データの準備<a class="anchor" aria-label="anchor" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%BA%96%E5%82%99"><i class="fas fa-link"></i></a>
 </h2>
 <p>データの読み込みは章<a href="data-input.html#data-input">1</a> を参考にしてください。</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rootdatafolder</span> <span class="op">=</span> <span class="fu">rprojroot</span><span class="fu">::</span><span class="fu"><a href="https://rprojroot.r-lib.org/reference/find_root_file.html">find_rstudio_root_file</a></span><span class="op">(</span><span class="st">"Data/"</span><span class="op">)</span>
 <span class="va">filename</span> <span class="op">=</span> <span class="st">'瀬戸内海藻場データ.xlsx'</span>
 <span class="va">path</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="va">rootdatafolder</span>, <span class="va">filename</span><span class="op">)</span>
@@ -93,7 +95,7 @@
 <span class="va">RNG</span> <span class="op">=</span> <span class="st">"E6:G15"</span>   <span class="co"># 海草データのセル範囲</span>
 <span class="va">seagrass</span> <span class="op">=</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="va">path</span>, sheet <span class="op">=</span> <span class="va">SHEET</span>, range <span class="op">=</span> <span class="va">RNG</span><span class="op">)</span></code></pre></div>
 <p>データの処理は章<a href="data-wrangling.html#data-wrangling">2</a> を参考にしてください。</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seaweed</span> <span class="op">=</span> <span class="va">seaweed</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html">everything</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="va">seagrass</span> <span class="op">=</span> <span class="va">seagrass</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html">everything</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
@@ -120,7 +122,7 @@
 <li>Measures of dispersion: ばらつきの尺度（四分位数間範囲、平均絶対偏差、中央絶対偏差、範囲、標準偏差、分散）</li>
 </ol>
 <p>まず、サイコロの関数を定義してから、位置のの尺度とばらつきの尺度を求めましょう。</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># n: サイコロの数</span>
 <span class="co"># s: サイコロの面の数</span>
 <span class="va">roll_dice</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span> <span class="op">=</span> <span class="fl">1</span>, <span class="va">s</span> <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">{</span>
@@ -128,24 +130,24 @@
   <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">face</span>, size <span class="op">=</span> <span class="va">n</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 <p>2つのサイコロを10回投げます。</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">2022</span><span class="op">)</span> <span class="co">#疑似乱数を固定することで、再現性のあるシミュレーションができる。</span>
 <span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fu">roll_dice</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">2</span>, s <span class="op">=</span> <span class="fl">6</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>サイコロの結果は次のとおりです。</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span>
 <span class="co">#&gt;  [1]  7  9 10 10  4 11  8  6  4  4</span></code></pre></div>
 <p><strong>平均値, mean, average</strong></p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt; [1] 7.3</span></code></pre></div>
 <p><strong>中央値, メディアン, median</strong></p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt; [1] 7.5</span></code></pre></div>
 <p><strong>最頻値, モード, mode</strong></p>
 <p>再頻値を求める。専用の関数がないので、ここで定義して使用します。</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mode</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">u</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
   <span class="va">matched</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tabulate.html">tabulate</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/match.html">match</a></span><span class="op">(</span><span class="va">x</span>,<span class="va">u</span><span class="op">)</span><span class="op">)</span>
@@ -158,24 +160,24 @@
 <p><span class="math display">\[
 Var(x) = \frac{1}{N-1}\sum_{n = 1}^N(x_n - \overline{x})^2
 \]</span></p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt; [1] 7.344444</span></code></pre></div>
 <p><strong>標準偏差, standard deviation</strong></p>
 <p>標準偏差は分散の平方根です。</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt; [1] 2.710064</span></code></pre></div>
 <p><strong>四分位数間範囲, inter-quantile range, IQR</strong></p>
 <p>四分位数間範囲は第2四分位数と第3四分位数の距離です。
 箱ひげ図の箱の高さが四分位数間範囲です。</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/diff.html">diff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.75</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;  75% </span>
 <span class="co">#&gt; 5.25</span></code></pre></div>
 <p><strong>範囲, range</strong></p>
 <p>範囲はデータを最大値と最小値の距離です。</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/diff.html">diff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] 7</span></code></pre></div>
 <p><strong>平均絶対偏差, mean absolute deviation</strong></p>
@@ -185,7 +187,7 @@ Var(x) = \frac{1}{N-1}\sum_{n = 1}^N(x_n - \overline{x})^2
 \]</span>
 <span class="math inline">\(\overline{x}\)</span> は平均値、<span class="math inline">\(N\)</span>はデータ数です。
 専用の関数がないので、これも定義します。</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mean_absolute_deviation</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">xbar</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
   <span class="va">xout</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">x</span> <span class="op">-</span> <span class="va">xbar</span><span class="op">)</span>
@@ -199,7 +201,7 @@ Var(x) = \frac{1}{N-1}\sum_{n = 1}^N(x_n - \overline{x})^2
 \text{MAD} = median(|x_i - \tilde{x}|)
 \]</span>
 <span class="math inline">\(\tilde{x}\)</span> は <span class="math inline">\(x\)</span> の中央値です。</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/mad.html">mad</a></span><span class="op">(</span><span class="va">x</span>, constant <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="co">#&gt; [1] 2.5</span></code></pre></div>
 <p>標準偏差として使う場合は、</p>
@@ -208,13 +210,13 @@ Var(x) = \frac{1}{N-1}\sum_{n = 1}^N(x_n - \overline{x})^2
 \]</span>
 この積は標準偏差のロバスト推定量 (robust estimator) といいます。
 ロバスト推定量は外れ値に強く影響されないのが特徴です。</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/mad.html">mad</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt; [1] 3.7065</span></code></pre></div>
 <p><code>tibble</code>データの集計は次のようにします。
 全データの集計の場合は、<code>tibble</code>　を <code>summarise</code> 関数に渡します。</p>
 <p>ここでは<code>seaweed</code> と <code>seagrass</code> の平均値を求めています。</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">d19</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>seaweed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">seaweed</span><span class="op">)</span>,
             seagrass <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">seagrass</span><span class="op">)</span><span class="op">)</span>
@@ -224,28 +226,28 @@ Var(x) = \frac{1}{N-1}\sum_{n = 1}^N(x_n - \overline{x})^2
 <span class="co">#&gt; 1    312.     127.</span></code></pre></div>
 <p><code><a href="https://dplyr.tidyverse.org/reference/across.html">across()</a></code> 関数を使えば、コードは諸略できます。
 <code><a href="https://dplyr.tidyverse.org/reference/across.html">across()</a></code> に渡したそれぞれのベクトル（列）に <code>mean</code> 関数を適応しています。</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">d19</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">seaweed</span>, <span class="va">seagrass</span><span class="op">)</span>, <span class="va">mean</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 × 2</span>
 <span class="co">#&gt;   seaweed seagrass</span>
 <span class="co">#&gt;     &lt;dbl&gt;    &lt;dbl&gt;</span>
 <span class="co">#&gt; 1    312.     127.</span></code></pre></div>
 <p><code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code> と <code><a href="https://rdrr.io/r/stats/sd.html">sd()</a></code> を同時に適応できます。</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">d19</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">seaweed</span>, <span class="va">seagrass</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">mean</span>, <span class="va">sd</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 × 4</span>
 <span class="co">#&gt;   seaweed_1 seaweed_2 seagrass_1 seagrass_2</span>
 <span class="co">#&gt;       &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;</span>
 <span class="co">#&gt; 1      312.      439.       127.       227.</span></code></pre></div>
 <p>ところが帰ってくる結果をみて、平均値と標準偏差の区別ができないので、次のようにコードをくみましょう。</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">d19</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">seaweed</span>, <span class="va">seagrass</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="va">mean</span>, sd <span class="op">=</span> <span class="va">sd</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 1 × 4</span>
 <span class="co">#&gt;   seaweed_mean seaweed_sd seagrass_mean seagrass_sd</span>
 <span class="co">#&gt;          &lt;dbl&gt;      &lt;dbl&gt;         &lt;dbl&gt;       &lt;dbl&gt;</span>
 <span class="co">#&gt; 1         312.       439.          127.        227.</span></code></pre></div>
 <p>では、平均値、標準偏差、平均絶対偏差を求めています。</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">d19</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">seaweed</span>, <span class="va">seagrass</span><span class="op">)</span>,
                    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="va">mean</span>, sd <span class="op">=</span> <span class="va">sd</span>,
@@ -257,7 +259,7 @@ Var(x) = \frac{1}{N-1}\sum_{n = 1}^N(x_n - \overline{x})^2
 <span class="co">#&gt; # … with 2 more variables: seagrass_sd &lt;dbl&gt;,</span>
 <span class="co">#&gt; #   seagrass_mad &lt;dbl&gt;</span></code></pre></div>
 <p><code>site</code> ごとに集計したいとき、<code><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code> 関数を使って、データのグループ化してから、それぞれの関数を適応します。</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">d19</span> |&gt;
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">site</span><span class="op">)</span> |&gt; 
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">seaweed</span>, <span class="va">seagrass</span><span class="op">)</span>,
@@ -281,15 +283,15 @@ Var(x) = \frac{1}{N-1}\sum_{n = 1}^N(x_n - \overline{x})^2
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#data-summary"><span class="header-section-number">4</span> データの集計</a></li>
-<li><a class="nav-link" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-2"><span class="header-section-number">4.1</span> 必要なパッケージ</a></li>
+<li><a class="nav-link" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-3"><span class="header-section-number">4.1</span> 必要なパッケージ</a></li>
 <li><a class="nav-link" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E6%BA%96%E5%82%99"><span class="header-section-number">4.2</span> データの準備</a></li>
 <li><a class="nav-link" href="#%E8%A8%98%E8%BF%B0%E7%B5%B1%E8%A8%88%E9%87%8F"><span class="header-section-number">4.3</span> 記述統計量</a></li>
 </ul>
 
       <div class="book-extra">
         <ul class="list-unstyled">
-<li><a id="book-source" href="https://github.com/rstudio/bookdown-demo/blob/master/04-data-summary.Rmd">View source <i class="fab fa-github"></i></a></li>
-          <li><a id="book-edit" href="https://github.com/rstudio/bookdown-demo/edit/master/04-data-summary.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+<li><a id="book-source" href="https://github.com/gnishihara/Lab-Manual/blob/master/04-data-summary.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/gnishihara/Lab-Manual/edit/master/04-data-summary.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
         </ul>
 </div>
     </nav>
@@ -301,7 +303,7 @@ Var(x) = \frac{1}{N-1}\sum_{n = 1}^N(x_n - \overline{x})^2
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室. It was last built on 2022-04-26.</p>
+    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室. It was last built on 2022-04-28.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

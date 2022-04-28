@@ -50,31 +50,52 @@
 <li><a class="" href="anova.html"><span class="header-section-number">7</span> 分散分析</a></li>
 <li><a class="" href="glm.html"><span class="header-section-number">8</span> 一般化線形モデル</a></li>
 <li><a class="" href="gam.html"><span class="header-section-number">9</span> 一般化加法モデル</a></li>
-<li><a class="" href="ggplot.html"><span class="header-section-number">10</span> ggplot</a></li>
-<li><a class="" href="maps.html"><span class="header-section-number">11</span> 地図の作り方</a></li>
+<li><a class="" href="model-selection.html"><span class="header-section-number">10</span> モデル選択</a></li>
+<li><a class="" href="ggplot.html"><span class="header-section-number">11</span> ggplot</a></li>
+<li><a class="" href="maps.html"><span class="header-section-number">12</span> 地図の作り方</a></li>
+<li><a class="" href="wavelet.html"><span class="header-section-number">13</span> Wavlet 解析</a></li>
 </ul>
 
         <div class="book-extra">
-          <p><a id="book-repo" href="https://github.com/rstudio/bookdown-demo">View book source <i class="fab fa-github"></i></a></p>
+          <p><a id="book-repo" href="https://github.com/gnishihara/Lab-Manual">View book source <i class="fab fa-github"></i></a></p>
         </div>
       </nav>
 </div>
   </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><!--bookdown:title:end--><!--bookdown:title:start--><div id="このマニュアルについて" class="section level1 unnumbered">
 <h1>このマニュアルについて<a class="anchor" aria-label="anchor" href="#%E3%81%93%E3%81%AE%E3%83%9E%E3%83%8B%E3%83%A5%E3%82%A2%E3%83%AB%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6"><i class="fas fa-link"></i></a>
 </h1>
-<p>解析の背景については講義<a href="maps.html#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>で紹介した内容を参考にしてください。
-章ごとに解析を紹介しています。
-R コードが記述されている部分はコードブロックまたはコードチャンクと呼びます。</p>
-<p>章ごとのコードは独立していないので、注意してください。
-コードをそのままコピー・ペーストすると、うまく動かないことがあります<a href="maps.html#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>。</p>
-<p>また、このマニュアルは R 環境における解析のコードを説明するためです<a href="maps.html#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>。
-このマニュアルだけだと、統計解析はできるが、統計学の理解には不十分です。
-最後に、マニュアルは随時更新するので、タイトルにあるバージョン番号を時々確認してね。
+<p><strong>【重要】このマニュアルは水圏植物生態学研究室用に準備しましたが、
+一部は水産学部の講義につかいます。</strong></p>
+<p>解析の背景については講義<a href="wavelet.html#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>の資料やレクチャーを参考にしてください。
+解析は章ごとに紹介していて、コードはお互いに独立させたつもりです。
+それにしても、そのままコピペすると動かないコードもあるので、コードをよく読んでから使ってください。
+コードに使用したデータは研究室のサーバにあるが、公開するつもりはありません。</p>
+<p>このマニュアルは統計学や解析についての詳細に説明するつもりはないです。
+つまり、このマニュアルだけだと、コードをくめるようになるが、統計学の理解には不十分です！
+解析の背景は十分理解してから、コードを使ってください。
+さらに、コードは研究室のサーバ環境で動きますが、その他の環境で動くは確認していません。</p>
+<p>最後に、マニュアルは随時更新するので、タイトルにあるバージョン番号を時々確認してね。
 わからないことまたは間違いがあれば、<a href="greg@nagasaki-u.ac.jp">メール</a>で連絡ください。</p>
-<p>研究室用のデータは RStudio の <code>~/Lab_Data/</code> に入っています。</p>
+<p><strong>研究室の皆さん：</strong>研究室用のデータは RStudio の <code>~/Lab_Data/</code> に入っています。</p>
+<p>マニュアルの更新日：04/28/2022 11:40:13 JST</p>
+<div id="サーバ環境" class="section level2 unnumbered">
+<h2>サーバ環境<a class="anchor" aria-label="anchor" href="#%E3%82%B5%E3%83%BC%E3%83%90%E7%92%B0%E5%A2%83"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Sys.info.html">Sys.info</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,<span class="fl">5</span><span class="op">)</span><span class="op">]</span>
+<span class="co">#&gt;                                sysname </span>
+<span class="co">#&gt;                                "Linux" </span>
+<span class="co">#&gt;                                release </span>
+<span class="co">#&gt;                      "5.10.0-10-amd64" </span>
+<span class="co">#&gt;                                version </span>
+<span class="co">#&gt; "#1 SMP Debian 5.10.84-1 (2021-12-08)" </span>
+<span class="co">#&gt;                                machine </span>
+<span class="co">#&gt;                               "x86_64"</span></code></pre></div>
+</div>
 <div id="マニュアルの作り方" class="section level2 unnumbered">
 <h2>マニュアルの作り方<a class="anchor" aria-label="anchor" href="#%E3%83%9E%E3%83%8B%E3%83%A5%E3%82%A2%E3%83%AB%E3%81%AE%E4%BD%9C%E3%82%8A%E6%96%B9"><i class="fas fa-link"></i></a>
 </h2>
+<p>このマニュアルは <code>bookdown</code> パッケージで作成しました。</p>
 <p>HTMLバージョンのマニュアルは RStudio の <strong>Build</strong> パネルで組み立てます。</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -83,11 +104,11 @@ R コードが記述されている部分はコードブロックまたはコー
 <strong>Build Book</strong> のアイコンをクリックして、<code><a href="https://pkgs.rstudio.com/bookdown/reference/bs4_book.html">bookdown::bs4_book</a></code> を選択する</li>
 </ol>
 <p>コンソールから組み立てる場合はつぎのコードを実行しましょう。</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">bookdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/bookdown/reference/render_book.html">render_book</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>作業しながら、マニュアルのプレビュー版はみれます。
 複数人でのプレビューはまだしたことないので、うまくいくかはわからない。</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">bookdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/bookdown/reference/serve_book.html">serve_book</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 
 </div>
@@ -99,13 +120,14 @@ R コードが記述されている部分はコードブロックまたはコー
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#%E3%81%93%E3%81%AE%E3%83%9E%E3%83%8B%E3%83%A5%E3%82%A2%E3%83%AB%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">このマニュアルについて</a></li>
+<li><a class="nav-link" href="#%E3%82%B5%E3%83%BC%E3%83%90%E7%92%B0%E5%A2%83">サーバ環境</a></li>
 <li><a class="nav-link" href="#%E3%83%9E%E3%83%8B%E3%83%A5%E3%82%A2%E3%83%AB%E3%81%AE%E4%BD%9C%E3%82%8A%E6%96%B9">マニュアルの作り方</a></li>
 </ul>
 
       <div class="book-extra">
         <ul class="list-unstyled">
-<li><a id="book-source" href="https://github.com/rstudio/bookdown-demo/blob/master/index.Rmd">View source <i class="fab fa-github"></i></a></li>
-          <li><a id="book-edit" href="https://github.com/rstudio/bookdown-demo/edit/master/index.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+<li><a id="book-source" href="https://github.com/gnishihara/Lab-Manual/blob/master/index.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/gnishihara/Lab-Manual/edit/master/index.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
         </ul>
 </div>
     </nav>
@@ -117,7 +139,7 @@ R コードが記述されている部分はコードブロックまたはコー
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室. It was last built on 2022-04-26.</p>
+    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室. It was last built on 2022-04-28.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
