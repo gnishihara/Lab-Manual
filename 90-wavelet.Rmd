@@ -1,4 +1,4 @@
-# Wavlet 解析 {#wavelet}
+# Wavelet 解析 {#wavelet}
 
 ## 必要なパッケージ
 
@@ -448,7 +448,7 @@ wtplots |>
   mutate(out = pmap(list(location, position, period, group, id, ggplot), save_wavelets))
 ```
 
-```{r, fig.cap = CAP, echo=FALSE}
+```{r, echo=FALSE}
 CAP = "
 有川湾鯨見山地先におけるガラモ場の水温に対するウェーブレット解析。
 観測期間は2018年5月17日から6月17日でしました。
@@ -459,9 +459,13 @@ CAP = "
 ところどころ強い12時間の周期もあります。12時間の周期は潮汐と関係していると考えますね。
 12時間より短い周期でも比較的に強いパワーが示されています。
 "
+
+```
+
+```{r, fig.cap = CAP, echo = FALSE, out.width="90%"}
 fn = rprojroot::find_rstudio_root_file("_wavelet_plots") |> 
   dir(full = TRUE, pattern = "png")
-str_subset(fn, "arikawagaramo_0m_7_03") |> magick::image_read()
+str_subset(fn, "arikawagaramo_0m_20180517*") |> magick::image_read()
 ```
 
 ## SNR の求め方
