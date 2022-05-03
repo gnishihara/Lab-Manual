@@ -94,13 +94,13 @@ mlit |> ggplot() + geom_sf()
 
 ```{r, eval = FALSE}
 # Takes 5.5 hours to complete with 30 cores!
-library(furrr)
-plan(multisession, workers = 30)
+# library(furrr)
+# plan(multisession, workers = 30)
 # Group by prefecture
-mlit1 = mlit |> group_nest(N03_001) |> 
-  mutate(data = future_map(data, st_union)) |> 
-  unnest(data) |> st_as_sf() 
-mlit1 |> write_rds("~/Lab_Data/Japan_map_data/Japan/todofuken.rds")
+# mlit1 = mlit |> group_nest(N03_001) |> 
+#   # mutate(data = future_map(data, st_union)) |> 
+#   unnest(data) |> st_as_sf() 
+# mlit1 |> write_rds("~/Lab_Data/Japan_map_data/Japan/todofuken.rds")
 ```
 
 ```{r}
