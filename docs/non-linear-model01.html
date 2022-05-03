@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 11 非線形モデルI | データ解析マニュアル</title>
+<meta name="author" content="水圏植物生態学研究室">
+<meta name="description" content="ここで紹介する非線形モデルは、海洋生物科学実験III用に準備しました。 光合成光曲線の解析を紹介します。  11.1 必要なパッケージ library(tidyverse) library(googlesheets4) library(ggcorrplot) library(patchwork) library(minpack.lm) library(nlstools)...">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
+<meta property="og:title" content="Chapter 11 非線形モデルI | データ解析マニュアル">
+<meta property="og:type" content="book">
+<meta property="og:description" content="ここで紹介する非線形モデルは、海洋生物科学実験III用に準備しました。 光合成光曲線の解析を紹介します。  11.1 必要なパッケージ library(tidyverse) library(googlesheets4) library(ggcorrplot) library(patchwork) library(minpack.lm) library(nlstools)...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 11 非線形モデルI | データ解析マニュアル">
+<meta name="twitter:description" content="ここで紹介する非線形モデルは、海洋生物科学実験III用に準備しました。 光合成光曲線の解析を紹介します。  11.1 必要なパッケージ library(tidyverse) library(googlesheets4) library(ggcorrplot) library(patchwork) library(minpack.lm) library(nlstools)...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<link rel="stylesheet" href="bs4_style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">データ解析マニュアル</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">このマニュアルについて</a></li>
+<li><a class="" href="data-input.html"><span class="header-section-number">1</span> データの読み込み</a></li>
+<li><a class="" href="data-wrangling.html"><span class="header-section-number">2</span> データの処理</a></li>
+<li><a class="" href="data-logger-input.html"><span class="header-section-number">3</span> ロガーからの読み込み</a></li>
+<li><a class="" href="data-summary.html"><span class="header-section-number">4</span> データの集計</a></li>
+<li><a class="" href="map-function.html"><span class="header-section-number">5</span> map 関数ってすごい</a></li>
+<li><a class="" href="t-test.html"><span class="header-section-number">6</span> t 検定</a></li>
+<li><a class="" href="anova.html"><span class="header-section-number">7</span> 分散分析</a></li>
+<li><a class="" href="linear-models.html"><span class="header-section-number">8</span> 線形モデル</a></li>
+<li><a class="" href="gam.html"><span class="header-section-number">9</span> 一般化加法モデル</a></li>
+<li><a class="" href="model-selection.html"><span class="header-section-number">10</span> モデル選択</a></li>
+<li><a class="active" href="non-linear-model01.html"><span class="header-section-number">11</span> 非線形モデルI</a></li>
+<li><a class="" href="ggplot.html"><span class="header-section-number">12</span> ggplot</a></li>
+<li><a class="" href="maps.html"><span class="header-section-number">13</span> 地図の作り方</a></li>
+<li><a class="" href="wavelet.html"><span class="header-section-number">14</span> Wavelet 解析</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/gnishihara/Lab-Manual">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="non-linear-model01" class="section level1" number="11">
+<h1>
+<span class="header-section-number">11</span> 非線形モデルI<a class="anchor" aria-label="anchor" href="#non-linear-model01"><i class="fas fa-link"></i></a>
+</h1>
+<p>ここで紹介する非線形モデルは、海洋生物科学実験III用に準備しました。
+光合成光曲線の解析を紹介します。</p>
+<div id="必要なパッケージ-9" class="section level2" number="11.1">
+<h2>
+<span class="header-section-number">11.1</span> 必要なパッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-9"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb189"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://googlesheets4.tidyverse.org">googlesheets4</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.sthda.com/english/wiki/ggcorrplot">ggcorrplot</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">minpack.lm</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/aursiber/nlstools">nlstools</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://broom.tidymodels.org/">broom</a></span><span class="op">)</span></code></pre></div>
+</div>
+<div id="データの読み込み-2" class="section level2" number="11.2">
+<h2>
+<span class="header-section-number">11.2</span> データの読み込み<a class="anchor" aria-label="anchor" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF-2"><i class="fas fa-link"></i></a>
+</h2>
+<p>データは Google Drive に共有しています。
+<code>googlesheets4</code> のパッケージをつかて、データをクラウドからダウンロードしましょう。
+データは共有制限なしで公開したので、authentication なしでアクセスできます。
+このときは <code><a href="https://googlesheets4.tidyverse.org/reference/gs4_deauth.html">gs4_deauth()</a></code> を実行します。</p>
+<div class="sourceCode" id="cb190"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://googlesheets4.tidyverse.org/reference/gs4_deauth.html">gs4_deauth</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>Google Drive で共有したデータは次のURLの通りです。
+リンクは実験日１〜３の google sheets に飛びます。
+* <a href="https://docs.google.com/spreadsheets/d/1CsY7ILKZRFlwQEIzSgu1veMQ964IPVegIJOo04lIGVE/edit#gid=1846404397">実験日 1</a>
+* <a href="https://docs.google.com/spreadsheets/d/1yeC-rJdxdiVa_icoNHZ1xrt4HWHyGCeQMnUt1r2_hnk/edit#gid=540001236">実験日 2</a>
+* <a href="https://docs.google.com/spreadsheets/d/1Im8Qg-ukk8uh_3z4H6IwirTc4nhxPqKrDWrjhK4gZ0o/edit#gid=2099964525">実験日 3</a></p>
+<div class="sourceCode" id="cb191"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">spreadsheet1</span> <span class="op">=</span> <span class="st">"https://docs.google.com/spreadsheets/d/1CsY7ILKZRFlwQEIzSgu1veMQ964IPVegIJOo04lIGVE/edit#gid=1846404397"</span>
+<span class="va">spreadsheet2</span> <span class="op">=</span> <span class="st">"https://docs.google.com/spreadsheets/d/1yeC-rJdxdiVa_icoNHZ1xrt4HWHyGCeQMnUt1r2_hnk/edit#gid=540001236"</span> 
+<span class="va">spreadsheet3</span> <span class="op">=</span> <span class="st">"https://docs.google.com/spreadsheets/d/1Im8Qg-ukk8uh_3z4H6IwirTc4nhxPqKrDWrjhK4gZ0o/edit#gid=2099964525"</span></code></pre></div>
+<p>google sheets にはつぎのシートが入っています。</p>
+<ul>
+<li>光合成データ</li>
+<li>海藻資料データ</li>
+<li>光環境データ</li>
+</ul>
+<p>データの読み込みは <code><a href="https://googlesheets4.tidyverse.org/reference/range_read.html">read_sheet()</a></code> で行います。
+各シートの構造は同じにしているので、<code><a href="https://purrr.tidyverse.org/reference/map.html">map()</a></code> をつかって一度にデータを読み込みます。
+<code>fnames</code> 変数は解析に使わないので、<code>select(-fnames)</code> で外します。</p>
+<div class="sourceCode" id="cb192"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mgldata</span> <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>fnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">spreadsheet1</span>, <span class="va">spreadsheet2</span>, <span class="va">spreadsheet3</span><span class="op">)</span>, day <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">fnames</span>, <span class="va">read_sheet</span>, sheet <span class="op">=</span> <span class="st">"光合成データ"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">fnames</span><span class="op">)</span>
+<span class="va">seaweed</span> <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>fnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">spreadsheet1</span>, <span class="va">spreadsheet2</span>, <span class="va">spreadsheet3</span><span class="op">)</span>, day <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">fnames</span>, <span class="va">read_sheet</span>, sheet <span class="op">=</span> <span class="st">"海藻資料データ"</span><span class="op">)</span><span class="op">)</span>|&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">fnames</span><span class="op">)</span>
+<span class="va">lightdata</span> <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>fnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">spreadsheet1</span>, <span class="va">spreadsheet2</span>, <span class="va">spreadsheet3</span><span class="op">)</span>, day <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">fnames</span>, <span class="va">read_sheet</span>, sheet <span class="op">=</span> <span class="st">"光環境データ"</span><span class="op">)</span><span class="op">)</span>|&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">fnames</span><span class="op">)</span></code></pre></div>
+<div id="光環境データの処理" class="section level3" number="11.2.1">
+<h3>
+<span class="header-section-number">11.2.1</span> 光環境データの処理<a class="anchor" aria-label="anchor" href="#%E5%85%89%E7%92%B0%E5%A2%83%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%87%A6%E7%90%86"><i class="fas fa-link"></i></a>
+</h3>
+<p>班毎に光量子の平均値を計算するよりも、光条件毎の平均値を求めた方がいいとおもいます。
+データそのものには、アルミホイルの情報がないので、光環境データと結合します。</p>
+<div class="sourceCode" id="cb193"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">lightdata</span> <span class="op">=</span> <span class="va">lightdata</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">day</span>,
+         han <span class="op">=</span> <span class="st">"班"</span>,
+         light <span class="op">=</span> <span class="st">"光環境"</span>,
+         sample <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"サンプル"</span><span class="op">)</span>,
+         ppfd <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"光量子"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">day</span>, <span class="va">light</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>ppfd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">ppfd</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>アルミホイルの <code>tmp</code> データ。</p>
+<div class="sourceCode" id="cb194"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tmp</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>light <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="st">"アルミホイル"</span>,<span class="fl">3</span><span class="op">)</span>, 
+                       ppfd <span class="op">=</span>  <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">3</span><span class="op">)</span>,
+                       day <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">lightdata</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span><span class="va">lightdata</span>, <span class="va">tmp</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>light <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">light</span><span class="op">)</span>, day <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">day</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="全データを結合" class="section level3" number="11.2.2">
+<h3>
+<span class="header-section-number">11.2.2</span> 全データを結合<a class="anchor" aria-label="anchor" href="#%E5%85%A8%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E7%B5%90%E5%90%88"><i class="fas fa-link"></i></a>
+</h3>
+<p>光合成データ <code>mgldata</code> と海藻資料データ <code>seaweed</code> を結合する。</p>
+<div class="sourceCode" id="cb195"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mgldata</span> <span class="op">=</span> <span class="va">mgldata</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">day</span>,
+         han <span class="op">=</span> <span class="st">"班"</span>,
+         sample <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"サンプル"</span><span class="op">)</span>,
+         min <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"時間"</span><span class="op">)</span>,
+         mgl <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"酸素"</span><span class="op">)</span>,
+         temperature <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"水温"</span><span class="op">)</span>,
+         light <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"光環境"</span><span class="op">)</span>,
+         seaweed <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"海藻"</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">seaweed</span> <span class="op">=</span> <span class="va">seaweed</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">day</span>,
+         seaweed <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"海藻"</span><span class="op">)</span>,
+         han <span class="op">=</span> <span class="st">"班"</span>,
+         sample <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"サンプル"</span><span class="op">)</span>,
+         vol <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"容量"</span><span class="op">)</span>,
+         gww <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"湿重量"</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">mgldata</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">full_join</a></span><span class="op">(</span><span class="va">mgldata</span>, <span class="va">seaweed</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"han"</span>, <span class="st">"sample"</span>, <span class="st">"day"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><code>han</code>, <code>sample</code>, <code>day</code> は因子に変換します。</p>
+<div class="sourceCode" id="cb196"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mgldata</span> <span class="op">=</span> <span class="va">mgldata</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">han</span>, <span class="va">sample</span>, <span class="va">day</span><span class="op">)</span>, <span class="va">as.factor</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>結合したあとの，溶存酸素濃度の時間変動を確認します。</p>
+<div class="sourceCode" id="cb197"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">mgldata</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">min</span>, y <span class="op">=</span> <span class="va">mgl</span>, color <span class="op">=</span> <span class="va">han</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/vars.html">vars</a></span><span class="op">(</span><span class="va">light</span><span class="op">)</span>,
+             cols <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/vars.html">vars</a></span><span class="op">(</span><span class="va">seaweed</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="29-analysis-nonlinear_files/figure-html/unnamed-chunk-9-1.png" width="90%" style="display: block; margin: auto;"></div>
+<p>ネットがないとき (0ネット) 溶存酸素濃度が増加するが、アルミホイルのときは減少しています。</p>
+</div>
+<div id="光合成速度を求める" class="section level3" number="11.2.3">
+<h3>
+<span class="header-section-number">11.2.3</span> 光合成速度を求める<a class="anchor" aria-label="anchor" href="#%E5%85%89%E5%90%88%E6%88%90%E9%80%9F%E5%BA%A6%E3%82%92%E6%B1%82%E3%82%81%E3%82%8B"><i class="fas fa-link"></i></a>
+</h3>
+<p>光合成速度を求めるための関数を定義します。
+<code>fit_model()</code> は線形モデルを溶存酸素濃度時系列データに当てはめ用です。
+<code>get_rate()</code> は 2 つのモデル係数 <span class="math inline">\((y = b_0+ b_1 x)\)</span> から傾き <span class="math inline">\((b_1)\)</span> を抽出するためです。</p>
+<div class="sourceCode" id="cb198"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fit_model</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">mgl</span> <span class="op">~</span> <span class="va">min</span>, data <span class="op">=</span> <span class="va">df</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="va">get_rate</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coefficients</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> 
+<span class="op">}</span></code></pre></div>
+<p>ここでデータをグループ化して、グループ毎の傾きを求めます。</p>
+<div class="sourceCode" id="cb199"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mgldata</span> <span class="op">=</span> 
+  <span class="va">mgldata</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">day</span>, <span class="va">han</span>, <span class="va">sample</span>, <span class="va">light</span>, <span class="va">gww</span>, <span class="va">vol</span>, <span class="va">seaweed</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">fit_model</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>rate <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_dbl</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">get_rate</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>stats <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">glance</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">stats</span><span class="op">)</span> </code></pre></div>
+<p>求めた係数と環境データを結合します。</p>
+<div class="sourceCode" id="cb200"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">alldata</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">full_join</a></span><span class="op">(</span><span class="va">mgldata</span>, <span class="va">lightdata</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"day"</span>, <span class="st">"light"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>係数は湿重量と実験容器の容積で割って、湿重量あたり純光合成速度を求めます。
+ここで、係数の単位は mg O<sub>2</sub> l<sup>-1</sup> min<sup>-1</sup> から mg O<sub>2</sub> g<sub>ww</sub> min<sup>-1</sup> に変わります。
+単位の求め方：</p>
+<p>$$
+^{} _{} ^{} </p>
+<p>$$</p>
+<div class="sourceCode" id="cb201"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">alldata</span> <span class="op">=</span> 
+  <span class="va">alldata</span> <span class="op"><a href="https://googlesheets4.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>normalized_rate <span class="op">=</span> <span class="va">rate</span> <span class="op">/</span> <span class="va">gww</span> <span class="op">*</span> <span class="va">vol</span><span class="op">)</span>
+  </code></pre></div>
+<p>解析をする前に、光量子量、種、班ごとの平均値を求めます。</p>
+<div class="sourceCode" id="cb202"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dataset</span> <span class="op">=</span> 
+  <span class="va">alldata</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">ppfd</span>, <span class="va">seaweed</span>, <span class="va">han</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>np <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">normalized_rate</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>標準化した光合成速度は次の通りです。</p>
+<div class="sourceCode" id="cb203"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">xlabel</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"PPFD"</span><span class="op">~</span><span class="op">(</span><span class="va">mu</span><span class="op">*</span><span class="va">mol</span><span class="op">~</span><span class="va">m</span><span class="op">^</span><span class="op">{</span><span class="op">-</span><span class="fl">2</span><span class="op">}</span><span class="op">~</span><span class="va">s</span><span class="op">^</span><span class="op">{</span><span class="op">-</span><span class="fl">1</span><span class="op">}</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+<span class="va">ylabel</span> <span class="op">=</span> <span class="st">'"Net photosynthesis rate"~(mu*g~O[2]~g[ww]^{-1}~min^{-1})'</span>
+<span class="va">ylabel</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">as.expression</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">ylabel</span><span class="op">)</span><span class="op">)</span>
+<span class="va">dataset</span> |&gt; 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">ppfd</span>, y <span class="op">=</span> <span class="va">np</span>, color <span class="op">=</span> <span class="va">han</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_color_viridis_d</a></span><span class="op">(</span><span class="st">""</span>, end <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span><span class="va">xlabel</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span><span class="va">ylabel</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span>col <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/vars.html">vars</a></span><span class="op">(</span><span class="va">seaweed</span><span class="op">)</span><span class="op">)</span> </code></pre></div>
+<div class="inline-figure"><img src="29-analysis-nonlinear_files/figure-html/unnamed-chunk-15-1.png" width="90%" style="display: block; margin: auto;"></div>
+</div>
+</div>
+<div id="モデルの当てはめ" class="section level2" number="11.3">
+<h2>
+<span class="header-section-number">11.3</span> モデルの当てはめ<a class="anchor" aria-label="anchor" href="#%E3%83%A2%E3%83%87%E3%83%AB%E3%81%AE%E5%BD%93%E3%81%A6%E3%81%AF%E3%82%81"><i class="fas fa-link"></i></a>
+</h2>
+<p>非線形モデルの当てはめに便利な <code>nlstools</code> パッケージを読み込みます。</p>
+<div class="sourceCode" id="cb204"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/aursiber/nlstools">nlstools</a></span><span class="op">)</span></code></pre></div>
+<p>当てはめたいモデルは次のとおりです。</p>
+<p><span class="math display">\[
+\overbrace{P_{net}}^{\text{純光合成速度}} = \underbrace{P_{max}\left(1 - \exp\left(-\frac{\alpha}{P_{max}}I\right)\right)}_{\text{総光合成速度}} - \overbrace{R_d}^{\text{暗記呼吸速度}}
+\]</span></p>
+<ul>
+<li>
+<span class="math inline">\(P_{net}\)</span> は純光合成速度 (<code>normalized_rate</code>)</li>
+<li>
+<span class="math inline">\(I\)</span> 光量子量 (<code>ppfd</code>)</li>
+<li>
+<span class="math inline">\(P_{max}\)</span> は光合成飽和速度 (<code>pmax</code>)</li>
+<li>
+<span class="math inline">\(\alpha\)</span> は初期勾配 (<code>alpha</code>)</li>
+<li>
+<span class="math inline">\(R_d\)</span> は暗呼吸速度 (<code>rd</code>)</li>
+</ul>
+<p>このモデルをR関数に書き換えると次のようになります。</p>
+<div class="sourceCode" id="cb205"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pecurve</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">ppfd</span>, <span class="va">pmax</span>, <span class="va">rd</span>, <span class="va">alpha</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">pmax</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">alpha</span> <span class="op">/</span> <span class="va">pmax</span> <span class="op">*</span> <span class="va">ppfd</span><span class="op">)</span><span class="op">)</span> <span class="op">-</span> <span class="va">rd</span>
+<span class="op">}</span></code></pre></div>
+<p><code>nlstools</code> の <code><a href="https://rdrr.io/pkg/nlstools/man/nlstools.html">preview()</a></code> 関数をつかって，モデル当てはめ用の関数 (<code><a href="https://rdrr.io/r/stats/nls.html">nls()</a></code>) に必要なの初期値を探します。
+<code>variable</code> 引数に <code>ppfd</code> 変数の位置情報を渡してください。</p>
+<div class="sourceCode" id="cb206"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">START</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>pmax <span class="op">=</span> <span class="fl">10</span>, rd <span class="op">=</span> <span class="fl">3</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span>
+
+<span class="va">crispifolium</span> <span class="op">=</span> <span class="va">dataset</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">seaweed</span>, <span class="st">"コブクロ"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">thunbergii</span> <span class="op">=</span> <span class="va">dataset</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">seaweed</span>, <span class="st">"ウミトラノオ"</span><span class="op">)</span><span class="op">)</span>
+<span class="va">juvenile</span> <span class="op">=</span> <span class="va">dataset</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">seaweed</span>, <span class="st">"幼体"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb207"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/nlstools/man/nlstools.html">preview</a></span><span class="op">(</span><span class="va">np</span> <span class="op">~</span> <span class="fu">pecurve</span><span class="op">(</span><span class="va">ppfd</span>, <span class="va">pmax</span>, <span class="va">rd</span>, <span class="va">alpha</span><span class="op">)</span>, 
+            data <span class="op">=</span> <span class="va">crispifolium</span>, 
+        variable <span class="op">=</span> <span class="fl">1</span>,
+        start <span class="op">=</span> <span class="va">START</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="29-analysis-nonlinear_files/figure-html/unnamed-chunk-19-1.png" width="90%" style="display: block; margin: auto;"></div>
+<pre><code>#&gt; 
+#&gt; RSS:  167</code></pre>
+<div class="sourceCode" id="cb209"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/nlstools/man/nlstools.html">preview</a></span><span class="op">(</span><span class="va">np</span> <span class="op">~</span> <span class="fu">pecurve</span><span class="op">(</span><span class="va">ppfd</span>, <span class="va">pmax</span>, <span class="va">rd</span>, <span class="va">alpha</span><span class="op">)</span>, 
+            data <span class="op">=</span> <span class="va">thunbergii</span>, 
+        variable <span class="op">=</span> <span class="fl">1</span>,
+        start <span class="op">=</span> <span class="va">START</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="29-analysis-nonlinear_files/figure-html/unnamed-chunk-20-1.png" width="90%" style="display: block; margin: auto;"></div>
+<pre><code>#&gt; 
+#&gt; RSS:  501</code></pre>
+<div class="sourceCode" id="cb211"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/nlstools/man/nlstools.html">preview</a></span><span class="op">(</span><span class="va">np</span> <span class="op">~</span> <span class="fu">pecurve</span><span class="op">(</span><span class="va">ppfd</span>, <span class="va">pmax</span>, <span class="va">rd</span>, <span class="va">alpha</span><span class="op">)</span>, 
+            data <span class="op">=</span> <span class="va">juvenile</span>, 
+        variable <span class="op">=</span> <span class="fl">1</span>,
+        start <span class="op">=</span> <span class="va">START</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="29-analysis-nonlinear_files/figure-html/unnamed-chunk-21-1.png" width="90%" style="display: block; margin: auto;"></div>
+<pre><code>#&gt; 
+#&gt; RSS:  246</code></pre>
+<p><code>+</code> 記号がデータの中心に通る用になったら，そのときの初期値を <del><code><a href="https://rdrr.io/r/stats/nls.html">nls()</a></code></del> <code><a href="https://rdrr.io/pkg/minpack.lm/man/nlsLM.html">nlsLM()</a></code> 関数に渡してモデルの当てはめをします。
+ちなみに、<code><a href="https://rdrr.io/r/stats/nls.html">nls()</a></code> 関数はGauss-Newton アルゴリズムによってパラメータ推定をしますが、<code><a href="https://rdrr.io/pkg/minpack.lm/man/nlsLM.html">nlsLM()</a></code> は Levenberg-Marquardt アルゴリズムを用います。
+Levenberg-Marquardt法のほうが優秀です。
+その理由について、詳細はいつか紹介します。</p>
+<p>ここではデータを海藻毎に当てはめるので、解析関数をつくります。</p>
+<div class="sourceCode" id="cb213"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fit_nls</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">START</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>pmax <span class="op">=</span> <span class="fl">14</span>, rd <span class="op">=</span> <span class="fl">3</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span>
+  <span class="co"># nls(np ~ pecurve(ppfd, pmax, rd, alpha),  data = df, start = START)</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/minpack.lm/man/nlsLM.html">nlsLM</a></span><span class="op">(</span><span class="va">np</span> <span class="op">~</span> <span class="fu">pecurve</span><span class="op">(</span><span class="va">ppfd</span>, <span class="va">pmax</span>, <span class="va">rd</span>, <span class="va">alpha</span><span class="op">)</span>,  data <span class="op">=</span> <span class="va">df</span>, start <span class="op">=</span> <span class="va">START</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="va">dataset</span> <span class="op">=</span> <span class="va">dataset</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">seaweed</span><span class="op">)</span> |&gt;
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">fit_nls</span><span class="op">)</span><span class="op">)</span>
+<span class="va">dataset</span>
+<span class="co">#&gt; # A tibble: 3 × 3</span>
+<span class="co">#&gt;   seaweed                    data model </span>
+<span class="co">#&gt;   &lt;chr&gt;        &lt;list&lt;tibble[,3]&gt;&gt; &lt;list&gt;</span>
+<span class="co">#&gt; 1 ウミトラノオ           [24 × 3] &lt;nls&gt; </span>
+<span class="co">#&gt; 2 コブクロモク           [24 × 3] &lt;nls&gt; </span>
+<span class="co">#&gt; 3 幼体                   [24 × 3] &lt;nls&gt;</span></code></pre></div>
+<p>当てはめたモデルの結果は次の通りです。</p>
+<div class="sourceCode" id="cb214"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dataset</span> <span class="op">=</span> <span class="va">dataset</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>summary <span class="op">=</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">glance</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">summary</span><span class="op">)</span>
+<span class="va">dataset</span>
+<span class="co">#&gt; # A tibble: 3 × 12</span>
+<span class="co">#&gt;   seaweed       data model sigma isConv  finTol logLik   AIC</span>
+<span class="co">#&gt;   &lt;chr&gt;     &lt;list&lt;t&gt; &lt;lis&gt; &lt;dbl&gt; &lt;lgl&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 ウミトラ… [24 × 3] &lt;nls&gt;  2.51 TRUE   1.49e-8  -54.5 117. </span>
+<span class="co">#&gt; 2 コブクロ… [24 × 3] &lt;nls&gt;  2.21 TRUE   1.49e-8  -51.5 111. </span>
+<span class="co">#&gt; 3 幼体      [24 × 3] &lt;nls&gt;  1.31 TRUE   1.49e-8  -39.0  86.0</span>
+<span class="co">#&gt; # … with 4 more variables: BIC &lt;dbl&gt;, deviance &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   df.residual &lt;int&gt;, nobs &lt;int&gt;</span></code></pre></div>
+<p>次はモデルの期待値を求めます。
+この関数は期待値を擬似データから計算します。
+擬似データは <code><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble()</a></code> で作っています。</p>
+<div class="sourceCode" id="cb215"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">calc_fitted</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">model</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">N</span> <span class="op">=</span> <span class="fl">21</span> <span class="co"># 擬似データの長さ</span>
+  <span class="va">ndata</span> <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>ppfd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">ppfd</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">ppfd</span><span class="op">)</span>,length <span class="op">=</span> <span class="va">N</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">tmp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">model</span>, newdata <span class="op">=</span> <span class="va">ndata</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span><span class="op">(</span><span class="va">ndata</span>,<span class="va">tmp</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="va">dataset</span> <span class="op">=</span> <span class="va">dataset</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>fitted <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html">map2</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">model</span>, <span class="va">calc_fitted</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb216"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">ppfd</span>, y <span class="op">=</span> <span class="va">np</span><span class="op">)</span>, data <span class="op">=</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">dataset</span>, <span class="va">data</span><span class="op">)</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">ppfd</span>, y <span class="op">=</span> <span class="va">value</span><span class="op">)</span>, data <span class="op">=</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">dataset</span>, <span class="va">fitted</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span>rows <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/vars.html">vars</a></span><span class="op">(</span><span class="va">seaweed</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:unnamed-chunk-25"></span>
+<img src="29-analysis-nonlinear_files/figure-html/unnamed-chunk-25-1.png" alt="観測とモデル期待値。" width="90%"><p class="caption">
+Figure 11.1: 観測とモデル期待値。
+</p>
+</div>
+</div>
+<div id="診断図-1" class="section level2" number="11.4">
+<h2>
+<span class="header-section-number">11.4</span> 診断図<a class="anchor" aria-label="anchor" href="#%E8%A8%BA%E6%96%AD%E5%9B%B3-1"><i class="fas fa-link"></i></a>
+</h2>
+<p>線形モデルと同様に、モデルを当てはめたら、残渣の診断図も確認しましょう。</p>
+<div class="sourceCode" id="cb217"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">shindan</span> <span class="op">=</span> <span class="va">dataset</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">seaweed</span>, <span class="va">data</span>, <span class="va">model</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>residuals <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">residuals</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>fitted <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">fitted</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">seaweed</span>, <span class="va">data</span>, <span class="va">residuals</span>, <span class="va">fitted</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html">everything</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb218"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">p1</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">shindan</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">fitted</span>, y <span class="op">=</span> <span class="va">residuals</span>,
+                 color <span class="op">=</span> <span class="va">seaweed</span><span class="op">)</span>,
+             size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_color_viridis_d</a></span><span class="op">(</span>end <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>
+
+<span class="va">p2</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">shindan</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">fitted</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">residuals</span><span class="op">)</span><span class="op">)</span>,
+                 color <span class="op">=</span> <span class="va">seaweed</span><span class="op">)</span>,
+             size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_color_viridis_d</a></span><span class="op">(</span>end <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span>
+<span class="va">p1</span><span class="op">+</span><span class="va">p2</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:unnamed-chunk-28"></span>
+<img src="29-analysis-nonlinear_files/figure-html/unnamed-chunk-28-1.png" alt="
+モデル残渣と残渣の絶対値の平方根の図で、モデルの当てはめの良さが分かります。
+（左）はモデル残渣対期待値です。期待値が増加するとモデル残渣の散らばりが大きくなるのがはっきりしています。
+点線 (0) の周りを均一にばらつくのが理想です。
+（右）は残渣の絶対値の平方根です。期待値が上がると残渣が増加しています。
+これらの図を確認すると、残渣の正規性に問題あると考えられます。
+" width="90%"><p class="caption">
+Figure 11.2: 
+モデル残渣と残渣の絶対値の平方根の図で、モデルの当てはめの良さが分かります。
+（左）はモデル残渣対期待値です。期待値が増加するとモデル残渣の散らばりが大きくなるのがはっきりしています。
+点線 (0) の周りを均一にばらつくのが理想です。
+（右）は残渣の絶対値の平方根です。期待値が上がると残渣が増加しています。
+これらの図を確認すると、残渣の正規性に問題あると考えられます。
+</p>
+</div>
+</div>
+<div id="パラメータの集計" class="section level2" number="11.5">
+<h2>
+<span class="header-section-number">11.5</span> パラメータの集計<a class="anchor" aria-label="anchor" href="#%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E3%81%AE%E9%9B%86%E8%A8%88"><i class="fas fa-link"></i></a>
+</h2>
+<p>残渣プロットの結果はひどかったが、とりあえず、光飽和点 <span class="math inline">\((I_k)\)</span> と光補償点 <span class="math inline">\((I_c)\)</span> を求めましょう。</p>
+<ul>
+<li>光飽和点：<span class="math inline">\(I_k = P_{max} / \alpha\)</span>
+</li>
+<li>光補償点：<span class="math inline">\(I_c = \frac{P_{max}}{\alpha} \ln\left(\frac{P_{max}}{P_{max} - R_d}\right)\)</span>
+</li>
+</ul>
+<p>まずは係数を抽出するための関数を定義します。</p>
+<div class="sourceCode" id="cb219"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">get_cfs</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">cfs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>
+  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>pmax <span class="op">=</span> <span class="va">cfs</span><span class="op">[</span><span class="st">"pmax"</span><span class="op">]</span>,
+         alpha <span class="op">=</span> <span class="va">cfs</span><span class="op">[</span><span class="st">"alpha"</span><span class="op">]</span>,
+         rd <span class="op">=</span> <span class="va">cfs</span><span class="op">[</span><span class="st">"rd"</span><span class="op">]</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
+<p>ここで光飽和点と光補償点を求めるための関数を定義します。</p>
+<div class="sourceCode" id="cb220"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">calc_ik</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">cfs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>
+  <span class="va">cfs</span><span class="op">[</span><span class="st">"pmax"</span><span class="op">]</span> <span class="op">/</span> <span class="va">cfs</span><span class="op">[</span><span class="st">"alpha"</span><span class="op">]</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">cfs</span><span class="op">[</span><span class="st">"pmax"</span><span class="op">]</span><span class="op">/</span><span class="op">(</span><span class="va">cfs</span><span class="op">[</span><span class="st">"pmax"</span><span class="op">]</span> <span class="op">-</span> <span class="va">cfs</span><span class="op">[</span><span class="st">"rd"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span>
+<span class="va">calc_ic</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">m</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">cfs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span>
+  <span class="va">cfs</span><span class="op">[</span><span class="st">"pmax"</span><span class="op">]</span> <span class="op">/</span> <span class="va">cfs</span><span class="op">[</span><span class="st">"alpha"</span><span class="op">]</span>
+<span class="op">}</span></code></pre></div>
+<p><code><a href="https://purrr.tidyverse.org/reference/map.html">map()</a></code> を使って係数を求めます。</p>
+<div class="sourceCode" id="cb221"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">modelcfs</span> <span class="op">=</span> <span class="va">dataset</span> <span class="op"><a href="https://googlesheets4.tidyverse.org/reference/pipe.html">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">seaweed</span>, <span class="va">model</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>cfs <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">get_cfs</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ik <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">calc_ik</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ic <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">calc_ic</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">ik</span>, <span class="va">ic</span>, <span class="va">cfs</span><span class="op">)</span><span class="op">)</span>
+<span class="va">modelcfs</span>
+<span class="co">#&gt; # A tibble: 3 × 7</span>
+<span class="co">#&gt;   seaweed      model   pmax  alpha    rd    ik    ic</span>
+<span class="co">#&gt;   &lt;chr&gt;        &lt;list&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 ウミトラノオ &lt;nls&gt;  23.3  0.0858 2.08  25.4  271. </span>
+<span class="co">#&gt; 2 コブクロモク &lt;nls&gt;   5.24 0.165  0.431  2.74  31.8</span>
+<span class="co">#&gt; 3 幼体         &lt;nls&gt;   4.50 0.0718 0.827 12.7   62.7</span></code></pre></div>
+<div class="sourceCode" id="cb222"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cnames</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"海藻類"</span>, <span class="st">"P~max~"</span>,
+          <span class="st">"α"</span>, <span class="st">"R~d~"</span>, <span class="st">"I~k~"</span>, <span class="st">"I~c~"</span><span class="op">)</span>
+<span class="va">modelcfs</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">model</span><span class="op">)</span> |&gt; 
+  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kbl.html">kbl</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>,
+                  col.names <span class="op">=</span> <span class="va">cnames</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr>
+<th style="text-align:left;">
+海藻類
+</th>
+<th style="text-align:right;">
+P<sub>max</sub>
+</th>
+<th style="text-align:right;">
+α
+</th>
+<th style="text-align:right;">
+R<sub>d</sub>
+</th>
+<th style="text-align:right;">
+I<sub>k</sub>
+</th>
+<th style="text-align:right;">
+I<sub>c</sub>
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+ウミトラノオ
+</td>
+<td style="text-align:right;">
+23.3
+</td>
+<td style="text-align:right;">
+0.086
+</td>
+<td style="text-align:right;">
+2.1
+</td>
+<td style="text-align:right;">
+25.4
+</td>
+<td style="text-align:right;">
+271.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+コブクロモク
+</td>
+<td style="text-align:right;">
+5.2
+</td>
+<td style="text-align:right;">
+0.165
+</td>
+<td style="text-align:right;">
+0.4
+</td>
+<td style="text-align:right;">
+2.7
+</td>
+<td style="text-align:right;">
+31.8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+幼体
+</td>
+<td style="text-align:right;">
+4.5
+</td>
+<td style="text-align:right;">
+0.072
+</td>
+<td style="text-align:right;">
+0.8
+</td>
+<td style="text-align:right;">
+12.7
+</td>
+<td style="text-align:right;">
+62.7
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div id="多重比較-2" class="section level2" number="11.6">
+<h2>
+<span class="header-section-number">11.6</span> 多重比較<a class="anchor" aria-label="anchor" href="#%E5%A4%9A%E9%87%8D%E6%AF%94%E8%BC%83-2"><i class="fas fa-link"></i></a>
+</h2>
+<p>数種類のデータ群に、一つのモデルを当てはめたら、群ごとに推定したパラメータの違いが気になります。
+複数群をお互いに比較することは多重比較といいます。
+一般的には、
+群ごとにパラメータを推定する full model から群ごとのデータをまとめて、一つのパラメータを推定する pooled model まで考えられます。
+このとき、<code><a href="https://rdrr.io/pkg/minpack.lm/man/nlsLM.html">nlsLM()</a></code> は使用できないので、<code><a href="https://rdrr.io/r/stats/nls.html">nls()</a></code> 関数を使います。
+<code><a href="https://rdrr.io/r/stats/nls.html">nls()</a></code> の収束を助けるために、まずは pooled model の <code><a href="https://rdrr.io/pkg/minpack.lm/man/nlsLM.html">nlsLM()</a></code> の結果を full model のパラメータ初期値にします。</p>
+<p>では、データをすくし整理します。</p>
+<div class="sourceCode" id="cb223"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">dataset</span> <span class="op">=</span> <span class="va">dataset</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">seaweed</span>, <span class="va">data</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
+<span class="va">dataset</span> <span class="op">=</span> <span class="va">dataset</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>seaweed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">seaweed</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>フルモデル (full model) の場合はそれぞれの群ごとに、<span class="math inline">\(P_{max}\)</span>、<span class="math inline">\(\alpha\)</span>、<span class="math inline">\(R_d\)</span> を推定します。
+プールモデル (pooled model) の場合は、群の区別をせずに、1 セットのパラメータを推定します。</p>
+<div class="sourceCode" id="cb224"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">poolmodel</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/minpack.lm/man/nlsLM.html">nlsLM</a></span><span class="op">(</span><span class="va">np</span> <span class="op">~</span> <span class="fu">pecurve</span><span class="op">(</span><span class="va">ppfd</span>, <span class="va">pmax</span>, <span class="va">rd</span>, <span class="va">alpha</span><span class="op">)</span>, 
+    start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>pmax <span class="op">=</span> <span class="fl">10</span>, rd <span class="op">=</span> <span class="fl">3</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span>,
+    data <span class="op">=</span> <span class="va">dataset</span>, 
+    lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>pmax <span class="op">=</span> <span class="fl">0</span>, rd <span class="op">=</span> <span class="fl">0</span>, alpha <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">START</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">poolmodel</span><span class="op">)</span>, <span class="va">rep</span>, <span class="fl">3</span><span class="op">)</span>
+<span class="va">fullmodel</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/nls.html">nls</a></span><span class="op">(</span><span class="va">np</span> <span class="op">~</span> <span class="fu">pecurve</span><span class="op">(</span><span class="va">ppfd</span>, <span class="va">pmax</span><span class="op">[</span><span class="va">seaweed</span><span class="op">]</span>, <span class="va">rd</span><span class="op">[</span><span class="va">seaweed</span><span class="op">]</span>, <span class="va">alpha</span><span class="op">[</span><span class="va">seaweed</span><span class="op">]</span><span class="op">)</span>, 
+    start <span class="op">=</span> <span class="va">START</span>, 
+    data <span class="op">=</span> <span class="va">dataset</span><span class="op">)</span></code></pre></div>
+<p>AIC を確認すると、フルモデルのAICが最も低いです。</p>
+<div class="sourceCode" id="cb225"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html">AIC</a></span><span class="op">(</span><span class="va">poolmodel</span>, <span class="va">fullmodel</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span>rownames <span class="op">=</span> <span class="st">"model"</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">AIC</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 2 × 3</span>
+<span class="co">#&gt;   model        df   AIC</span>
+<span class="co">#&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 fullmodel    10  320.</span>
+<span class="co">#&gt; 2 poolmodel     4  353.</span></code></pre></div>
+<p>すべてのモデルを当てはめて、AICで比較することはできますが、
+Wald’s 検定でパラメータ比較をしたほうが便利です。</p>
+<p>パラメータの多重比較は
+[<code>aomisc</code>](devtools::install_github(“onofriAndreaPG/aomisc”)
+の個人パッケージが有ると楽です。
+インストール方法は <code>remotes</code> パッケージをつかって、github からインストールします。</p>
+<div class="sourceCode" id="cb226"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># remotes::install_github("onofriAndreaPG/aomisc")</span></code></pre></div>
+<p>多重比較は Holm法を使います。</p>
+<p>Holm法はp 値を小さい順になれべてから実施します。
+最も小さいP値の有意水準は <span class="math inline">\(\alpha / N\)</span> です。
+<span class="math inline">\(N\)</span> は比較する回数です。
+ここで<span class="math inline">\(P \leq \alpha / N\)</span> なら、
+次のP値を <span class="math inline">\(\alpha / (N-1)\)</span> で評価します。
+<span class="math inline">\(P &gt; \alpha / (N-1)\)</span> なら、ここで検定が終わります。
+帰無仮説を棄却できないまで、<span class="math inline">\(N-k\)</span> の補正でP値を評価続けます。</p>
+<div class="sourceCode" id="cb227"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.statforbiology.com">aomisc</a></span><span class="op">)</span>
+<span class="va">cfs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fullmodel</span><span class="op">)</span><span class="op">$</span><span class="va">coef</span>
+<span class="va">df</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fullmodel</span><span class="op">)</span><span class="op">$</span><span class="va">df</span></code></pre></div>
+<p><code>pmax</code> の多重比較は次のとおりです。
+3つ目の比較まで評価しました</p>
+<div class="sourceCode" id="cb228"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">rows</span> <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>
+<span class="fu"><a href="https://rdrr.io/pkg/aomisc/man/pairComp.html">pairComp</a></span><span class="op">(</span><span class="va">cfs</span><span class="op">[</span><span class="va">rows</span>,<span class="fl">1</span><span class="op">]</span>, <span class="va">cfs</span><span class="op">[</span><span class="va">rows</span>,<span class="fl">2</span><span class="op">]</span>,dfr <span class="op">=</span> <span class="va">df</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, adjust <span class="op">=</span> <span class="st">"holm"</span><span class="op">)</span>
+<span class="co">#&gt; $pairs</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;   Simultaneous Tests for General Linear Hypotheses</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Linear Hypotheses:</span>
+<span class="co">#&gt;                  Estimate Std. Error t value Pr(&gt;|t|)   </span>
+<span class="co">#&gt; pmax1-pmax2 == 0   18.045      4.915   3.671  0.00102 **</span>
+<span class="co">#&gt; pmax1-pmax3 == 0   18.785      4.956   3.790  0.00102 **</span>
+<span class="co">#&gt; pmax2-pmax3 == 0    0.740      1.960   0.377  0.70711   </span>
+<span class="co">#&gt; ---</span>
+<span class="co">#&gt; Signif. codes:  </span>
+<span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span>
+<span class="co">#&gt; (Adjusted p values reported -- holm method)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $Letters</span>
+<span class="co">#&gt;            Mean       SE CLD</span>
+<span class="co">#&gt; pmax1 23.286128 4.737174   a</span>
+<span class="co">#&gt; pmax2  5.240990 1.311692   b</span>
+<span class="co">#&gt; pmax3  4.501039 1.456917   b</span></code></pre></div>
+<p><code>alpha</code>と<code>rd</code>の場合、<span class="math inline">\(P &gt; \alpha/N\)</span> ので、3つ目比較までしません。</p>
+<div class="sourceCode" id="cb229"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">rows</span> <span class="op">=</span> <span class="fl">4</span><span class="op">:</span><span class="fl">6</span>
+<span class="fu"><a href="https://rdrr.io/pkg/aomisc/man/pairComp.html">pairComp</a></span><span class="op">(</span><span class="va">cfs</span><span class="op">[</span><span class="va">rows</span>,<span class="fl">1</span><span class="op">]</span>, <span class="va">cfs</span><span class="op">[</span><span class="va">rows</span>,<span class="fl">2</span><span class="op">]</span>,dfr <span class="op">=</span> <span class="va">df</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, adjust <span class="op">=</span> <span class="st">"holm"</span><span class="op">)</span>
+<span class="co">#&gt; $pairs</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;   Simultaneous Tests for General Linear Hypotheses</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Linear Hypotheses:</span>
+<span class="co">#&gt;              Estimate Std. Error t value Pr(&gt;|t|)</span>
+<span class="co">#&gt; rd1-rd2 == 0   1.6452     1.5549   1.058    0.882</span>
+<span class="co">#&gt; rd1-rd3 == 0   1.2494     1.5164   0.824    0.882</span>
+<span class="co">#&gt; rd2-rd3 == 0  -0.3958     1.5815  -0.250    0.882</span>
+<span class="co">#&gt; (Adjusted p values reported -- holm method)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $Letters</span>
+<span class="co">#&gt;          Mean       SE CLD</span>
+<span class="co">#&gt; rd1 2.0767329 1.052591   a</span>
+<span class="co">#&gt; rd2 0.4315057 1.144426   a</span>
+<span class="co">#&gt; rd3 0.8273007 1.091576   a</span></code></pre></div>
+<div class="sourceCode" id="cb230"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">rows</span> <span class="op">=</span> <span class="fl">7</span><span class="op">:</span><span class="fl">9</span>
+<span class="fu"><a href="https://rdrr.io/pkg/aomisc/man/pairComp.html">pairComp</a></span><span class="op">(</span><span class="va">cfs</span><span class="op">[</span><span class="va">rows</span>,<span class="fl">1</span><span class="op">]</span>, <span class="va">cfs</span><span class="op">[</span><span class="va">rows</span>,<span class="fl">2</span><span class="op">]</span>,dfr <span class="op">=</span> <span class="va">df</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, adjust <span class="op">=</span> <span class="st">"holm"</span><span class="op">)</span>
+<span class="co">#&gt; $pairs</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;   Simultaneous Tests for General Linear Hypotheses</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Linear Hypotheses:</span>
+<span class="co">#&gt;                    Estimate Std. Error t value Pr(&gt;|t|)</span>
+<span class="co">#&gt; alpha1-alpha2 == 0 -0.07882    0.10219  -0.771        1</span>
+<span class="co">#&gt; alpha1-alpha3 == 0  0.01404    0.05846   0.240        1</span>
+<span class="co">#&gt; alpha2-alpha3 == 0  0.09286    0.11428   0.813        1</span>
+<span class="co">#&gt; (Adjusted p values reported -- holm method)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $Letters</span>
+<span class="co">#&gt;              Mean         SE CLD</span>
+<span class="co">#&gt; alpha1 0.08579966 0.01998607   a</span>
+<span class="co">#&gt; alpha2 0.16461744 0.10021636   a</span>
+<span class="co">#&gt; alpha3 0.07175792 0.05493227   a</span></code></pre></div>
+<div class="sourceCode" id="cb231"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/detach.html">detach</a></span><span class="op">(</span><span class="va">package</span><span class="op">:</span><span class="va">aomisc</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/detach.html">detach</a></span><span class="op">(</span><span class="va">package</span><span class="op">:</span><span class="va">drc</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/detach.html">detach</a></span><span class="op">(</span><span class="va">package</span><span class="op">:</span><span class="va">MASS</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="モデルの改良-1" class="section level2" number="11.7">
+<h2>
+<span class="header-section-number">11.7</span> モデルの改良<a class="anchor" aria-label="anchor" href="#%E3%83%A2%E3%83%87%E3%83%AB%E3%81%AE%E6%94%B9%E8%89%AF-1"><i class="fas fa-link"></i></a>
+</h2>
+<p>上で多重比較をしましたが、実は非線形モデルのパラメータはお互いとの相関関係が強いことが多いです。
+つまり、多重比較に若干無理があります。
+光合成光曲線の解析から推定したパラメータの相関関係は次の図の通りです。</p>
+<div class="sourceCode" id="cb232"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fm_cov</span>  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html">vcov</a></span><span class="op">(</span><span class="va">fullmodel</span><span class="op">)</span> <span class="co"># モデルパラメータの共分散行列</span>
+<span class="va">fm_corr</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cov2cor</a></span><span class="op">(</span><span class="va">fm_cov</span><span class="op">)</span> <span class="co"># モデルパラメータの相関行列</span></code></pre></div>
+<div class="sourceCode" id="cb233"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">vname1</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pmax"</span>, <span class="st">"alpha"</span>, <span class="st">"rd"</span><span class="op">)</span>, <span class="st">"1"</span><span class="op">)</span>
+<span class="va">vname2</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pmax"</span>, <span class="st">"alpha"</span>, <span class="st">"rd"</span><span class="op">)</span>, <span class="st">"2"</span><span class="op">)</span>
+<span class="va">vname3</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pmax"</span>, <span class="st">"alpha"</span>, <span class="st">"rd"</span><span class="op">)</span>, <span class="st">"3"</span><span class="op">)</span>
+<span class="va">p1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggcorrplot/man/ggcorrplot.html">ggcorrplot</a></span><span class="op">(</span><span class="va">fm_corr</span><span class="op">[</span><span class="va">vname1</span>, <span class="va">vname1</span><span class="op">]</span>,     type <span class="op">=</span> <span class="st">"upper"</span>, show.diag <span class="op">=</span> <span class="cn">T</span>, lab <span class="op">=</span><span class="cn">T</span><span class="op">)</span>
+<span class="va">p2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggcorrplot/man/ggcorrplot.html">ggcorrplot</a></span><span class="op">(</span><span class="va">fm_corr</span><span class="op">[</span><span class="va">vname2</span>, <span class="va">vname2</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"upper"</span>, show.diag <span class="op">=</span> <span class="cn">T</span>, lab <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
+<span class="va">p3</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggcorrplot/man/ggcorrplot.html">ggcorrplot</a></span><span class="op">(</span><span class="va">fm_corr</span><span class="op">[</span><span class="va">vname3</span>, <span class="va">vname3</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"upper"</span>, show.diag <span class="op">=</span> <span class="cn">T</span>, lab <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
+<span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span> <span class="op">+</span> <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html">plot_layout</a></span><span class="op">(</span>ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:unnamed-chunk-44"></span>
+<img src="29-analysis-nonlinear_files/figure-html/unnamed-chunk-44-1.png" alt="
+光合成光曲線の解析からもとめたパラメータの相関関係を示しています。
+種ごとにまとめて、3つの相関プロットに示した。
+（右）ウミトラノオ、（中）コブクロモク、（左）幼体。
+相関係数は -1 から　1 をとります。
+ウミトラノオ以外の場合では、パラメータごとの関係に正の相関があります。
+" width="90%"><p class="caption">
+Figure 11.3: 
+光合成光曲線の解析からもとめたパラメータの相関関係を示しています。
+種ごとにまとめて、3つの相関プロットに示した。
+（右）ウミトラノオ、（中）コブクロモク、（左）幼体。
+相関係数は -1 から　1 をとります。
+ウミトラノオ以外の場合では、パラメータごとの関係に正の相関があります。
+</p>
+</div>
+<p>さらに、共分散も確認すると、負の値をとったペアもあります。
+分散は 0 から　1の値しか取れませんが、共分散は負の値をとっても問題ないです。
+診断図の結果によると、このモデルには色々と問題がありますね。</p>
+<div class="sourceCode" id="cb234"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">vname1</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pmax"</span>, <span class="st">"alpha"</span>, <span class="st">"rd"</span><span class="op">)</span>, <span class="st">"1"</span><span class="op">)</span>
+<span class="va">vname2</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pmax"</span>, <span class="st">"alpha"</span>, <span class="st">"rd"</span><span class="op">)</span>, <span class="st">"2"</span><span class="op">)</span>
+<span class="va">vname3</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pmax"</span>, <span class="st">"alpha"</span>, <span class="st">"rd"</span><span class="op">)</span>, <span class="st">"3"</span><span class="op">)</span>
+<span class="va">p1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggcorrplot/man/ggcorrplot.html">ggcorrplot</a></span><span class="op">(</span><span class="va">fm_cov</span><span class="op">[</span><span class="va">vname1</span>, <span class="va">vname1</span><span class="op">]</span>,     type <span class="op">=</span> <span class="st">"upper"</span>, show.diag <span class="op">=</span> <span class="cn">T</span>, lab <span class="op">=</span><span class="cn">T</span><span class="op">)</span>
+<span class="va">p2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggcorrplot/man/ggcorrplot.html">ggcorrplot</a></span><span class="op">(</span><span class="va">fm_cov</span><span class="op">[</span><span class="va">vname2</span>, <span class="va">vname2</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"upper"</span>, show.diag <span class="op">=</span> <span class="cn">T</span>, lab <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
+<span class="va">p3</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggcorrplot/man/ggcorrplot.html">ggcorrplot</a></span><span class="op">(</span><span class="va">fm_cov</span><span class="op">[</span><span class="va">vname3</span>, <span class="va">vname3</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"upper"</span>, show.diag <span class="op">=</span> <span class="cn">T</span>, lab <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
+<span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span> <span class="op">+</span> <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html">plot_layout</a></span><span class="op">(</span>ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="29-analysis-nonlinear_files/figure-html/unnamed-chunk-46-1.png" width="90%" style="display: block; margin: auto;"></div>
+<p>モデル係数が絶対に正の値になるように、モデルは次の通りに改良した。</p>
+<p><span class="math display">\[
+\begin{aligned}
+P_{net} &amp;= P_{max}\left(1 - \exp\left(-\frac{\alpha}{P_{max}}I\right)\right) - R_d \\
+P_{max} &amp;= \exp(\log P_{max}) \\
+\alpha &amp;= \exp(\log \alpha) \\
+R_{d} &amp;= \exp(\log R_{d}) \\
+\end{aligned}
+\]</span></p>
+<p>ログスケールのパラメータは <span class="math inline">\(-\infty \leq x \leq \infty\)</span>　ですが、
+指数関数で変換すると、<span class="math inline">\(\exp(x) &gt; 0\)</span> です。</p>
+<div class="sourceCode" id="cb235"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">pecurve_exp</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">ppfd</span>, <span class="va">pmax</span>, <span class="va">rd</span>, <span class="va">alpha</span><span class="op">)</span> <span class="op">{</span>
+  <span class="va">pmax</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">pmax</span><span class="op">)</span>
+  <span class="va">alpha</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">alpha</span><span class="op">)</span>
+  <span class="va">rd</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">rd</span><span class="op">)</span>
+  <span class="va">pmax</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">alpha</span> <span class="op">/</span> <span class="va">pmax</span> <span class="op">*</span> <span class="va">ppfd</span><span class="op">)</span><span class="op">)</span> <span class="op">-</span> <span class="va">rd</span>
+<span class="op">}</span>
+
+<span class="va">poolmodel_exp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/minpack.lm/man/nlsLM.html">nlsLM</a></span><span class="op">(</span><span class="va">np</span> <span class="op">~</span> <span class="fu">pecurve_exp</span><span class="op">(</span><span class="va">ppfd</span>, <span class="va">pmax</span>, <span class="va">rd</span>, <span class="va">alpha</span><span class="op">)</span>, 
+    start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>pmax <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>, rd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">0.3</span><span class="op">)</span><span class="op">)</span>,
+    data <span class="op">=</span> <span class="va">dataset</span><span class="op">)</span>
+<span class="va">poolmodel_start</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/minpack.lm/man/nlsLM.html">nlsLM</a></span><span class="op">(</span><span class="va">np</span> <span class="op">~</span> <span class="fu">pecurve_exp</span><span class="op">(</span><span class="va">ppfd</span>, <span class="va">pmax</span>, <span class="va">rd</span>, <span class="va">alpha</span><span class="op">)</span>, 
+    start <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>pmax <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>, rd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fl">0.3</span><span class="op">)</span><span class="op">)</span>,
+    data <span class="op">=</span> <span class="va">dataset</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">ppfd</span> <span class="op">&lt;</span> <span class="fl">300</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">START</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">poolmodel_start</span><span class="op">)</span>, <span class="va">rep</span>, <span class="fl">3</span><span class="op">)</span>
+
+<span class="va">fullmodel_exp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/nls.html">nls</a></span><span class="op">(</span><span class="va">np</span> <span class="op">~</span> <span class="fu">pecurve_exp</span><span class="op">(</span><span class="va">ppfd</span>, <span class="va">pmax</span><span class="op">[</span><span class="va">seaweed</span><span class="op">]</span>, <span class="va">rd</span><span class="op">[</span><span class="va">seaweed</span><span class="op">]</span>, <span class="va">alpha</span><span class="op">[</span><span class="va">seaweed</span><span class="op">]</span><span class="op">)</span>, 
+    start <span class="op">=</span> <span class="va">START</span>, data <span class="op">=</span> <span class="va">dataset</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/stats/AIC.html">AIC</a></span><span class="op">(</span><span class="va">poolmodel_exp</span>, <span class="va">fullmodel_exp</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span>rownames <span class="op">=</span> <span class="st">"model"</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">AIC</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 2 × 3</span>
+<span class="co">#&gt;   model            df   AIC</span>
+<span class="co">#&gt;   &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 fullmodel_exp    10  320.</span>
+<span class="co">#&gt; 2 poolmodel_exp     4  353.</span></code></pre></div>
+<div class="sourceCode" id="cb236"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fm_cov_exp</span>  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html">vcov</a></span><span class="op">(</span><span class="va">fullmodel_exp</span><span class="op">)</span> <span class="co"># モデルパラメータの共分散行列</span>
+<span class="va">fm_corr_exp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cov2cor</a></span><span class="op">(</span><span class="va">fm_cov_exp</span><span class="op">)</span> <span class="co"># モデルパラメータの相関行列</span>
+
+<span class="va">vname1</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pmax"</span>, <span class="st">"alpha"</span>, <span class="st">"rd"</span><span class="op">)</span>, <span class="st">"1"</span><span class="op">)</span>
+<span class="va">vname2</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pmax"</span>, <span class="st">"alpha"</span>, <span class="st">"rd"</span><span class="op">)</span>, <span class="st">"2"</span><span class="op">)</span>
+<span class="va">vname3</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"pmax"</span>, <span class="st">"alpha"</span>, <span class="st">"rd"</span><span class="op">)</span>, <span class="st">"3"</span><span class="op">)</span>
+<span class="va">p1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggcorrplot/man/ggcorrplot.html">ggcorrplot</a></span><span class="op">(</span><span class="va">fm_corr_exp</span><span class="op">[</span><span class="va">vname1</span>, <span class="va">vname1</span><span class="op">]</span>,     type <span class="op">=</span> <span class="st">"upper"</span>, show.diag <span class="op">=</span> <span class="cn">T</span>, lab <span class="op">=</span><span class="cn">T</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"相関行列"</span><span class="op">)</span>
+<span class="va">p2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggcorrplot/man/ggcorrplot.html">ggcorrplot</a></span><span class="op">(</span><span class="va">fm_corr_exp</span><span class="op">[</span><span class="va">vname2</span>, <span class="va">vname2</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"upper"</span>, show.diag <span class="op">=</span> <span class="cn">T</span>, lab <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
+<span class="va">p3</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggcorrplot/man/ggcorrplot.html">ggcorrplot</a></span><span class="op">(</span><span class="va">fm_corr_exp</span><span class="op">[</span><span class="va">vname3</span>, <span class="va">vname3</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"upper"</span>, show.diag <span class="op">=</span> <span class="cn">T</span>, lab <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> 
+<span class="va">p4</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggcorrplot/man/ggcorrplot.html">ggcorrplot</a></span><span class="op">(</span><span class="va">fm_cov_exp</span><span class="op">[</span><span class="va">vname1</span>, <span class="va">vname1</span><span class="op">]</span>,     type <span class="op">=</span> <span class="st">"upper"</span>, show.diag <span class="op">=</span> <span class="cn">T</span>, lab <span class="op">=</span><span class="cn">T</span><span class="op">)</span><span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"共分散行列"</span><span class="op">)</span>
+<span class="va">p5</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggcorrplot/man/ggcorrplot.html">ggcorrplot</a></span><span class="op">(</span><span class="va">fm_cov_exp</span><span class="op">[</span><span class="va">vname2</span>, <span class="va">vname2</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"upper"</span>, show.diag <span class="op">=</span> <span class="cn">T</span>, lab <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
+<span class="va">p6</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/ggcorrplot/man/ggcorrplot.html">ggcorrplot</a></span><span class="op">(</span><span class="va">fm_cov_exp</span><span class="op">[</span><span class="va">vname3</span>, <span class="va">vname3</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"upper"</span>, show.diag <span class="op">=</span> <span class="cn">T</span>, lab <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> 
+
+<span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span> <span class="op">+</span> <span class="va">p3</span> <span class="op">+</span> <span class="va">p4</span> <span class="op">+</span> <span class="va">p5</span> <span class="op">+</span> <span class="va">p6</span> <span class="op">+</span> <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html">plot_layout</a></span><span class="op">(</span>ncol <span class="op">=</span> <span class="fl">2</span>, byrow <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:unnamed-chunk-49"></span>
+<img src="29-analysis-nonlinear_files/figure-html/unnamed-chunk-49-1.png" alt="
+改良したモデルでも、共分散行列に負の値がでました。
+コブクロモクの場合、光合成が飽和するほどの光ではなかったと考えられる。
+" width="90%"><p class="caption">
+Figure 11.4: 
+改良したモデルでも、共分散行列に負の値がでました。
+コブクロモクの場合、光合成が飽和するほどの光ではなかったと考えられる。
+</p>
+</div>
+<p>問題を残しながら、<span class="math inline">\(I_c\)</span> と <span class="math inline">\(I_k\)</span> の誤差を求めます。</p>
+</div>
+<div id="ガウス誤差伝播法" class="section level2" number="11.8">
+<h2>
+<span class="header-section-number">11.8</span> ガウス誤差伝播法<a class="anchor" aria-label="anchor" href="#%E3%82%AC%E3%82%A6%E3%82%B9%E8%AA%A4%E5%B7%AE%E4%BC%9D%E6%92%AD%E6%B3%95"><i class="fas fa-link"></i></a>
+</h2>
+<p>誤差伝播法は直接推定したパラメータから間接パラメータの誤差を推定するための手法です。
+他変数関数のテイラー展開を第2次の項まで求めた式で誤差を計算します。
+ただし、直接推定したパラメータはお互いに独立していたら、第1次の項まで十分です。</p>
+<p><span class="math display">\[
+\sigma_f^2 = \mathbf{g}^T\mathbf{V}\mathbf{g}
+\]</span>
+<span class="math display">\[
+\mathbf{g} =
+\begin{bmatrix}
+\frac{\partial f}{\partial \beta_x}\\
+\frac{\partial f}{\partial \beta_y}\\
+\frac{\partial f}{\partial \beta_z}\\
+\end{bmatrix}
+\]</span></p>
+<p><span class="math display">\[
+\mathbf{V} =
+\begin{bmatrix}
+\sigma_{xx}^2 &amp; \sigma_{xy}^2 &amp; \sigma_{xz}^2 \\
+\sigma_{xy}^2 &amp; \sigma_{yy}^2 &amp; \sigma_{yz}^2 \\
+\sigma_{xz}^2 &amp; \sigma_{yz}^2 &amp; \sigma_{zz}^2 \\
+\end{bmatrix}
+\]</span></p>
+<p><span class="math display">\[
+\sigma_f^2 =
+\begin{bmatrix}
+\frac{\partial f}{\partial \beta_x}&amp;
+\frac{\partial f}{\partial \beta_y}&amp;
+\frac{\partial f}{\partial \beta_z}\\
+\end{bmatrix}
+\begin{bmatrix}
+\sigma_{xx}^2 &amp; \sigma_{xy}^2 &amp; \sigma_{xz}^2 \\
+\sigma_{xy}^2 &amp; \sigma_{yy}^2 &amp; \sigma_{yz}^2 \\
+\sigma_{xz}^2 &amp; \sigma_{yz}^2 &amp; \sigma_{zz}^2 \\
+\end{bmatrix}
+\begin{bmatrix}
+\frac{\partial f}{\partial \beta_x}\\
+\frac{\partial f}{\partial \beta_y}\\
+\frac{\partial f}{\partial \beta_z}\\
+\end{bmatrix}
+\]</span></p>
+<p><span class="math display">\[
+\sigma_f^2 =
+\begin{bmatrix}
+\frac{\partial f}{\partial \beta_x}\sigma_{xx}^2 +\frac{\partial f}{\partial \beta_y}\sigma_{xy}^2 +\frac{\partial f}{\partial \beta_y}\sigma_{xz}^2&amp;
+\frac{\partial f}{\partial \beta_x}\sigma_{xy}^2 +\frac{\partial f}{\partial \beta_y}\sigma_{yy}^2 +\frac{\partial f}{\partial \beta_y}\sigma_{yz}^2&amp;
+\frac{\partial f}{\partial \beta_x}\sigma_{xz}^2 +\frac{\partial f}{\partial \beta_y}\sigma_{yz}^2 +\frac{\partial f}{\partial \beta_y}\sigma_{zz}^2
+\end{bmatrix}
+\begin{bmatrix}
+\frac{\partial f}{\partial \beta_x}\\
+\frac{\partial f}{\partial \beta_y}\\
+\frac{\partial f}{\partial \beta_z}\\
+\end{bmatrix}
+\]</span>
+<span class="math display">\[
+\sigma_f^2 =
+\frac{\partial f}{\partial \beta_x}\left(\frac{\partial f}{\partial \beta_x}\sigma_{xx}^2 +\frac{\partial f}{\partial \beta_y}\sigma_{xy}^2 +\frac{\partial f}{\partial \beta_z}\sigma_{xz}^2\right) +
+\frac{\partial f}{\partial \beta_y}\left(\frac{\partial f}{\partial \beta_x}\sigma_{xy}^2 +\frac{\partial f}{\partial \beta_y}\sigma_{yy}^2 +\frac{\partial f}{\partial \beta_z}\sigma_{yz}^2\right) +
+\frac{\partial f}{\partial \beta_z}\left(\frac{\partial f}{\partial \beta_x}\sigma_{xz}^2 +\frac{\partial f}{\partial \beta_y}\sigma_{yz}^2 +\frac{\partial f}{\partial \beta_z}\sigma_{zz}^2\right)
+\]</span></p>
+<p><span class="math display">\[
+\sigma_f^2 = \left(\frac{\partial f}{\partial \beta_x}\right)^2\sigma_{xx}^2 +
+                   \frac{\partial f}{\partial \beta_x}\frac{\partial f}{\partial \beta_y}\sigma_{xy}^2 +
+                   \frac{\partial f}{\partial \beta_x}\frac{\partial f}{\partial \beta_z}\sigma_{xz}^2 +
+             \left(\frac{\partial f}{\partial \beta_y}\right)^2\sigma_{yy}^2 +
+                   \frac{\partial f}{\partial \beta_y}\frac{\partial f}{\partial \beta_x}\sigma_{xy}^2 +
+                   \frac{\partial f}{\partial \beta_y}\frac{\partial f}{\partial \beta_z}\sigma_{yz}^2 +
+             \left(\frac{\partial f}{\partial \beta_z}\right)^2\sigma_{zz}^2 +
+                   \frac{\partial f}{\partial \beta_z}\frac{\partial f}{\partial \beta_x}\sigma_{xz}^2 +
+                   \frac{\partial f}{\partial \beta_z}\frac{\partial f}{\partial \beta_y}\sigma_{yz}^2
+\]</span></p>
+<p><span class="math display">\[
+\sigma_f^2 = \left(\frac{\partial f}{\partial \beta_x}\right)^2\sigma_{xx}^2 +
+             \left(\frac{\partial f}{\partial \beta_y}\right)^2\sigma_{yy}^2 +
+             \left(\frac{\partial f}{\partial \beta_z}\right)^2\sigma_{zz}^2 +
+                   2\frac{\partial f}{\partial \beta_x}\frac{\partial f}{\partial \beta_y}\sigma_{xy}^2 +
+                   2\frac{\partial f}{\partial \beta_x}\frac{\partial f}{\partial \beta_z}\sigma_{xz}^2 +
+                   2\frac{\partial f}{\partial \beta_y}\frac{\partial f}{\partial \beta_z}\sigma_{yz}^2
+\]</span></p>
+<p>参考文献：
+* Tellinghuisen J. 2001. Statistical error propagation. Journal of Physical Chemistry A 105: 3917 - 3921.
+* Lo E. 2005. Gaussian error propagation applied to ecological data: Post-ice-storm-downed woody biomass. Ecological Monographs 75: 451-466.</p>
+<p><span class="math display">\[
+\sigma_f^2=\sum_{i = 1}^n \left(\frac{\partial q}{\partial x_i}\sigma_{x_i}\right)^2 + 2\sum_{i = 1}^n\sum_{j = 1,j\neq i}^n \left(\frac{\partial q}{\partial x_i}\frac{\partial q}{\partial x_j}\rho_{x_i x_j}\sigma_{x_i}\sigma_{x_j}\right)
+\]</span></p>
+<p>共分散と相関の関係は次の通りです。</p>
+<p><span class="math display">\[
+\overbrace{\rho_{xy}}^\text{相関}= \overbrace{\sigma_{xy}}^\text{共分散} / \underbrace{(\sigma_x\sigma_y)}_{x,y\;\text{の標準偏差}}
+\]</span></p>
+<p>では、Rで解析に使ったモデルの偏微分方程式を求めます。
+光飽和点 <span class="math inline">\((I_k)\)</span> と光補償点 <span class="math inline">\((I_c)\)</span> の <code>formula</code> は次のように定義します。</p>
+<p><span class="math display">\[
+\begin{aligned}
+I_k &amp; = f_1 = P_{max} / \alpha \\
+I_c &amp; = f_2 = \frac{P_{max}}{\alpha} \ln\left(\frac{P_{max}}{P_{max} - R_d}\right) \\
+\end{aligned}
+\]</span></p>
+<div class="sourceCode" id="cb237"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fic</span> <span class="op">=</span> <span class="va">ic</span> <span class="op">~</span> <span class="va">pmax</span><span class="op">/</span><span class="va">alpha</span>
+<span class="va">fik</span> <span class="op">=</span> <span class="va">ik</span> <span class="op">~</span> <span class="va">pmax</span><span class="op">/</span><span class="va">alpha</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">pmax</span><span class="op">/</span><span class="op">(</span><span class="va">pmax</span> <span class="op">-</span> <span class="va">rd</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><code>fic</code> と <code>fik</code> は 3つの要素で組み立てられた formula です。</p>
+<div class="sourceCode" id="cb238"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">fic</span><span class="op">)</span>
+<span class="co">#&gt; [1] "formula"</span>
+<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">fic</span><span class="op">)</span>
+<span class="co">#&gt; [1] 3</span>
+<span class="va">fic</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
+<span class="co">#&gt; `~`</span>
+<span class="va">fic</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span>
+<span class="co">#&gt; ic</span>
+<span class="va">fic</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>
+<span class="co">#&gt; pmax/alpha</span></code></pre></div>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\partial f_1}{\partial \alpha} &amp;= \frac{-P_{max}}{\alpha^2} \\
+\frac{\partial f_1}{\partial P_{max}} &amp;= \frac{1}{\alpha} \\
+\end{aligned}
+\]</span>
+<span class="math display">\[
+\begin{aligned}
+\frac{\partial f_2}{\partial \alpha} &amp;= -\frac{P_{max}}{\alpha^2} \log\left(\frac{P_{max}}{P_{max} - R_d}\right) \\
+\frac{\partial f_2}{\partial P_{max}} &amp;= \frac{1}{\alpha} \log\left(\frac{P_{max}}{P_{max} - R_d}\right) + \frac{P_{max}}{\alpha}\left(\frac{1}{P_{max} - R_d} - \frac{P_{max}}{(P_{max}-R_d)^2}\right)/\left(\frac{P_{max}}{P_{max} - R_d}\right) \\
+\frac{\partial f_2}{\partial R_{d}} &amp;= \frac{P_{max}}{\alpha} \frac{P_{max}} {\left(P_{max}-R_d\right)^2}/\left(\frac{P_{max}}{P_{max} - R_d}\right) \\
+\end{aligned}
+\]</span></p>
+<div class="sourceCode" id="cb239"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">propagate_error</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">model</span>, <span class="va">dmodel</span>, <span class="va">parameters</span><span class="op">)</span> <span class="op">{</span>
+  <span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="va"><a href="https://rlang.r-lib.org">rlang</a></span><span class="op">)</span>  
+  <span class="va">cfs</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coefficients</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span>
+  <span class="va">vars</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/allnames.html">all.vars</a></span><span class="op">(</span><span class="va">dmodel</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
+  <span class="va">V</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/vcov.html">vcov</a></span><span class="op">(</span><span class="va">model</span><span class="op">)</span>
+  
+  <span class="va">V</span> <span class="op">=</span> <span class="va">V</span><span class="op">[</span><span class="va">parameters</span>, <span class="va">parameters</span><span class="op">]</span> 
+  <span class="va">expectation</span> <span class="op">=</span> <span class="va">cfs</span><span class="op">[</span><span class="va">parameters</span><span class="op">]</span>
+  
+  <span class="va">gradient_fn</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/deriv.html">deriv</a></span><span class="op">(</span><span class="va">dmodel</span><span class="op">[[</span><span class="fl">3</span><span class="op">]</span><span class="op">]</span>, <span class="va">vars</span>, function.arg <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
+  <span class="va">ff</span> <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/expr.html">expr</a></span><span class="op">(</span><span class="fu">gradient_fn</span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="fu"><a href="https://rlang.r-lib.org/reference/sym.html">syms</a></span><span class="op">(</span><span class="va">vars</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">tmp</span> <span class="op">=</span>  <span class="fu"><a href="https://rlang.r-lib.org/reference/defusing-advanced.html">exprs</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="op">!</span><span class="va">expectation</span><span class="op">)</span>
+  <span class="va">tmp</span> <span class="op">=</span> <span class="fu"><a href="https://rlang.r-lib.org/reference/set_names.html">set_names</a></span><span class="op">(</span><span class="va">tmp</span>, <span class="va">vars</span><span class="op">)</span>
+  
+  <span class="kw">for</span><span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">vars</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="fu"><a href="https://rlang.r-lib.org/reference/call2.html">call2</a></span><span class="op">(</span><span class="st">"="</span>, <span class="fu"><a href="https://rlang.r-lib.org/reference/expr.html">expr</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="va">vars</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span>, <span class="va">expectation</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/base/eval.html">eval</a></span><span class="op">(</span><span class="op">)</span>
+  <span class="op">}</span>
+  <span class="va">G</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/eval.html">eval</a></span><span class="op">(</span><span class="va">ff</span><span class="op">)</span>
+  <span class="va">G</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/attributes.html">attributes</a></span><span class="op">(</span><span class="va">G</span><span class="op">)</span><span class="op">$</span><span class="va">gradient</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span>ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">G</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">V</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html">%*%</a></span> <span class="va">G</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
+<p>ウミトラノオの共分散値は負の値になっていたので、ウミトラノオの <span class="math inline">\(I_c\)</span> と <span class="math inline">\(I_k\)</span> の標準誤差の推定はできません。
+残りのコブクロモクと幼体の方だけ推定してみます。</p>
+<div class="sourceCode" id="cb240"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cfsout</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">fullmodel</span><span class="op">)</span><span class="op">$</span><span class="va">coef</span> |&gt; <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span>rownames <span class="op">=</span> <span class="st">"parameter"</span><span class="op">)</span> |&gt; 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">parameter</span>, est<span class="op">=</span><span class="va">Estimate</span>, se <span class="op">=</span> <span class="va">`Std. Error`</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_extract.html">str_extract</a></span><span class="op">(</span><span class="va">parameter</span>, <span class="st">"[0-9]"</span><span class="op">)</span>,
+         parameter <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_extract.html">str_extract</a></span><span class="op">(</span><span class="va">parameter</span>, <span class="st">"[A-z]+"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">parameter</span>,
+              values_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">est</span>, <span class="va">se</span><span class="op">)</span>,
+              names_glue <span class="op">=</span> <span class="st">"{.value}_{parameter}"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb241"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cnames</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Seaweed"</span>, <span class="st">"Parameter"</span>, <span class="st">"Estimate"</span>, <span class="st">"SE"</span><span class="op">)</span>
+<span class="va">cfsout</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span><span class="op">(</span><span class="va">modelcfs</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">seaweed</span>, est_ic <span class="op">=</span> <span class="va">ic</span>, est_ik <span class="op">=</span> <span class="va">ik</span><span class="op">)</span>, <span class="va">cfsout</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>pmax <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="st">"pmax"</span>, <span class="va">id</span><span class="op">)</span>,
+  alpha <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="st">"alpha"</span>, <span class="va">id</span><span class="op">)</span>,
+  rd <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="st">"rd"</span>, <span class="va">id</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>se_ic <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html">pmap_dbl</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">pmax</span>, <span class="va">alpha</span>, <span class="va">rd</span><span class="op">)</span>, \<span class="op">(</span><span class="va">pmax</span>, <span class="va">alpha</span>, <span class="va">rd</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">fic</span> <span class="op">=</span> <span class="va">ic</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">pmax</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">alpha</span><span class="op">)</span>
+    <span class="fu">propagate_error</span><span class="op">(</span><span class="va">fullmodel</span>, <span class="va">fic</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pmax</span>, <span class="va">alpha</span><span class="op">)</span><span class="op">)</span>
+  <span class="op">}</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>se_ik <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html">pmap_dbl</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">pmax</span>, <span class="va">alpha</span>, <span class="va">rd</span><span class="op">)</span>, \<span class="op">(</span><span class="va">pmax</span>, <span class="va">alpha</span>, <span class="va">rd</span><span class="op">)</span> <span class="op">{</span>
+    <span class="va">fik</span> <span class="op">=</span> <span class="va">ik</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">pmax</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">alpha</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">pmax</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">pmax</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="va">rd</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
+    <span class="fu">propagate_error</span><span class="op">(</span><span class="va">fullmodel</span>, <span class="va">fik</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">pmax</span>, <span class="va">alpha</span>, <span class="va">rd</span><span class="op">)</span><span class="op">)</span>
+  <span class="op">}</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">alpha</span>, <span class="op">-</span><span class="va">pmax</span>, <span class="op">-</span><span class="va">rd</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"est_|se_"</span><span class="op">)</span>,
+               names_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"stat"</span>, <span class="st">"par"</span><span class="op">)</span>,
+               names_pattern <span class="op">=</span> <span class="st">"(est|se)_(.*)"</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">stat</span>, values_from <span class="op">=</span> <span class="va">value</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">par</span>, <span class="va">id</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">id</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb242"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">cfsout</span> |&gt; 
+  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kbl.html">kbl</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">3</span>,<span class="fl">2</span><span class="op">)</span>,
+                  col.names <span class="op">=</span> <span class="va">cnames</span><span class="op">)</span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<thead><tr>
+<th style="text-align:left;">
+Seaweed
+</th>
+<th style="text-align:left;">
+Parameter
+</th>
+<th style="text-align:right;">
+Estimate
+</th>
+<th style="text-align:right;">
+SE
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+ウミトラノオ
+</td>
+<td style="text-align:left;">
+alpha
+</td>
+<td style="text-align:right;">
+0.086
+</td>
+<td style="text-align:right;">
+2.000000e-02
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+コブクロモク
+</td>
+<td style="text-align:left;">
+alpha
+</td>
+<td style="text-align:right;">
+0.165
+</td>
+<td style="text-align:right;">
+1.000000e-01
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+幼体
+</td>
+<td style="text-align:left;">
+alpha
+</td>
+<td style="text-align:right;">
+0.072
+</td>
+<td style="text-align:right;">
+5.000000e-02
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ウミトラノオ
+</td>
+<td style="text-align:left;">
+ic
+</td>
+<td style="text-align:right;">
+271.412
+</td>
+<td style="text-align:right;">
+5.657173e+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+コブクロモク
+</td>
+<td style="text-align:left;">
+ic
+</td>
+<td style="text-align:right;">
+31.839
+</td>
+<td style="text-align:right;">
+2.039000e+02
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+幼体
+</td>
+<td style="text-align:left;">
+ic
+</td>
+<td style="text-align:right;">
+62.725
+</td>
+<td style="text-align:right;">
+1.215700e+02
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ウミトラノオ
+</td>
+<td style="text-align:left;">
+ik
+</td>
+<td style="text-align:right;">
+25.352
+</td>
+<td style="text-align:right;">
+7.580000e+00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+コブクロモク
+</td>
+<td style="text-align:left;">
+ik
+</td>
+<td style="text-align:right;">
+2.735
+</td>
+<td style="text-align:right;">
+1.400000e+00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+幼体
+</td>
+<td style="text-align:left;">
+ik
+</td>
+<td style="text-align:right;">
+12.739
+</td>
+<td style="text-align:right;">
+2.270000e+00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ウミトラノオ
+</td>
+<td style="text-align:left;">
+pmax
+</td>
+<td style="text-align:right;">
+23.286
+</td>
+<td style="text-align:right;">
+4.740000e+00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+コブクロモク
+</td>
+<td style="text-align:left;">
+pmax
+</td>
+<td style="text-align:right;">
+5.241
+</td>
+<td style="text-align:right;">
+1.310000e+00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+幼体
+</td>
+<td style="text-align:left;">
+pmax
+</td>
+<td style="text-align:right;">
+4.501
+</td>
+<td style="text-align:right;">
+1.460000e+00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ウミトラノオ
+</td>
+<td style="text-align:left;">
+rd
+</td>
+<td style="text-align:right;">
+2.077
+</td>
+<td style="text-align:right;">
+1.050000e+00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+コブクロモク
+</td>
+<td style="text-align:left;">
+rd
+</td>
+<td style="text-align:right;">
+0.432
+</td>
+<td style="text-align:right;">
+1.140000e+00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+幼体
+</td>
+<td style="text-align:left;">
+rd
+</td>
+<td style="text-align:right;">
+0.827
+</td>
+<td style="text-align:right;">
+1.090000e+00
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="model-selection.html"><span class="header-section-number">10</span> モデル選択</a></div>
+<div class="next"><a href="ggplot.html"><span class="header-section-number">12</span> ggplot</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#non-linear-model01"><span class="header-section-number">11</span> 非線形モデルI</a></li>
+<li><a class="nav-link" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-9"><span class="header-section-number">11.1</span> 必要なパッケージ</a></li>
+<li>
+<a class="nav-link" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF-2"><span class="header-section-number">11.2</span> データの読み込み</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#%E5%85%89%E7%92%B0%E5%A2%83%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E5%87%A6%E7%90%86"><span class="header-section-number">11.2.1</span> 光環境データの処理</a></li>
+<li><a class="nav-link" href="#%E5%85%A8%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E7%B5%90%E5%90%88"><span class="header-section-number">11.2.2</span> 全データを結合</a></li>
+<li><a class="nav-link" href="#%E5%85%89%E5%90%88%E6%88%90%E9%80%9F%E5%BA%A6%E3%82%92%E6%B1%82%E3%82%81%E3%82%8B"><span class="header-section-number">11.2.3</span> 光合成速度を求める</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#%E3%83%A2%E3%83%87%E3%83%AB%E3%81%AE%E5%BD%93%E3%81%A6%E3%81%AF%E3%82%81"><span class="header-section-number">11.3</span> モデルの当てはめ</a></li>
+<li><a class="nav-link" href="#%E8%A8%BA%E6%96%AD%E5%9B%B3-1"><span class="header-section-number">11.4</span> 診断図</a></li>
+<li><a class="nav-link" href="#%E3%83%91%E3%83%A9%E3%83%A1%E3%83%BC%E3%82%BF%E3%81%AE%E9%9B%86%E8%A8%88"><span class="header-section-number">11.5</span> パラメータの集計</a></li>
+<li><a class="nav-link" href="#%E5%A4%9A%E9%87%8D%E6%AF%94%E8%BC%83-2"><span class="header-section-number">11.6</span> 多重比較</a></li>
+<li><a class="nav-link" href="#%E3%83%A2%E3%83%87%E3%83%AB%E3%81%AE%E6%94%B9%E8%89%AF-1"><span class="header-section-number">11.7</span> モデルの改良</a></li>
+<li><a class="nav-link" href="#%E3%82%AC%E3%82%A6%E3%82%B9%E8%AA%A4%E5%B7%AE%E4%BC%9D%E6%92%AD%E6%B3%95"><span class="header-section-number">11.8</span> ガウス誤差伝播法</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/gnishihara/Lab-Manual/blob/master/29-analysis-nonlinear.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/gnishihara/Lab-Manual/edit/master/29-analysis-nonlinear.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室. It was last built on 2022-05-04.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

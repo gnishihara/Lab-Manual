@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 1 データの読み込み | データ解析マニュアル</title>
+<meta name="author" content="水圏植物生態学研究室">
+<meta name="description" content="1.1 必要なパッケージ library(tidyverse) library(readxl)  1.2 データの確認 データは環境省の「瀬戸内海における藻場・干潟分布状況調査（概要）」からまとめました。 もとのファイルは環境省平成３０年９月スライドデッキ からダウンロードできます。 XLSXファイルは readxl パッケージの read_xlsx() 関数で読み込みます。...">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
+<meta property="og:title" content="Chapter 1 データの読み込み | データ解析マニュアル">
+<meta property="og:type" content="book">
+<meta property="og:description" content="1.1 必要なパッケージ library(tidyverse) library(readxl)  1.2 データの確認 データは環境省の「瀬戸内海における藻場・干潟分布状況調査（概要）」からまとめました。 もとのファイルは環境省平成３０年９月スライドデッキ からダウンロードできます。 XLSXファイルは readxl パッケージの read_xlsx() 関数で読み込みます。...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 1 データの読み込み | データ解析マニュアル">
+<meta name="twitter:description" content="1.1 必要なパッケージ library(tidyverse) library(readxl)  1.2 データの確認 データは環境省の「瀬戸内海における藻場・干潟分布状況調査（概要）」からまとめました。 もとのファイルは環境省平成３０年９月スライドデッキ からダウンロードできます。 XLSXファイルは readxl パッケージの read_xlsx() 関数で読み込みます。...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<link rel="stylesheet" href="bs4_style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">データ解析マニュアル</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">このマニュアルについて</a></li>
+<li><a class="active" href="data-input.html"><span class="header-section-number">1</span> データの読み込み</a></li>
+<li><a class="" href="data-wrangling.html"><span class="header-section-number">2</span> データの処理</a></li>
+<li><a class="" href="data-logger-input.html"><span class="header-section-number">3</span> ロガーからの読み込み</a></li>
+<li><a class="" href="data-summary.html"><span class="header-section-number">4</span> データの集計</a></li>
+<li><a class="" href="map-function.html"><span class="header-section-number">5</span> map 関数ってすごい</a></li>
+<li><a class="" href="t-test.html"><span class="header-section-number">6</span> t 検定</a></li>
+<li><a class="" href="anova.html"><span class="header-section-number">7</span> 分散分析</a></li>
+<li><a class="" href="linear-models.html"><span class="header-section-number">8</span> 線形モデル</a></li>
+<li><a class="" href="gam.html"><span class="header-section-number">9</span> 一般化加法モデル</a></li>
+<li><a class="" href="model-selection.html"><span class="header-section-number">10</span> モデル選択</a></li>
+<li><a class="" href="non-linear-model01.html"><span class="header-section-number">11</span> 非線形モデルI</a></li>
+<li><a class="" href="ggplot.html"><span class="header-section-number">12</span> ggplot</a></li>
+<li><a class="" href="maps.html"><span class="header-section-number">13</span> 地図の作り方</a></li>
+<li><a class="" href="wavelet.html"><span class="header-section-number">14</span> Wavelet 解析</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/gnishihara/Lab-Manual">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="data-input" class="section level1" number="1">
+<h1>
+<span class="header-section-number">1</span> データの読み込み<a class="anchor" aria-label="anchor" href="#data-input"><i class="fas fa-link"></i></a>
+</h1>
+<div id="必要なパッケージ" class="section level2" number="1.1">
+<h2>
+<span class="header-section-number">1.1</span> 必要なパッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readxl.tidyverse.org">readxl</a></span><span class="op">)</span></code></pre></div>
+</div>
+<div id="データの確認" class="section level2" number="1.2">
+<h2>
+<span class="header-section-number">1.2</span> データの確認<a class="anchor" aria-label="anchor" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E7%A2%BA%E8%AA%8D"><i class="fas fa-link"></i></a>
+</h2>
+<p>データは環境省の「瀬戸内海における藻場・干潟分布状況調査（概要）」からまとめました。
+もとのファイルは<a href="http://www.env.go.jp/water/totalresult.pdf">環境省平成３０年９月スライドデッキ</a> からダウンロードできます。
+XLSXファイルは <code>readxl</code> パッケージの <code><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx()</a></code> 関数で読み込みます。
+では、XLSXファイルに存在するシートの確認をしましょう<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>。</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">rootdatafolder</span> <span class="op">=</span> <span class="fu">rprojroot</span><span class="fu">::</span><span class="fu"><a href="https://rprojroot.r-lib.org/reference/find_root_file.html">find_rstudio_root_file</a></span><span class="op">(</span><span class="st">"Data/"</span><span class="op">)</span>
+<span class="va">filename</span> <span class="op">=</span> <span class="st">'瀬戸内海藻場データ.xlsx'</span>
+<span class="va">path</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="va">rootdatafolder</span>, <span class="va">filename</span><span class="op">)</span>
+<span class="fu"><a href="https://readxl.tidyverse.org/reference/excel_sheets.html">excel_sheets</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span> <span class="co"># シート名を確認する</span>
+<span class="co">#&gt; [1] "FY1990" "FY2018"</span></code></pre></div>
+<p><code><a href="https://readxl.tidyverse.org/reference/excel_sheets.html">excel_sheets()</a></code> を実行したら、ファイルから 2つのシート名が返ってきました。
+読み込む前に、それぞれのシートの構造を確認しましょう (Fig. <a href="data-input.html#fig:seto1">1.1</a> and <a href="data-input.html#fig:seto2">1.2</a>)。
+確認はスプレッドシートソフト（MS Office、 Google Sheets、 Open Office、 Apple Numbers、 など）で行います。</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:seto1"></span>
+<img src="01-data-input_files/figure-html/seto1-1.png" alt="瀬戸内海藻場データ.xlsx の FY1990 シートに入力されているデータは縦長の形式です。" width="90%"><p class="caption">
+Figure 1.1: 瀬戸内海藻場データ.xlsx の FY1990 シートに入力されているデータは縦長の形式です。
+</p>
+</div>
+<p>FY1990 のデータの構造は縦長なので、読み込みは比較的に楽です。
+<strong>それぞれの変数は一つの列</strong><a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>に入力されているから、読み込みが簡単です。</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:seto2"></span>
+<img src="01-data-input_files/figure-html/seto2-1.png" alt="瀬戸内海藻場データ.xlsx の FY2018 シートに入力されているデータは横長の形式です。" width="90%"><p class="caption">
+Figure 1.2: 瀬戸内海藻場データ.xlsx の FY2018 シートに入力されているデータは横長の形式です。
+</p>
+</div>
+<p>FY2018 のデータの構造は横長です。
+データは海藻と海草にわけられ、それぞれの変数じゃなくて、それぞれの場所の値を列に入力されています。
+この用なデータの読み込みは手間がかかります<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>。</p>
+</div>
+<div id="データを読み込む" class="section level2" number="1.3">
+<h2>
+<span class="header-section-number">1.3</span> データを読み込む<a class="anchor" aria-label="anchor" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%82%80"><i class="fas fa-link"></i></a>
+</h2>
+<p>では、<strong>FY1990 シート</strong>のデータを読み込みます。
+ここでシートから読み込むセルの範囲を指定します。</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">RNG</span> <span class="op">=</span> <span class="st">"A4:C27"</span>   <span class="co"># セルの範囲</span>
+<span class="va">SHEET</span> <span class="op">=</span> <span class="st">"FY1990"</span> <span class="co"># シート名</span>
+<span class="va">d19</span> <span class="op">=</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="va">path</span>, sheet <span class="op">=</span> <span class="va">SHEET</span>, range <span class="op">=</span> <span class="va">RNG</span><span class="op">)</span></code></pre></div>
+<p>データは <code>tibble</code> として読み込まれました。
+データに大きな問題がなければ、各列の型・タイプ (type)<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> は自動的に設定されます。</p>
+<ul>
+<li>
+<code>調査海域</code> の列は <code>&lt;chr&gt;</code> : character, 文字列</li>
+<li>
+<code>海藻</code> の列は <code>&lt;dbl&gt;</code>: double, ダブル・数値・実数</li>
+<li>
+<code>海草</code> の列は <code>&lt;dbl&gt;</code>: double, ダブル・数値・実数</li>
+</ul>
+<p>変数名が日本語の場合、コードが書きづらくなったり、バグの原因になります。
+最初から英語表記にするのが合理的ですが、R環境内で名前を変換することは難しくないです。
+とりあえず <code>d19</code> の内容をみましょう。</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">d19</span> <span class="co"># FY1990 データの内容</span>
+<span class="co">#&gt; # A tibble: 23 × 3</span>
+<span class="co">#&gt;    調査海域  海藻  海草</span>
+<span class="co">#&gt;    &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 東部        55    14</span>
+<span class="co">#&gt;  2 東部       128    62</span>
+<span class="co">#&gt;  3 東部        86     0</span>
+<span class="co">#&gt;  4 東部        87     8</span>
+<span class="co">#&gt;  5 東部       214    54</span>
+<span class="co">#&gt;  6 東部       140    57</span>
+<span class="co">#&gt;  7 中部        30    45</span>
+<span class="co">#&gt;  8 中部         5   623</span>
+<span class="co">#&gt;  9 中部       460   886</span>
+<span class="co">#&gt; 10 中部        51   180</span>
+<span class="co">#&gt; # … with 13 more rows</span></code></pre></div>
+<p><strong>FY2018 シート</strong>の読み込みは、海藻と海草ごとにする必要があります。
+読み込んだ後に、データを縦長に変換し、2 つの tibble を縦に結合します。</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">RNG</span> <span class="op">=</span> <span class="st">"A6:C15"</span>   <span class="co"># 海藻データのセル範囲</span>
+<span class="va">SHEET</span> <span class="op">=</span> <span class="st">"FY2018"</span> <span class="co"># シート名</span>
+<span class="va">seaweed</span> <span class="op">=</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="va">path</span>, sheet <span class="op">=</span> <span class="va">SHEET</span>, range <span class="op">=</span> <span class="va">RNG</span><span class="op">)</span>
+<span class="va">RNG</span> <span class="op">=</span> <span class="st">"E6:G15"</span>   <span class="co"># 海草データのセル範囲</span>
+<span class="va">seagrass</span> <span class="op">=</span> <span class="fu"><a href="https://readxl.tidyverse.org/reference/read_excel.html">read_xlsx</a></span><span class="op">(</span><span class="va">path</span>, sheet <span class="op">=</span> <span class="va">SHEET</span>, range <span class="op">=</span> <span class="va">RNG</span><span class="op">)</span></code></pre></div>
+<p>最初のセル範囲を読み込んで ファイルのコンテンツを <code>seaweed</code> に書き込んだら、<code>RNG</code> を次のセル範囲に書き換えます。
+データは同じシートにあるので、<code>SHEET</code> を変更したり、新たに定義する必要はありません。</p>
+<p><code>seaweed</code> の内容は次のとおりです。</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">seaweed</span>
+<span class="co">#&gt; # A tibble: 9 × 3</span>
+<span class="co">#&gt;    東部  中部  西部</span>
+<span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt; 1    14    62   108</span>
+<span class="co">#&gt; 2    93   838     0</span>
+<span class="co">#&gt; 3    12   933     0</span>
+<span class="co">#&gt; 4     8   193     0</span>
+<span class="co">#&gt; 5   444   235     0</span>
+<span class="co">#&gt; 6    85   150   126</span>
+<span class="co">#&gt; 7    NA   283     0</span>
+<span class="co">#&gt; 8    NA     3     0</span>
+<span class="co">#&gt; 9    NA    12    NA</span></code></pre></div>
+<p><code>seagrass</code> の内容は次のとおりです。</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">seagrass</span>
+<span class="co">#&gt; # A tibble: 9 × 3</span>
+<span class="co">#&gt;    東部  中部  西部</span>
+<span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt; 1    71    63   430</span>
+<span class="co">#&gt; 2   145     5   231</span>
+<span class="co">#&gt; 3    94   674   404</span>
+<span class="co">#&gt; 4    82    69  2005</span>
+<span class="co">#&gt; 5    49    21  1094</span>
+<span class="co">#&gt; 6   100   141    54</span>
+<span class="co">#&gt; 7    NA   635   221</span>
+<span class="co">#&gt; 8    NA    62   182</span>
+<span class="co">#&gt; 9    NA   440    NA</span></code></pre></div>
+<p><code>NA</code> は Not Available の諸略です。
+Rの場合、存在しないデータ (欠損値) は <code>NA</code> になります。</p>
+
+</div>
+</div>
+<div class="footnotes">
+<hr>
+<ol start="2">
+<li id="fn2"><p>t検定、一元配置分散分析、二元配置分散分析のチャプターに使うデータはここで処理しています。<a href="data-input.html#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>基本的には一行に 1 サンプル、一列に 1 変数にしましょう。<a href="data-input.html#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>一行に複数サンプルがあるので、そのまま R の関数にわたせない。<a href="data-input.html#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>他に: &lt;lgl&gt; logical、 論理値；&lt;int&gt; integer、 整数；&lt;dttm&gt; datetime、日時 などもあります。<a href="data-input.html#fnref5" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="index.html">このマニュアルについて</a></div>
+<div class="next"><a href="data-wrangling.html"><span class="header-section-number">2</span> データの処理</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#data-input"><span class="header-section-number">1</span> データの読み込み</a></li>
+<li><a class="nav-link" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8"><span class="header-section-number">1.1</span> 必要なパッケージ</a></li>
+<li><a class="nav-link" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E7%A2%BA%E8%AA%8D"><span class="header-section-number">1.2</span> データの確認</a></li>
+<li><a class="nav-link" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%82%80"><span class="header-section-number">1.3</span> データを読み込む</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/gnishihara/Lab-Manual/blob/master/01-data-input.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/gnishihara/Lab-Manual/edit/master/01-data-input.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室. It was last built on 2022-05-04.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>
