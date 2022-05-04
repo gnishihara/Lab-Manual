@@ -1,6 +1,6 @@
 --- 
 title: "データ解析マニュアル"
-author: "水圏植物生態学研究室"
+author: "水圏植物生態学研究室 (greg nishihara)"
 date: "2022-05-04"
 site: bookdown::bookdown_site
 documentclass: book
@@ -15,8 +15,10 @@ csl: chicago-fullnote-bibliography.csl
 
 # このマニュアルについて {-}
 
-**【重要】このマニュアルは水圏植物生態学研究室用に準備しましたが、
+**【重要1】このマニュアルは水圏植物生態学研究室用に準備しましたが、
 一部は水産学部の講義につかいます。**
+
+**【重要2】R コードに自身あるが、日本語はチンプンカンプンかも。It is easier to explain this stuff in English.**
 
 解析の背景については講義^[基礎統計学]の資料やレクチャーを参考にしてください。
 解析は章ごとに紹介していて、コードはお互いに独立させたつもりです。
@@ -33,7 +35,7 @@ csl: chicago-fullnote-bibliography.csl
 
 **研究室の皆さん：**研究室用のデータは RStudio の `~/Lab_Data/` に入っています。
 
-マニュアルの更新日：05/04/2022 06:58:09 JST
+マニュアルの更新日：05/04/2022 11:00:59 JST
 
 ## サーバ環境 {-}
 
