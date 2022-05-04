@@ -877,10 +877,12 @@ cfsout = cfsout |>
          est_ik = est_pmax / est_alpha * log(est_pmax / (est_pmax - est_rd))) |> 
   mutate(pmax = str_c("pmax", id),
          alpha = str_c("alpha", id),
-         rd = str_c("rd", id))
+         rd = str_c("rd", id),
+         seaweed = c("ウミトラノオ", "コブクロモク", "幼体"))
 ```
 
 `propagate_error()` をそれぞれの海藻に適応します。
+
 ```{r}
 apply_propagate_error_fic = function(pmax, alpha, rd) {
     fic = ic ~ pmax / alpha
