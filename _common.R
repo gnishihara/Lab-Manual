@@ -16,8 +16,10 @@ knitr::opts_chunk$set(
 
 
 library(tidyverse)
+library(lubridate)
 library(showtext)
 library(ggpubr)
+library(lemon)
 library(magick)
 library(patchwork)
 

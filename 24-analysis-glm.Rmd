@@ -1186,7 +1186,7 @@ AIC(H2_poisson, H2_negbinom)
 ポアソン分布GLMのAICが高いので，負の二項分布GLMを採択します。
 
 
-\note[item]{\href{https://stats.stackexchange.com/questions/157575/why-is-the-quasi-poisson-in-glm-not-treated-as-a-special-case-of-negative-binomi}{Quasipoisson and negative binomial model}}
+<!-- \note[item]{\href{https://stats.stackexchange.com/questions/157575/why-is-the-quasi-poisson-in-glm-not-treated-as-a-special-case-of-negative-binomi}{Quasipoisson and negative binomial model}} -->
 
 ### 負の二項分布の結果（係数表）
 
