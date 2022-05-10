@@ -4,7 +4,7 @@ author: "水圏植物生態学研究室 (greg nishihara)"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book
-bibliography: [book.bib, packages.bib]
+bibliography: [book.bib, packages.bib, windfetch.bib ]
 # url: your book url like https://bookdown.org/yihui/bookdown
 # cover-image: path to the social sharing image like images/cover.jpg
 description: |
@@ -65,4 +65,76 @@ bookdown::render_book()
 ```{r, eval = FALSE}
 bookdown::serve_book()
 ```
+
+## R, Rtools, RStudio のリンク先
+
+* R は [CRANのサイト](https://cran.r-project.org/) からダウンロードしてください。
+* [Rtools42](https://cran.r-project.org/bin/windows/Rtools/rtools42/files/rtools42-5168-5107.exe) もインストールしてください。直接ダウンロードリンクに飛びます。
+* [RStudio](https://www.rstudio.com/products/rstudio/download/) のインストールも強くおすすめします。
+
+```{r, echo = F, out.width="90%"}
+link1 = "https://cran.r-project.org/"
+link2 = "https://cran.r-project.org/bin/windows/Rtools/rtools42/files/rtools42-5168-5107.exe"
+link3 = "https://www.rstudio.com/products/rstudio/download/"
+fix_name = \(x) sprintf("V%04d", 1:length(x))
+z1 = qrcode::qr_code(link1, "H") |> as_tibble(.name_repair = fix_name) |> 
+  mutate(y = 1:n()) |> 
+  pivot_longer(-y) |> 
+  mutate(x = str_extract(name, "[0-9]+")) |> 
+  mutate(x = as.numeric(x)) |> 
+  mutate(value = factor(as.numeric(value)))
+z2 = qrcode::qr_code(link2, "H") |> as_tibble(.name_repair = fix_name) |> 
+  mutate(y = 1:n()) |> 
+  pivot_longer(-y) |> 
+  mutate(x = str_extract(name, "[0-9]+")) |> 
+  mutate(x = as.numeric(x)) |> 
+  mutate(value = factor(as.numeric(value)))
+z3 = qrcode::qr_code(link3, "H") |> as_tibble(.name_repair = fix_name) |> 
+  mutate(y = 1:n()) |> 
+  pivot_longer(-y) |> 
+  mutate(x = str_extract(name, "[0-9]+")) |> 
+  mutate(x = as.numeric(x)) |> 
+  mutate(value = factor(as.numeric(value)))
+q1 = ggplot(z1) + 
+  geom_tile(aes(x = x, y = rev(y), fill = value), show.legend = F) +
+  annotate("text", x = median(z1$x), y = 0, label = "R のリンク", 
+           family = "notosans", fontface = "bold", color = "grey30") +
+  scale_fill_grey(start = 1, end = 0) +
+  coord_equal() +
+  ggpubr::clean_theme() + 
+  theme(plot.background = element_blank(),
+        panel.background = element_blank())
+q2 = ggplot(z2) + 
+  geom_tile(aes(x = x, y = rev(y), fill = value), show.legend = F) +
+  annotate("text", x = median(z2$x), y = 0, label = "Rtools42 のリンク", 
+           family = "notosans", fontface = "bold", color = "grey30") +
+  scale_fill_grey(start = 1, end = 0) +
+  coord_equal() +
+  ggpubr::clean_theme() + 
+  theme(plot.background = element_blank(),
+        panel.background = element_blank())
+q3 = ggplot(z3) + 
+  geom_tile(aes(x = x, y = rev(y), fill = value), show.legend = F) +
+  annotate("text", x = median(z3$x), y = 0, label = "RStudio のリンク", 
+           family = "notosans", fontface = "bold", color = "grey30") +
+  scale_fill_grey(start = 1, end = 0) +
+  coord_equal() +
+  ggpubr::clean_theme() + 
+  theme(plot.background = element_blank(),
+        panel.background = element_blank())
+
+q1 + q2 + q3
+# 
+# pdfname = "~/Videos/RStudio/Installation_demo/software-link-20220510.pdf"
+# pngname = str_replace(pdfname, "pdf", "png")
+# ggsave(pdfname, width = 200, height = 200, units = "mm")
+# image_read_pdf(pdfname) |> image_trim() |> 
+#   image_border(geometry = "50x50", color = "white") |> 
+#   image_write(pngname)
+```
+
+
+
+
+
 
