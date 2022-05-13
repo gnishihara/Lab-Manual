@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 15 冗長性分析 (RDA) | データ解析マニュアル</title>
+<meta name="author" content="水圏植物生態学研究室 (greg nishihara)">
+<meta name="description" content="冗長性分析は多変量解析 (multivariate analysis) の一種です。 多変量解析の目的は多変量・多次元の応答変数 (response variable, observation) の特徴を要約または予測することです。 重回帰分析、主成分分析、クラスター分析、多次元尺度更生法は代表的な方法です。 多変量解析の中に、座標づけ・順序づけ (ordination)...">
+<meta name="generator" content="bookdown 0.26 with bs4_book()">
+<meta property="og:title" content="Chapter 15 冗長性分析 (RDA) | データ解析マニュアル">
+<meta property="og:type" content="book">
+<meta property="og:description" content="冗長性分析は多変量解析 (multivariate analysis) の一種です。 多変量解析の目的は多変量・多次元の応答変数 (response variable, observation) の特徴を要約または予測することです。 重回帰分析、主成分分析、クラスター分析、多次元尺度更生法は代表的な方法です。 多変量解析の中に、座標づけ・順序づけ (ordination)...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 15 冗長性分析 (RDA) | データ解析マニュアル">
+<meta name="twitter:description" content="冗長性分析は多変量解析 (multivariate analysis) の一種です。 多変量解析の目的は多変量・多次元の応答変数 (response variable, observation) の特徴を要約または予測することです。 重回帰分析、主成分分析、クラスター分析、多次元尺度更生法は代表的な方法です。 多変量解析の中に、座標づけ・順序づけ (ordination)...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
+<link rel="stylesheet" href="bs4_style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="">データ解析マニュアル</a>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">このマニュアルについて</a></li>
+<li><a class="" href="data-input.html"><span class="header-section-number">1</span> データの読み込み</a></li>
+<li><a class="" href="data-wrangling.html"><span class="header-section-number">2</span> データの処理</a></li>
+<li><a class="" href="data-logger-input.html"><span class="header-section-number">3</span> ロガーからの読み込み</a></li>
+<li><a class="" href="data-summary.html"><span class="header-section-number">4</span> データの集計</a></li>
+<li><a class="" href="map-function.html"><span class="header-section-number">5</span> map 関数ってすごい</a></li>
+<li><a class="" href="t-test.html"><span class="header-section-number">6</span> t 検定</a></li>
+<li><a class="" href="anova.html"><span class="header-section-number">7</span> 分散分析</a></li>
+<li><a class="" href="linear-models.html"><span class="header-section-number">8</span> 線形モデル</a></li>
+<li><a class="" href="gam.html"><span class="header-section-number">9</span> 一般化加法モデル</a></li>
+<li><a class="" href="model-selection.html"><span class="header-section-number">10</span> モデル選択</a></li>
+<li><a class="" href="non-linear-model01.html"><span class="header-section-number">11</span> 非線形モデル-I</a></li>
+<li><a class="" href="ggplot.html"><span class="header-section-number">12</span> ggplot</a></li>
+<li><a class="" href="maps.html"><span class="header-section-number">13</span> 地図の作り方</a></li>
+<li><a class="" href="wind-fetch.html"><span class="header-section-number">14</span> 送風距離 (フェッチ, wind fetch )</a></li>
+<li><a class="active" href="redundancy-analysis.html"><span class="header-section-number">15</span> 冗長性分析 (RDA)</a></li>
+<li><a class="" href="wavelet.html"><span class="header-section-number">16</span> Wavelet 解析</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/gnishihara/Lab-Manual">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="redundancy-analysis" class="section level1" number="15">
+<h1>
+<span class="header-section-number">15</span> 冗長性分析 (RDA)<a class="anchor" aria-label="anchor" href="#redundancy-analysis"><i class="fas fa-link"></i></a>
+</h1>
+<p>冗長性分析は多変量解析 (multivariate analysis) の一種です。
+多変量解析の目的は多変量・多次元の応答変数 (response variable, observation) の特徴を要約または予測することです。
+重回帰分析、主成分分析、クラスター分析、多次元尺度更生法は代表的な方法です。</p>
+<p>多変量解析の中に、座標づけ・順序づけ (ordination) を用いる解析方法があります。
+これは、多次元の説明変数と多次元の応答変数 (explanatory variable, predictor) の多変量解析です。
+もっと簡易に説明すると、多変量解析は unconstrained と constrained に分けられます。</p>
+<p>では、冗長性分析は群集生態学の解析に用いる手法の 1 つです。
+実際には主成分分析を説明変数で constrained したものが冗長性分析です。
+例えば、種の行列データが応答変数となり、温度や風速、降水量などの環境要因の行列データが説明変数となります。
+つまり、生物群集と環境変数の関係を調べられます。</p>
+<p>冗長性分析をするなら、解析するまえに次の作業が必要です。</p>
+<ol style="list-style-type: decimal">
+<li>応答変数の単位が異なる場合、データのスケールが同じになるようにしてください。説明変数の z 値を求めることが一般的ですが、カウントのデータはそのまま使いましょう。</li>
+<li>説明変数の数はサンプル・観測値・サイトの数より少ないようにすること。</li>
+<li>説明変数の単位が異なる場合、応答変数と同じように z 値を求めてください。</li>
+<li>各説明変数と各応答変数のペアの関係が直線であることを確認してください。直線はない場合は、変数の変換を検討してください。</li>
+<li>ユークリッド距離以外の距離を使用するなら、生態学に適切な変換を使ってください。へリンガ変換 (Hellinger transform) は種数に適しています。へリンガ変換はゼロや少数の重み付けは低いです。</li>
+</ol>
+<div id="必要なパッケージ-12" class="section level2" number="15.1">
+<h2>
+<span class="header-section-number">15.1</span> 必要なパッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-12"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb285"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># データ処理用パッケージ</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://lubridate.tidyverse.org">lubridate</a></span><span class="op">)</span>
+
+<span class="co"># RDA 用パッケージ</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/vegandevs/vegan">vegan</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">ggvegan</span><span class="op">)</span>
+
+<span class="co"># データ整形, 可視化用</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://stringi.gagolewski.com/">stringi</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/slowkow/ggrepel">ggrepel</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rpkgs.datanovia.com/ggpubr/">ggpubr</a></span><span class="op">)</span>
+
+<span class="co"># GIS系のパッケージ</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://xml2.r-lib.org/">xml2</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rvest.tidyverse.org/">rvest</a></span><span class="op">)</span></code></pre></div>
+</div>
+<div id="データの読み込み-3" class="section level2" number="15.2">
+<h2>
+<span class="header-section-number">15.2</span> データの読み込み<a class="anchor" aria-label="anchor" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF-3"><i class="fas fa-link"></i></a>
+</h2>
+<p>地点の緯度、経度、地点名のデータを読み込みます。</p>
+<div class="sourceCode" id="cb286"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># 地点のデータ.</span>
+<span class="va">mogi</span>          <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.9153635749726</span>,  lat <span class="op">=</span> <span class="fl">32.70623687738632</span>,  spot <span class="op">=</span> <span class="st">"茂木港"</span><span class="op">)</span>
+<span class="va">hachikoku</span>     <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.8383693424696</span>,  lat <span class="op">=</span> <span class="fl">32.84731449061039</span>,  spot <span class="op">=</span> <span class="st">"時津八工区"</span><span class="op">)</span>
+<span class="va">shinnagasaki</span>  <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.76273726531167</span>, lat <span class="op">=</span> <span class="fl">32.81348550319948</span>,  spot <span class="op">=</span> <span class="st">"新長崎漁港"</span><span class="op">)</span>
+<span class="va">iojima</span>        <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.7821657616903</span>,  lat <span class="op">=</span> <span class="fl">32.703793584891876</span>, spot <span class="op">=</span> <span class="st">"伊王島"</span><span class="op">)</span>
+<span class="va">makishima</span>     <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.965811722672</span>,   lat <span class="op">=</span> <span class="fl">32.75280526296073</span>,  spot <span class="op">=</span> <span class="st">"牧島弁天"</span><span class="op">)</span>
+<span class="va">uki</span>           <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">130.08539712666882</span>, lat <span class="op">=</span> <span class="fl">32.79186359942752</span>,  spot <span class="op">=</span> <span class="st">"有喜"</span><span class="op">)</span>
+<span class="va">chijiwa</span>       <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">130.18963213745377</span>, lat <span class="op">=</span> <span class="fl">32.78110330164613</span>,  spot <span class="op">=</span> <span class="st">"千々石"</span><span class="op">)</span>
+<span class="va">nagasakigyoko</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.8655064038331</span>,  lat <span class="op">=</span> <span class="fl">32.74467008358571</span>,  spot <span class="op">=</span> <span class="st">"長崎港"</span><span class="op">)</span>
+<span class="va">oseto</span>         <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.63277961757416</span>, lat <span class="op">=</span> <span class="fl">32.93102986237914</span>,  spot <span class="op">=</span> <span class="st">"大瀬戸地磯"</span><span class="op">)</span>
+<span class="va">yuinohama</span>     <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.99744215828974</span>, lat <span class="op">=</span> <span class="fl">32.75999373754844</span>,  spot <span class="op">=</span> <span class="st">"結の浜"</span><span class="op">)</span>
+<span class="va">nagayo</span>        <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.865934845824</span>,   lat <span class="op">=</span> <span class="fl">32.84614488892818</span>,  spot <span class="op">=</span> <span class="st">"長与"</span><span class="op">)</span>
+<span class="va">koe</span>           <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.81160493756988</span>, lat <span class="op">=</span> <span class="fl">32.75672238458309</span>,  spot <span class="op">=</span> <span class="st">"小江港"</span><span class="op">)</span>
+<span class="va">kaminoshima</span>   <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.8195940446883</span>,  lat <span class="op">=</span> <span class="fl">32.72418777847413</span>,  spot <span class="op">=</span> <span class="st">"神の島"</span><span class="op">)</span>
+<span class="va">nanakoku</span>      <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.84686360804426</span>, lat <span class="op">=</span> <span class="fl">32.83951168442669</span>,  spot <span class="op">=</span> <span class="st">"時津七工区"</span><span class="op">)</span>
+<span class="va">togitsuko</span>     <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.84779161587724</span>, lat <span class="op">=</span> <span class="fl">32.83386270229517</span>,  spot <span class="op">=</span> <span class="st">"時津港"</span><span class="op">)</span>
+<span class="va">tameshi</span>       <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.84086842907925</span>, lat <span class="op">=</span> <span class="fl">32.63768592814823</span>,  spot <span class="op">=</span> <span class="st">"為石港"</span><span class="op">)</span>
+<span class="va">maria</span>         <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.82697052559877</span>, lat <span class="op">=</span> <span class="fl">32.71645046633131</span>,  spot <span class="op">=</span> <span class="st">"神の島（マリア像）"</span><span class="op">)</span>
+<span class="va">kabashima</span>     <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.78207587005704</span>, lat <span class="op">=</span> <span class="fl">32.56964417259288</span>,  spot <span class="op">=</span> <span class="st">"樺島"</span><span class="op">)</span>
+<span class="va">wakimisaki</span>    <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.7844175224698</span>,  lat <span class="op">=</span> <span class="fl">32.57935098714508</span>,  spot <span class="op">=</span> <span class="st">"脇岬港"</span><span class="op">)</span>
+<span class="va">takashima</span>     <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.75940675600606</span>, lat <span class="op">=</span> <span class="fl">32.6701574982406</span>,   spot <span class="op">=</span> <span class="st">"高島釣り公園"</span><span class="op">)</span>
+<span class="va">fukahori</span>      <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.81655615391824</span>, lat <span class="op">=</span> <span class="fl">32.684034723520824</span>, spot <span class="op">=</span> <span class="st">"深堀"</span><span class="op">)</span>
+<span class="va">ainoura</span>       <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.65998414190727</span>, lat <span class="op">=</span> <span class="fl">33.17044115356162</span>,  spot <span class="op">=</span> <span class="st">"相浦川"</span><span class="op">)</span>
+<span class="va">odo</span>           <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.80164858578118</span>, lat <span class="op">=</span> <span class="fl">32.91795820807477</span>,  spot <span class="op">=</span> <span class="st">"尾戸"</span><span class="op">)</span>
+<span class="va">enoura</span>        <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">130.03532906360107</span>, lat <span class="op">=</span> <span class="fl">32.76477883221611</span>,  spot <span class="op">=</span> <span class="st">"江の浦漁港"</span><span class="op">)</span>
+<span class="va">fukushima</span>     <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.82510401615977</span>, lat <span class="op">=</span> <span class="fl">33.361672678116534</span>, spot <span class="op">=</span> <span class="st">"福島"</span><span class="op">)</span>
+<span class="va">kisashi</span>       <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">130.19682599039155</span>, lat <span class="op">=</span> <span class="fl">32.71797951737513</span>,  spot <span class="op">=</span> <span class="st">"木指"</span><span class="op">)</span>
+<span class="va">ikeshimo</span>      <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.98698524182933</span>, lat <span class="op">=</span> <span class="fl">32.757089717364224</span>, spot <span class="op">=</span> <span class="st">"池下"</span><span class="op">)</span>
+<span class="va">kidu</span>          <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">130.1877412283317</span>,  lat <span class="op">=</span> <span class="fl">32.76624792288015</span>,  spot <span class="op">=</span> <span class="st">"木津"</span><span class="op">)</span>
+<span class="va">kunisaki</span>      <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">130.13379349135502</span>, lat <span class="op">=</span> <span class="fl">32.6835771032792</span>,   spot <span class="op">=</span> <span class="st">"国﨑半島"</span><span class="op">)</span>
+<span class="va">yokose</span>        <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.70488196433504</span>, lat <span class="op">=</span> <span class="fl">33.08595494898572</span>,  spot <span class="op">=</span> <span class="st">"横瀬港"</span><span class="op">)</span>
+<span class="va">sasebogawa</span>    <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.72194554448632</span>, lat <span class="op">=</span> <span class="fl">33.16169028908325</span>,  spot <span class="op">=</span> <span class="st">"佐世保川河口"</span><span class="op">)</span>
+<span class="va">mie</span>           <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.74786663770905</span>, lat <span class="op">=</span> <span class="fl">32.820159276236936</span>, spot <span class="op">=</span> <span class="st">"三重漁港"</span><span class="op">)</span>
+<span class="va">nagushi</span>       <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">130.1424470044555</span>,  lat <span class="op">=</span> <span class="fl">32.681644023378894</span>, spot <span class="op">=</span> <span class="st">"南串（京泊）"</span><span class="op">)</span>
+<span class="va">shishigawa</span>    <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.80598029708491</span>, lat <span class="op">=</span> <span class="fl">32.86486310040935</span>,  spot <span class="op">=</span> <span class="st">"子々川"</span><span class="op">)</span>
+<span class="va">obama</span>         <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">130.2055019801174</span>,  lat <span class="op">=</span> <span class="fl">32.73220809832507</span>,  spot <span class="op">=</span> <span class="st">"小浜"</span><span class="op">)</span>
+<span class="va">tobiko</span>        <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">130.1668200832182</span>,  lat <span class="op">=</span> <span class="fl">32.697084316063425</span>, spot <span class="op">=</span> <span class="st">"飛子"</span><span class="op">)</span>
+<span class="va">aba</span>           <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.94851786984017</span>, lat <span class="op">=</span> <span class="fl">32.755822723429574</span>, spot <span class="op">=</span> <span class="st">"網場"</span><span class="op">)</span>
+<span class="va">nezumishima</span>   <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.83509963298388</span>, lat <span class="op">=</span> <span class="fl">32.7200235294155</span>,   spot <span class="op">=</span> <span class="st">"神の島（鼠島）"</span><span class="op">)</span>
+<span class="va">sakito</span>        <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.64031098930263</span>, lat <span class="op">=</span> <span class="fl">33.041195585109726</span>, spot <span class="op">=</span> <span class="st">"崎戸大島"</span><span class="op">)</span>
+<span class="va">higashihama</span>   <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">129.7434881947802</span>,  lat <span class="op">=</span> <span class="fl">33.133498396367585</span>, spot <span class="op">=</span> <span class="st">"東浜港"</span><span class="op">)</span>
+<span class="va">higashiookawa</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">130.00122186927044</span>, lat <span class="op">=</span> <span class="fl">32.84251398315686</span>,  spot <span class="op">=</span> <span class="st">"東大川"</span><span class="op">)</span>
+<span class="va">kadusa</span>        <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>long <span class="op">=</span> <span class="fl">130.16169860577867</span>, lat <span class="op">=</span> <span class="fl">32.62263363021445</span>,  spot <span class="op">=</span> <span class="st">"加津佐漁港"</span><span class="op">)</span>
+
+<span class="va">spot_info</span> <span class="op">=</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span><span class="va">mogi</span>, <span class="va">hachikoku</span>, <span class="va">shinnagasaki</span>, <span class="va">iojima</span>, <span class="va">makishima</span>, <span class="va">uki</span>, <span class="va">chijiwa</span>, <span class="va">nagasakigyoko</span>,
+            <span class="va">oseto</span>, <span class="va">yuinohama</span>, <span class="va">nagayo</span>, <span class="va">koe</span>, <span class="va">kaminoshima</span>, <span class="va">nanakoku</span>, <span class="va">togitsuko</span>, <span class="va">tameshi</span>,
+            <span class="va">maria</span>, <span class="va">kabashima</span>, <span class="va">wakimisaki</span>, <span class="va">takashima</span>, <span class="va">fukahori</span>, <span class="va">ainoura</span>, <span class="va">odo</span>,
+            <span class="va">enoura</span>, <span class="va">fukushima</span>, <span class="va">kisashi</span>, <span class="va">ikeshimo</span>, <span class="va">kidu</span>, <span class="va">kunisaki</span>, <span class="va">yokose</span>, <span class="va">sasebogawa</span>,
+            <span class="va">mie</span>, <span class="va">nagushi</span>, <span class="va">shishigawa</span>, <span class="va">obama</span>, <span class="va">tobiko</span>, <span class="va">aba</span>, <span class="va">nezumishima</span>, <span class="va">sakito</span>, 
+            <span class="va">higashihama</span>, <span class="va">higashiookawa</span>, <span class="va">kadusa</span><span class="op">)</span></code></pre></div>
+<p>次に、釣果のデータを読み込みます。
+ネット上から集めたデータなので, 記入ミスや測定方法の違いがあります.
+文字列処理を行って, データを丁寧に整形していきます。</p>
+<p>釣果データを読み込みます。
+データは研究室サーバにあります。</p>
+<div class="sourceCode" id="cb287"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tanimaesfolder</span> <span class="op">=</span> <span class="st">"~/Lab_Data/tanimaes/share_files/example_data/"</span>
+<span class="va">filename</span> <span class="op">=</span> <span class="st">"nagasaki_fishing_spot_fishdata.rds"</span>
+<span class="va">fish_data0</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="va">tanimaesfolder</span>, <span class="va">filename</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html">read_rds</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p><code><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when()</a></code> を使って、和名を整えます。</p>
+<div class="sourceCode" id="cb288"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fish_data1</span> <span class="op">=</span> <span class="va">fish_data0</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span> |&gt;
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>species_j <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span>
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"^アジゴ?$"</span><span class="op">)</span>        <span class="op">~</span> <span class="st">"マアジ"</span>,
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"^アラカブ+"</span><span class="op">)</span>       <span class="op">~</span> <span class="st">"カサゴ"</span>,
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"エギング"</span><span class="op">)</span>         <span class="op">~</span> <span class="st">"アオリイカ"</span>,
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"^クロ$"</span><span class="op">)</span>           <span class="op">~</span> <span class="st">"メジナ"</span>, 
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"^サゴシ$"</span><span class="op">)</span>         <span class="op">~</span> <span class="st">"サワラ"</span>,
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"^サバゴ?$"</span><span class="op">)</span>        <span class="op">~</span> <span class="st">"サバ"</span>,
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"シーバス|セイゴ"</span><span class="op">)</span>  <span class="op">~</span>  <span class="st">"スズキ"</span>,     
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"^チヌ$"</span><span class="op">)</span>           <span class="op">~</span> <span class="st">"クロダイ"</span>,            
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"^ネリゴ$"</span><span class="op">)</span>         <span class="op">~</span> <span class="st">"カンパチ"</span>,         
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"^ハタ$"</span><span class="op">)</span>           <span class="op">~</span> <span class="st">"キジハタ"</span>,            
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"ハマチ|ヤズ|ブリ"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"ブリ"</span>,     
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"^ヒラス$"</span><span class="op">)</span>         <span class="op">~</span> <span class="st">"ヒラマサ"</span>,         
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"^タコ$"</span><span class="op">)</span>           <span class="op">~</span> <span class="st">"マダコ"</span>,             
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"^メッキアジ$"</span><span class="op">)</span>     <span class="op">~</span> <span class="st">"メッキ"</span>,        
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"^メバリング$"</span><span class="op">)</span>     <span class="op">~</span> <span class="st">"メバル"</span>,        
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"^モンゴウイカ$"</span><span class="op">)</span>   <span class="op">~</span> <span class="st">"カミナリイカ"</span>,
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"^太刀魚$"</span><span class="op">)</span>         <span class="op">~</span> <span class="st">"タチウオ"</span>,         
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"^真鯛$"</span><span class="op">)</span>           <span class="op">~</span> <span class="st">"マダイ"</span>,             
+    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"^キス$"</span><span class="op">)</span>           <span class="op">~</span> <span class="st">"シロギス"</span>
+  <span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><code>species_j</code> が 木指または <code>size</code> が 1杯のデータを外す。</p>
+<div class="sourceCode" id="cb289"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fish_data1</span> <span class="op">=</span> <span class="va">fish_data1</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="st">"木指"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">size</span>, <span class="st">"1杯"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><code>stringi</code> パッケージの <code><a href="https://rdrr.io/pkg/stringi/man/stri_trans_nf.html">stri_trans_nfkd()</a></code> 関数を使って、全角を半角に変換する。
+すの次に、<code>size</code> と <code>weight</code> の情報を 1 列にまとめる。</p>
+<div class="sourceCode" id="cb290"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fish_data1</span> <span class="op">=</span> <span class="va">fish_data1</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/stringi/man/stri_trans_nf.html">stri_trans_nfkd</a></span><span class="op">(</span><span class="va">size</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>weight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/stringi/man/stri_trans_nf.html">stri_trans_nfkd</a></span><span class="op">(</span><span class="va">weight</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>date <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/ymd.html">ymd</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">)</span> |&gt;  
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">size</span><span class="op">)</span>, <span class="va">weight</span>, <span class="va">size</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><code>size</code> 変数をさらに整える。</p>
+<div class="sourceCode" id="cb291"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fish_data2</span> <span class="op">=</span> <span class="va">fish_data1</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">size</span>, pattern <span class="op">=</span> <span class="st">"手|掌"</span><span class="op">)</span>, <span class="st">"20cm"</span>, <span class="va">size</span><span class="op">)</span>, <span class="co"># 「手のひら」は 20cm と定義.</span>
+         size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">size</span>, pattern <span class="op">=</span> <span class="st">"コロッケ"</span><span class="op">)</span>, <span class="st">"10cm"</span>, <span class="va">size</span><span class="op">)</span>, <span class="co"># 「コロッケサイズ」は 10cm と定義.</span>
+         size <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">size</span>, pattern <span class="op">=</span> <span class="st">"三"</span>,   replacement <span class="op">=</span> <span class="st">"3"</span><span class="op">)</span>, 
+         size <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">size</span>, pattern <span class="op">=</span> <span class="st">"四"</span>,   replacement <span class="op">=</span> <span class="st">"4"</span><span class="op">)</span>,
+         size <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">size</span>, pattern <span class="op">=</span> <span class="st">"本半"</span>, replacement <span class="op">=</span> <span class="st">".5"</span><span class="op">)</span><span class="op">)</span> <span class="co"># 漢数字をアラビア数字に.</span></code></pre></div>
+<div class="sourceCode" id="cb292"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fish_data2</span> <span class="op">=</span> <span class="va">fish_data2</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">size</span>, pattern <span class="op">=</span> <span class="st">"[Cc]?[Mm㎝]|ｾﾝﾁ"</span><span class="op">)</span>, <span class="st">"length"</span>, <span class="st">"width"</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="co"># 評価基準.</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">size</span>, pattern <span class="op">=</span> <span class="st">"[Kk]?[Gg㎏ℊ]|ｷﾛ"</span><span class="op">)</span>, <span class="st">"weight"</span>, <span class="va">type</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="co"># 評価基準.</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html">str_remove</a></span><span class="op">(</span><span class="va">size</span>, pattern <span class="op">=</span> <span class="st">".*[~∼]"</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="co"># チルダ記号より前の文字列を消去.</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_extract.html">str_extract</a></span><span class="op">(</span><span class="va">size</span>, pattern <span class="op">=</span> <span class="st">"[0-9,.]+"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="co"># サイズの数値部分のみ抽出.</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"width"</span> <span class="op">&amp;</span> <span class="va">size</span> <span class="op">&gt;</span> <span class="fl">180</span>, <span class="st">"weight"</span>, <span class="va">type</span><span class="op">)</span>, <span class="co"># 重量っぽいものを重量評価に.</span>
+         type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"width"</span> <span class="op">&amp;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/between.html">between</a></span><span class="op">(</span><span class="va">size</span>, <span class="fl">9</span>, <span class="fl">180</span><span class="op">)</span>, <span class="st">"length"</span>, <span class="va">type</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="co"># 長さっぽいものを長さ評価に.</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">"weight"</span> <span class="op">&amp;</span> <span class="va">size</span> <span class="op">&lt;</span> <span class="fl">30</span>, <span class="va">size</span><span class="op">*</span><span class="fl">1000</span>, <span class="va">size</span><span class="op">)</span><span class="op">)</span> |&gt; <span class="co"># キロっぽいものはグラム評価に.</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">spot</span>, <span class="va">long</span>, <span class="va">lat</span>, <span class="va">date</span>, <span class="va">species_j</span>, <span class="va">type</span>, <span class="va">size</span>, <span class="va">method</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>次は、長さ, 重さ, 幅 の値を標準化します。
+10cm, 20cm, 30cm, 1kg, 2kg, 3kg のアオリイカを, 数値で並び替えると Max:30 , Min:1 となってしまうので、測定方法ごとにグループ化し, 正規化します。
+正規化された値に 10 をかけて 50 を足すと, 学力偏差値でお馴染みの偏差値になります。</p>
+<div class="sourceCode" id="cb293"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fish_data2</span> <span class="op">=</span> <span class="va">fish_data2</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">type</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>size_scl <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">size</span><span class="op">)</span><span class="op">)</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">fish_data2</span>
+<span class="co">#&gt; # A tibble: 565 × 9</span>
+<span class="co">#&gt;    spot   long   lat date       species_j type   size method</span>
+<span class="co">#&gt;    &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;date&gt;     &lt;chr&gt;     &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; </span>
+<span class="co">#&gt;  1 茂木…  130.  32.7 2022-04-29 シロギス  leng…    25 投げ… </span>
+<span class="co">#&gt;  2 茂木…  130.  32.7 2022-04-27 シロギス  leng…    15 投げ… </span>
+<span class="co">#&gt;  3 茂木…  130.  32.7 2022-03-17 シロギス  leng…    15 投げ… </span>
+<span class="co">#&gt;  4 茂木…  130.  32.7 2022-03-03 メジナ    leng…    25 フカ… </span>
+<span class="co">#&gt;  5 茂木…  130.  32.7 2022-01-22 シロギス  leng…    21 投げ… </span>
+<span class="co">#&gt;  6 茂木…  130.  32.7 2022-01-07 カサゴ    leng…    20 ブラ… </span>
+<span class="co">#&gt;  7 茂木…  130.  32.7 2021-12-09 シロギス  leng…    23 投げ… </span>
+<span class="co">#&gt;  8 茂木…  130.  32.7 2021-11-29 ブリ      leng…    60 ルアー</span>
+<span class="co">#&gt;  9 茂木…  130.  32.7 2021-11-15 マアジ    leng…    25 サビ… </span>
+<span class="co">#&gt; 10 茂木…  130.  32.7 2021-11-08 マアジ    leng…    20 サビ… </span>
+<span class="co">#&gt; # … with 555 more rows, and 1 more variable: size_scl &lt;dbl&gt;</span></code></pre></div>
+<p>釣果のデータを整形し終わりました。
+うまく整形できているか、可視化することで確認してみます。</p>
+<div class="sourceCode" id="cb294"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># 作図.</span>
+<span class="va">p1</span> <span class="op">=</span> <span class="va">fish_data2</span> |&gt; 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_jitter.html">geom_jitter</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/reorder.factor.html">reorder</a></span><span class="op">(</span><span class="va">species_j</span>, <span class="va">size_scl</span><span class="op">)</span>, <span class="va">size_scl</span>, color <span class="op">=</span> <span class="va">type</span><span class="op">)</span>, 
+              width <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_color_viridis_d</a></span><span class="op">(</span>end <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span>, vjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">p2</span> <span class="op">=</span> <span class="va">fish_data2</span> |&gt;  
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>month <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/month.html">month</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">month</span>, <span class="va">size_scl</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op">(</span><span class="st">"species_j"</span><span class="op">)</span>
+<span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></code></pre></div>
+<div class="inline-figure"><img src="80-redundancy-analysis_files/figure-html/unnamed-chunk-10-1.png" width="90%" style="display: block; margin: auto;"></div>
+<p>種組成の類似度を説明する環境要因のデータを用意します。</p>
+<div class="sourceCode" id="cb295"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># その他の変数.</span>
+<span class="co"># 種. これは分析に用いませんが ggplot 用に作っておきます.</span>
+<span class="va">sp_info</span> <span class="op">=</span> <span class="va">fish_data2</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">spot</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tidyverse.html">summarise</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">species_j</span><span class="op">)</span>,
+            max_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">size_scl</span><span class="op">)</span>,
+            mean_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">size_scl</span><span class="op">)</span><span class="op">)</span>
+
+<span class="co"># fetch. (送風距離)</span>
+<span class="va">filename</span> <span class="op">=</span> <span class="st">"nagasaki_fishing_spot_fetch.rds"</span>
+<span class="va">fetch_info</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="va">tanimaesfolder</span>, <span class="va">filename</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html">read_rds</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">fetch_info</span> <span class="op">=</span> <span class="va">fetch_info</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">length</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">spot</span><span class="op">)</span> |&gt;
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tidyverse.html">summarise</a></span><span class="op">(</span>mean_f <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">length</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="gis-の処理" class="section level2" number="15.3">
+<h2>
+<span class="header-section-number">15.3</span> GIS の処理<a class="anchor" aria-label="anchor" href="#gis-%E3%81%AE%E5%87%A6%E7%90%86"><i class="fas fa-link"></i></a>
+</h2>
+<p>GIS用の <code>tibble</code>（地図用のデータ）は <code>sf</code> パッケージの <code><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf()</a></code> で作ります。
+<code>spot_info</code> を EPSG:4326 (WGS84) の座標参照系に設定します。
+<code>suisa_gps</code> も同じように作ります。</p>
+<div class="sourceCode" id="cb296"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">spot_gps</span> <span class="op">=</span> <span class="va">spot_info</span> |&gt; 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"long"</span>, <span class="st">"lat"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span>, agr <span class="op">=</span> <span class="st">"constant"</span><span class="op">)</span>
+
+<span class="va">suisan_gps</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tibble.html">tibble</a></span><span class="op">(</span>spot <span class="op">=</span> <span class="st">"水産学部"</span>, 
+                    long <span class="op">=</span> <span class="fl">129.86544761304938</span>, lat <span class="op">=</span> <span class="fl">32.786294986775076</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"long"</span>, <span class="st">"lat"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span>, agr <span class="op">=</span> <span class="st">"constant"</span><span class="op">)</span></code></pre></div>
+<p>距離を求めるためには、座標参照系を EPSG:2450 (JDG2000, 日本座標系) に変換します。
+緯度経度は東距 (northing) と北距 easting(（単位はメートル）に代わります。</p>
+<div class="sourceCode" id="cb297"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">spot_gps</span> <span class="op">=</span> <span class="va">spot_gps</span> |&gt; <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="fl">2450</span><span class="op">)</span><span class="op">)</span>
+<span class="va">suisan_gps</span> <span class="op">=</span> <span class="va">suisan_gps</span> |&gt; <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="fl">2450</span><span class="op">)</span><span class="op">)</span>
+<span class="va">std</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_distance</a></span><span class="op">(</span><span class="va">spot_gps</span>, <span class="va">suisan_gps</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">spot_info</span> <span class="op">=</span> <span class="va">spot_info</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>dist_from_sui <span class="op">=</span> <span class="va">std</span><span class="op">)</span>
+<span class="va">spot_info</span>
+<span class="co">#&gt; # A tibble: 42 × 4</span>
+<span class="co">#&gt;     long   lat spot       dist_from_sui</span>
+<span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;              &lt;dbl&gt;</span>
+<span class="co">#&gt;  1  130.  32.7 茂木港            10115.</span>
+<span class="co">#&gt;  2  130.  32.8 時津八工区         7285.</span>
+<span class="co">#&gt;  3  130.  32.8 新長崎漁港        10163.</span>
+<span class="co">#&gt;  4  130.  32.7 伊王島            12124.</span>
+<span class="co">#&gt;  5  130.  32.8 牧島弁天          10190.</span>
+<span class="co">#&gt;  6  130.  32.8 有喜              20774.</span>
+<span class="co">#&gt;  7  130.  32.8 千々石            30609.</span>
+<span class="co">#&gt;  8  130.  32.7 長崎港             4653.</span>
+<span class="co">#&gt;  9  130.  32.9 大瀬戸地磯        27276.</span>
+<span class="co">#&gt; 10  130.  32.8 結の浜            12806.</span>
+<span class="co">#&gt; # … with 32 more rows</span></code></pre></div>
+<p>XMLデータから河川の位置情報を読み込みます。</p>
+<div class="sourceCode" id="cb298"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">filename</span> <span class="op">=</span> <span class="st">"W05-07_42.xml"</span>
+<span class="va">tanimaesxmlfolder</span> <span class="op">=</span> <span class="st">"~/Lab_Data/tanimaes/seaweed_data/info/"</span>
+<span class="va">river</span> <span class="op">=</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="va">tanimaesxmlfolder</span>, <span class="va">filename</span><span class="op">)</span> |&gt; <span class="fu"><a href="http://xml2.r-lib.org/reference/read_xml.html">read_xml</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">river</span> <span class="op">=</span> <span class="va">river</span> |&gt; 
+  <span class="fu"><a href="https://rvest.tidyverse.org/reference/html_element.html">html_elements</a></span><span class="op">(</span>xpath <span class="op">=</span> <span class="st">'///GM_PointArray.column'</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="http://xml2.r-lib.org/reference/xml_children.html">xml_children</a></span><span class="op">(</span><span class="op">)</span> |&gt;
+  <span class="fu"><a href="http://xml2.r-lib.org/reference/xml_text.html">xml_text</a></span><span class="op">(</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>読み込んだあと、河川の識別をします。</p>
+<div class="sourceCode" id="cb299"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">river</span> <span class="op">=</span> <span class="va">river</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">value</span> <span class="op">==</span> <span class="st">""</span>, <span class="st">"river_sep"</span>, <span class="va">value</span><span class="op">)</span><span class="op">)</span> |&gt;
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>river_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">value</span>, pattern <span class="op">=</span> <span class="st">"river_sep"</span><span class="op">)</span>, <span class="fl">0.5</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>river_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span><span class="op">(</span><span class="va">river_id</span><span class="op">)</span> <span class="op">+</span> <span class="fl">0.5</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">value</span> <span class="op">!=</span> <span class="st">"river_sep"</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html">separate</a></span><span class="op">(</span><span class="va">value</span>, into <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"lat"</span>, <span class="st">"long"</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">" "</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"lat"</span>, <span class="st">"long"</span><span class="op">)</span>,  <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">.x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>ここで <code>sf</code> オブジェクトに変換します。</p>
+<div class="sourceCode" id="cb300"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">river</span> <span class="op">=</span> <span class="va">river</span> |&gt; 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"long"</span>, <span class="st">"lat"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span>, agr <span class="op">=</span> <span class="st">"constant"</span><span class="op">)</span></code></pre></div>
+<p>Region of interest (ROI, 関心領域) に河川データを絞ります。</p>
+<div class="sourceCode" id="cb301"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">river_boundary</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="fl">129.5</span>, xmax <span class="op">=</span> <span class="fl">130</span>, 
+                           ymin <span class="op">=</span> <span class="fl">32.5</span>, ymax <span class="op">=</span> <span class="fl">33.1</span><span class="op">)</span>, crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="fl">4326</span><span class="op">)</span><span class="op">)</span>
+<span class="va">river_boundary</span> <span class="op">=</span> <span class="va">river_boundary</span> |&gt; <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sfc.html">st_as_sfc</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">river</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crop.html">st_crop</a></span><span class="op">(</span><span class="va">river</span>, <span class="va">river_boundary</span><span class="op">)</span>
+<span class="va">river</span> <span class="op">=</span> <span class="va">river</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">river_id</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/ranking.html">row_number</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">n</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, <span class="cn">T</span>, <span class="cn">F</span><span class="op">)</span><span class="op">)</span> </code></pre></div>
+<p>河口と川の合流地点に色を付けます。</p>
+<div class="sourceCode" id="cb302"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">river</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">status</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_color_viridis_d</a></span><span class="op">(</span><span class="st">"河口域"</span><span class="op">)</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:unnamed-chunk-18"></span>
+<img src="80-redundancy-analysis_files/figure-html/unnamed-chunk-18-1.png" alt="河川の河口域を特定して、色で区別しました。" width="90%"><p class="caption">
+Figure 11.1: 河川の河口域を特定して、色で区別しました。
+</p>
+</div>
+<p><code>spot_gps</code> の位置と河口域の距離を求めます。
+<code>river</code> から河口域の位置情報を抽出します。</p>
+<div class="sourceCode" id="cb303"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">river_mouth_info</span> <span class="op">=</span> <span class="va">river</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">river_id</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">status</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p><code>river_mouth_info</code> の座標参照系を EPSG:2450 に変換します。</p>
+<div class="sourceCode" id="cb304"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">river_mouth_gps</span> <span class="op">=</span> <span class="va">river_mouth_info</span> |&gt; <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="fl">2450</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><code><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_distance()</a></code> 関数を使って、<code>river_mouth_gps</code> と <code>spot_gps</code> の距離を求めます。
+結果は <code>n x m</code> の行列です。
+長崎大学水産学部からの距離は、ここで再計算しています。
+最後の <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> は距離を m から km に変換しています。</p>
+<div class="sourceCode" id="cb305"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">calc_distance_nearest_river_mouth</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">origin</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_distance</a></span><span class="op">(</span><span class="va">origin</span>, <span class="va">data</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://purrr.tidyverse.org/reference/as_vector.html">as_vector</a></span><span class="op">(</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="op">)</span>
+<span class="op">}</span>
+
+<span class="va">river_mouth_info</span> <span class="op">=</span> <span class="va">spot_gps</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_nest.html">group_nest</a></span><span class="op">(</span><span class="va">spot</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>dist_from_river <span class="op">=</span> 
+           <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_dbl</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">calc_distance_nearest_river_mouth</span>, 
+                   origin <span class="op">=</span> <span class="va">river_mouth_gps</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>dist_from_suisan <span class="op">=</span> 
+           <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_dbl</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">calc_distance_nearest_river_mouth</span>, 
+                   origin <span class="op">=</span> <span class="va">suisan_gps</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with</a></span><span class="op">(</span><span class="st">"dist"</span><span class="op">)</span>, <span class="op">~</span> <span class="va">.</span> <span class="op">/</span> <span class="fl">1000</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></code></pre></div>
+<p>上の処理をすると、座標参照系の情報が消えたので、ここで再び付けます。</p>
+<div class="sourceCode" id="cb306"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">river_mouth_info</span> <span class="op">=</span> <span class="va">river_mouth_info</span> |&gt; <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="fl">2450</span><span class="op">)</span><span class="op">)</span>
+<span class="va">river_mouth_info</span>
+<span class="co">#&gt; Simple feature collection with 42 features and 3 fields</span>
+<span class="co">#&gt; Geometry type: POINT</span>
+<span class="co">#&gt; Dimension:     XY</span>
+<span class="co">#&gt; Bounding box:  xmin: -820809.1 ymin: -318563.7 xmax: -820809.1 ymax: -318563.7</span>
+<span class="co">#&gt; Projected CRS: JGD2000 / Japan Plane Rectangular CS VIII</span>
+<span class="co">#&gt; # A tibble: 42 × 4</span>
+<span class="co">#&gt;    spot                      geometry dist_from_river</span>
+<span class="co">#&gt;  * &lt;chr&gt;                  &lt;POINT [m]&gt;           &lt;dbl&gt;</span>
+<span class="co">#&gt;  1 三重漁港     (-820809.1 -318563.7)           0.403</span>
+<span class="co">#&gt;  2 伊王島       (-818658.1 -331798.2)           5.50 </span>
+<span class="co">#&gt;  3 佐世保川河口   (-820048 -280305.1)           9.46 </span>
+<span class="co">#&gt;  4 加津佐漁港   (-783625.6 -343734.2)          21.9  </span>
+<span class="co">#&gt;  5 千々石       (-779599.8 -326292.3)          18.0  </span>
+<span class="co">#&gt;  6 南串（京泊）   (-784919.2 -337018)          16.3  </span>
+<span class="co">#&gt;  7 国﨑半島     (-785717.3 -336737.9)          15.5  </span>
+<span class="co">#&gt;  8 大瀬戸地磯   (-830591.3 -305298.9)           3.06 </span>
+<span class="co">#&gt;  9 子々川       (-814928.6 -314037.7)           0.265</span>
+<span class="co">#&gt; 10 小江港       (-815397.5 -326130.3)           0.341</span>
+<span class="co">#&gt; # … with 32 more rows, and 1 more variable:</span>
+<span class="co">#&gt; #   dist_from_suisan &lt;dbl&gt;</span></code></pre></div>
+</div>
+<div id="冗長性分析-rda" class="section level2" number="15.4">
+<h2>
+<span class="header-section-number">15.4</span> 冗長性分析 (RDA)<a class="anchor" aria-label="anchor" href="#%E5%86%97%E9%95%B7%E6%80%A7%E5%88%86%E6%9E%90-rda"><i class="fas fa-link"></i></a>
+</h2>
+<p>RDA などの序列化に用いるデータは横長にする必要があります。
+つまり、列の並びは（説明変数１、説明変数２、説明変数３、生物種１、生物種２、生物種３…）
+のようにしなければなりません。
+そこで一旦、生物の行列と説明変数の <code>tibble</code> に分けて整形します。
+また、地点ごとに釣果データの数が異なるので、生物の行列データについてへリンガー変換を実施します。</p>
+<p>RDA 用のデータを組み立てます。
+応答変数の種構成行列は <code>fish_data2</code> から作ります。
+まずは、<code>spot</code> と <code>species_j</code> 毎の総数を求めます。</p>
+<div class="sourceCode" id="cb307"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">Y</span> <span class="op">=</span> <span class="va">fish_data2</span> |&gt;
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">spot</span>, <span class="va">species_j</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tidyverse.html">summarise</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span>, .groups <span class="op">=</span> <span class="st">"drop"</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">species_j</span>, values_from <span class="op">=</span> <span class="va">n</span>, values_fill <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></code></pre></div>
+<p>こんど、説明変数の <code>tibble</code> を準備します。</p>
+<div class="sourceCode" id="cb308"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">fetch_info</span>, <span class="va">river_mouth_info</span>, by <span class="op">=</span> <span class="st">"spot"</span><span class="op">)</span></code></pre></div>
+<p><code>spot</code> 毎の種数を求めます。</p>
+<div class="sourceCode" id="cb309"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">species_n</span> <span class="op">=</span> <span class="va">Y</span> |&gt; <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span><span class="op">-</span><span class="va">spot</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">spot</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/tidyverse.html">summarise</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">value</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span>
+<span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">species_n</span><span class="op">)</span></code></pre></div>
+<p><code>fetch_info</code> と <code>river_mouth_info</code> を結合したら、説明変数を正規化します.</p>
+<div class="sourceCode" id="cb310"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">scale_data</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>
+<span class="op">}</span>
+
+<span class="va">X</span> <span class="op">=</span> <span class="va">X</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">mean_f</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">"dist"</span><span class="op">)</span><span class="op">)</span>, <span class="va">scale_data</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><code>Y</code> に存在しない <code>X</code> の情報を確認します。</p>
+<div class="sourceCode" id="cb311"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html">anti_join</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">Y</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 0 × 6</span>
+<span class="co">#&gt; # … with 6 variables: spot &lt;chr&gt;, mean_f &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   geometry &lt;GEOMETRY [m]&gt;, dist_from_river &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   dist_from_suisan &lt;dbl&gt;, n &lt;int&gt;</span></code></pre></div>
+<p>データが合わないので、ここで修正します。</p>
+<div class="sourceCode" id="cb312"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">X</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter-joins.html">semi_join</a></span><span class="op">(</span><span class="va">X</span>, <span class="va">Y</span><span class="op">)</span></code></pre></div>
+<p>最後に、<code>X</code> と <code>Y</code> の行の順序を合わせます。</p>
+<div class="sourceCode" id="cb313"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">X</span> <span class="op">=</span> <span class="va">X</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">spot</span><span class="op">)</span>
+<span class="va">Y</span> <span class="op">=</span> <span class="va">Y</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">spot</span><span class="op">)</span></code></pre></div>
+<p>では、種構成行列の仕上げです。</p>
+<div class="sourceCode" id="cb314"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">Y</span> <span class="op">=</span> <span class="va">Y</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">spot</span><span class="op">)</span> |&gt; <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<p>つぎに、種構成行列をへリンガ変換 (Hellinger transformation) します。</p>
+<div class="sourceCode" id="cb315"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">Y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/vegan/man/decostand.html">decostand</a></span><span class="op">(</span><span class="va">Y</span>, method <span class="op">=</span> <span class="st">"hellinger"</span><span class="op">)</span></code></pre></div>
+<p>モデルを記述します。
+今回は、地点間の類似性を説明する説明変数がそもそも少ないです。</p>
+<div class="sourceCode" id="cb316"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># モデル選択.</span>
+<span class="va">r1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/vegan/man/cca.html">rda</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">dist_from_river</span>, data <span class="op">=</span> <span class="va">X</span><span class="op">)</span>
+<span class="va">r2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/vegan/man/cca.html">rda</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">mean_f</span>, data <span class="op">=</span> <span class="va">X</span><span class="op">)</span>
+<span class="va">r3</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/vegan/man/cca.html">rda</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">dist_from_suisan</span>, data <span class="op">=</span> <span class="va">X</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">r1</span>, by <span class="op">=</span> <span class="st">"terms"</span>, permutations <span class="op">=</span> <span class="fl">999</span><span class="op">)</span> <span class="co"># 変数ごとに P 値を確認.</span>
+<span class="co">#&gt; Permutation test for rda under reduced model</span>
+<span class="co">#&gt; Terms added sequentially (first to last)</span>
+<span class="co">#&gt; Permutation: free</span>
+<span class="co">#&gt; Number of permutations: 999</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Model: rda(formula = Y ~ dist_from_river, data = X)</span>
+<span class="co">#&gt;                 Df Variance      F Pr(&gt;F)</span>
+<span class="co">#&gt; dist_from_river  1  0.01771 1.2087   0.28</span>
+<span class="co">#&gt; Residual        38  0.55676</span>
+<span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">r2</span>, by <span class="op">=</span> <span class="st">"terms"</span>, permutations <span class="op">=</span> <span class="fl">999</span><span class="op">)</span> <span class="co"># 変数ごとに P 値を確認.</span>
+<span class="co">#&gt; Permutation test for rda under reduced model</span>
+<span class="co">#&gt; Terms added sequentially (first to last)</span>
+<span class="co">#&gt; Permutation: free</span>
+<span class="co">#&gt; Number of permutations: 999</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Model: rda(formula = Y ~ mean_f, data = X)</span>
+<span class="co">#&gt;          Df Variance      F Pr(&gt;F)</span>
+<span class="co">#&gt; mean_f    1  0.02458 1.6984  0.123</span>
+<span class="co">#&gt; Residual 38  0.54989</span>
+<span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">r3</span>, by <span class="op">=</span> <span class="st">"terms"</span>, permutations <span class="op">=</span> <span class="fl">999</span><span class="op">)</span> <span class="co"># 変数ごとに P 値を確認.</span>
+<span class="co">#&gt; Permutation test for rda under reduced model</span>
+<span class="co">#&gt; Terms added sequentially (first to last)</span>
+<span class="co">#&gt; Permutation: free</span>
+<span class="co">#&gt; Number of permutations: 999</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Model: rda(formula = Y ~ dist_from_suisan, data = X)</span>
+<span class="co">#&gt;                  Df Variance      F Pr(&gt;F)</span>
+<span class="co">#&gt; dist_from_suisan  1  0.01025 0.6903  0.675</span>
+<span class="co">#&gt; Residual         38  0.56422</span></code></pre></div>
+<p>河口からの距離は釣果と関係性がありそうですが、平均吹送距離や水産学部棟からの距離は、
+ほとんど関係なさそうです。
+とりあえず、練習として全ての変数を残したモデルを使用しようと思います。</p>
+<div class="sourceCode" id="cb317"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">r4</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/vegan/man/cca.html">rda</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">dist_from_river</span> <span class="op">+</span> <span class="va">dist_from_suisan</span> <span class="op">+</span> <span class="va">mean_f</span>, data <span class="op">=</span> <span class="va">X</span><span class="op">)</span></code></pre></div>
+<p>モデルの結果を確認します。
+Constrained inertia が Unconstrained inertia より高いとき、
+応答変数の散らばりは説明変数で説明できていると考えられる。
+今回の解析結果を確認すると、Constrained intertia は Unconstrained inertia より
+とても小さいので、応答変数の散らばりは説明変数で十分説明できていません。</p>
+<div class="sourceCode" id="cb318"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">r4</span>
+<span class="co">#&gt; Call: rda(formula = Y ~ dist_from_river +</span>
+<span class="co">#&gt; dist_from_suisan + mean_f, data = X)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;               Inertia Proportion Rank</span>
+<span class="co">#&gt; Total         0.57446    1.00000     </span>
+<span class="co">#&gt; Constrained   0.06003    0.10450    3</span>
+<span class="co">#&gt; Unconstrained 0.51443    0.89550   17</span>
+<span class="co">#&gt; Inertia is variance </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Eigenvalues for constrained axes:</span>
+<span class="co">#&gt;     RDA1     RDA2     RDA3 </span>
+<span class="co">#&gt; 0.030020 0.021112 0.008899 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Eigenvalues for unconstrained axes:</span>
+<span class="co">#&gt;     PC1     PC2     PC3     PC4     PC5     PC6     PC7 </span>
+<span class="co">#&gt; 0.19012 0.09932 0.06286 0.03970 0.03587 0.02510 0.01805 </span>
+<span class="co">#&gt;     PC8 </span>
+<span class="co">#&gt; 0.01438 </span>
+<span class="co">#&gt; (Showing 8 of 17 unconstrained eigenvalues)</span></code></pre></div>
+<p>Constrained inertia はとても低かったが、勉強のために解析を進めます。
+変数ごとに P 値を確認します。</p>
+<div class="sourceCode" id="cb319"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">r4</span>, by <span class="op">=</span> <span class="st">"terms"</span>,  permutations <span class="op">=</span> <span class="fl">999</span><span class="op">)</span>
+<span class="co">#&gt; Permutation test for rda under reduced model</span>
+<span class="co">#&gt; Terms added sequentially (first to last)</span>
+<span class="co">#&gt; Permutation: free</span>
+<span class="co">#&gt; Number of permutations: 999</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Model: rda(formula = Y ~ dist_from_river + dist_from_suisan + mean_f, data = X)</span>
+<span class="co">#&gt;                  Df Variance      F Pr(&gt;F)  </span>
+<span class="co">#&gt; dist_from_river   1  0.01771 1.2393  0.274  </span>
+<span class="co">#&gt; dist_from_suisan  1  0.01419 0.9931  0.409  </span>
+<span class="co">#&gt; mean_f            1  0.02813 1.9687  0.072 .</span>
+<span class="co">#&gt; Residual         36  0.51443                </span>
+<span class="co">#&gt; ---</span>
+<span class="co">#&gt; Signif. codes:  </span>
+<span class="co">#&gt; 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></code></pre></div>
+<p>抽出される成分ごとに P 値を確認します。</p>
+<div class="sourceCode" id="cb320"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">r4</span>, by <span class="op">=</span> <span class="st">"axis"</span>,  permutations <span class="op">=</span> <span class="fl">999</span><span class="op">)</span>
+<span class="co">#&gt; Permutation test for rda under reduced model</span>
+<span class="co">#&gt; Forward tests for axes</span>
+<span class="co">#&gt; Permutation: free</span>
+<span class="co">#&gt; Number of permutations: 999</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Model: rda(formula = Y ~ dist_from_river + dist_from_suisan + mean_f, data = X)</span>
+<span class="co">#&gt;          Df Variance      F Pr(&gt;F)</span>
+<span class="co">#&gt; RDA1      1  0.03002 2.1008  0.316</span>
+<span class="co">#&gt; RDA2      1  0.02111 1.4774  0.409</span>
+<span class="co">#&gt; RDA3      1  0.00890 0.6228  0.697</span>
+<span class="co">#&gt; Residual 36  0.51443</span></code></pre></div>
+<p>モデルの P 値を確認します。</p>
+<div class="sourceCode" id="cb321"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/anova.html">anova</a></span><span class="op">(</span><span class="va">r4</span>, permutations <span class="op">=</span> <span class="fl">999</span><span class="op">)</span>
+<span class="co">#&gt; Permutation test for rda under reduced model</span>
+<span class="co">#&gt; Permutation: free</span>
+<span class="co">#&gt; Number of permutations: 999</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Model: rda(formula = Y ~ dist_from_river + dist_from_suisan + mean_f, data = X)</span>
+<span class="co">#&gt;          Df Variance      F Pr(&gt;F)</span>
+<span class="co">#&gt; Model     3  0.06003 1.4003  0.137</span>
+<span class="co">#&gt; Residual 36  0.51443</span></code></pre></div>
+<p>調整済み決定係数 (R<sub>adj</sub><sup>2</sup>) は低いですね。</p>
+<div class="sourceCode" id="cb322"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/vegan/man/RsquareAdj.html">RsquareAdj</a></span><span class="op">(</span><span class="va">r4</span><span class="op">)</span><span class="op">$</span><span class="va">r.squared</span> 
+<span class="co">#&gt; [1] 0.1045</span></code></pre></div>
+<p>制約ありの序列化解析では、調整済み決定係数 <span class="math inline">\((R_{adj}^{2})\)</span> は一般的に低くなります。
+この値が高いほど、モデルの説明力が高いです。
+分析結果は <code>ggvegan</code>パッケージの <code><a href="https://ggplot2.tidyverse.org/reference/fortify.html">fortify()</a></code> 関数を使って抽出します。</p>
+<div class="sourceCode" id="cb323"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">rout1</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/fortify.html">fortify</a></span><span class="op">(</span><span class="va">r4</span>, axes <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, scaling <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<span class="va">rout2</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/fortify.html">fortify</a></span><span class="op">(</span><span class="va">r4</span>, axes <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, scaling <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+
+<span class="va">calculate_equilibrium</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">{</span>
+  <span class="co"># vegan scales output with a constant.</span>
+  <span class="va">p</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">X</span><span class="op">$</span><span class="va">CA</span><span class="op">$</span><span class="va">eig</span><span class="op">)</span>
+  <span class="va">tot</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">X</span><span class="op">$</span><span class="va">CA</span><span class="op">$</span><span class="va">eig</span><span class="op">)</span>
+  <span class="va">n</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">X</span><span class="op">$</span><span class="va">CA</span><span class="op">$</span><span class="va">u</span><span class="op">)</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">/</span> <span class="va">p</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="op">(</span><span class="va">n</span><span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">*</span><span class="va">tot</span><span class="op">)</span><span class="op">^</span><span class="fl">0.25</span>
+<span class="op">}</span>
+
+<span class="co"># biplot.</span>
+<span class="va">biplot1</span> <span class="op">=</span> <span class="va">rout1</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">Score</span>, <span class="st">"biplot"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>sRDA1 <span class="op">=</span> <span class="fl">1.5</span><span class="op">*</span><span class="va">RDA1</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">RDA1</span><span class="op">^</span><span class="fl">2</span><span class="op">+</span><span class="va">RDA2</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>sRDA2 <span class="op">=</span> <span class="fl">1.5</span><span class="op">*</span><span class="va">RDA2</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">RDA1</span><span class="op">^</span><span class="fl">2</span><span class="op">+</span><span class="va">RDA2</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>theta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">atan</a></span><span class="op">(</span><span class="va">sRDA2</span><span class="op">/</span> <span class="va">sRDA1</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>theta <span class="op">=</span> <span class="fl">180</span> <span class="op">*</span> <span class="va">theta</span> <span class="op">/</span> <span class="va">pi</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">RDA1</span> <span class="op">&lt;</span> <span class="fl">0</span>, <span class="va">theta</span> , <span class="va">theta</span><span class="op">)</span>,
+         hjust <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">RDA1</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>,
+         vjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Label <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/recode.html">recode</a></span><span class="op">(</span><span class="va">Label</span>, dist_from_river <span class="op">=</span> <span class="st">"河口からの距離"</span><span class="op">)</span>,
+         Label <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/recode.html">recode</a></span><span class="op">(</span><span class="va">Label</span>, dist_from_sui <span class="op">=</span> <span class="st">"水産学部棟からの距離"</span><span class="op">)</span>,
+         Label <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/recode.html">recode</a></span><span class="op">(</span><span class="va">Label</span>, mean_f <span class="op">=</span> <span class="st">"平均フェッチ"</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">biplot2</span> <span class="op">=</span> <span class="va">rout2</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">Score</span>, <span class="st">"biplot"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>sRDA1 <span class="op">=</span> <span class="fl">2.0</span><span class="op">*</span><span class="va">RDA1</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">RDA1</span><span class="op">^</span><span class="fl">2</span><span class="op">+</span><span class="va">RDA2</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>sRDA2 <span class="op">=</span> <span class="fl">2.0</span><span class="op">*</span><span class="va">RDA2</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="op">(</span><span class="va">RDA1</span><span class="op">^</span><span class="fl">2</span><span class="op">+</span><span class="va">RDA2</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>theta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">atan</a></span><span class="op">(</span><span class="va">sRDA2</span><span class="op">/</span> <span class="va">sRDA1</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>theta <span class="op">=</span> <span class="fl">180</span> <span class="op">*</span> <span class="va">theta</span> <span class="op">/</span> <span class="va">pi</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">RDA1</span> <span class="op">&lt;</span> <span class="fl">0</span>, <span class="va">theta</span> , <span class="va">theta</span><span class="op">)</span>,
+         hjust <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">RDA1</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span>,
+         vjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span> |&gt; 
+   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Label <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/recode.html">recode</a></span><span class="op">(</span><span class="va">Label</span>, dist_from_river <span class="op">=</span> <span class="st">"河口からの距離"</span><span class="op">)</span>,
+         Label <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/recode.html">recode</a></span><span class="op">(</span><span class="va">Label</span>, dist_from_sui <span class="op">=</span> <span class="st">"水産学部棟からの距離"</span><span class="op">)</span>,
+         Label <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/recode.html">recode</a></span><span class="op">(</span><span class="va">Label</span>, mean_f <span class="op">=</span> <span class="st">"平均フェッチ"</span><span class="op">)</span><span class="op">)</span>
+
+<span class="co"># サイト.</span>
+<span class="va">sites1</span> <span class="op">=</span> <span class="va">rout1</span> |&gt;
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">Score</span>, <span class="st">"sites"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span> 
+
+<span class="va">sites2</span> <span class="op">=</span> <span class="va">rout2</span> |&gt;
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">Score</span>, <span class="st">"sites"</span><span class="op">)</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_cols</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> |&gt; 
+  <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span>
+
+<span class="co"># 生物種.</span>
+<span class="va">species1</span> <span class="op">=</span> <span class="va">rout1</span> |&gt;
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">Score</span>, <span class="st">"species"</span><span class="op">)</span><span class="op">)</span>
+
+<span class="va">species2</span> <span class="op">=</span> <span class="va">rout2</span> |&gt;
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">Score</span>, <span class="st">"species"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>分析の結果を可視化します。
+説明変数から合成変量が構成され、それが応答変数の分散を説明する割合は最大化されています。</p>
+<div class="sourceCode" id="cb324"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># 表示したい生物種.</span>
+<span class="va">SP_LABEL</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"アオリイカ"</span>, <span class="st">"シロギス"</span>, <span class="st">"ブリ"</span>, <span class="st">"スズキ"</span>, 
+             <span class="st">"タチウオ"</span>, <span class="st">"イイダコ"</span>, <span class="st">"メバル"</span>, <span class="st">"カサゴ"</span>, 
+             <span class="st">"メジナ"</span>, <span class="st">"マダイ"</span>, <span class="st">"クロダイ"</span>, <span class="st">"マアジ"</span><span class="op">)</span>
+<span class="va">XLABEL</span> <span class="op">=</span> <span class="st">"RDA[1]"</span>
+<span class="va">YLABEL</span> <span class="op">=</span> <span class="st">"RDA[2]"</span>
+
+<span class="co"># scaling 1.</span>
+<span class="co"># 作図.</span>
+<span class="va">p1</span> <span class="op">=</span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, color <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, color <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">ggforce</span><span class="fu">::</span><span class="fu"><a href="https://ggforce.data-imaginist.com/reference/geom_circle.html">geom_circle</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x0 <span class="op">=</span> <span class="fl">0</span>, y0 <span class="op">=</span> <span class="fl">0</span>, r <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="co"># geom_point(aes(x = RDA1, y = RDA2, color = size_scl_mean),</span>
+  <span class="co">#            data = sites1, size = 5) +</span>
+  <span class="co"># 生物種.</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggrepel/man/geom_text_repel.html">geom_text_repel</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">RDA1</span>, y <span class="op">=</span> <span class="va">RDA2</span>, label <span class="op">=</span> <span class="va">Label</span><span class="op">)</span>,
+                  verbose <span class="op">=</span> <span class="cn">T</span>, force <span class="op">=</span> <span class="fl">1</span>, box.padding <span class="op">=</span> <span class="fl">0</span>, point.padding <span class="op">=</span> <span class="fl">0</span>,
+                  data <span class="op">=</span> <span class="va">species1</span> |&gt; <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">Label</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">SP_LABEL</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">3</span>, color <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span>  <span class="op">+</span>
+  <span class="co"># 矢印</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, y <span class="op">=</span> <span class="fl">0</span>, xend <span class="op">=</span> <span class="fl">2</span><span class="op">*</span><span class="va">RDA1</span>, yend <span class="op">=</span> <span class="fl">2</span><span class="op">*</span><span class="va">RDA2</span><span class="op">)</span>,
+               data <span class="op">=</span> <span class="va">biplot1</span>,
+               arrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/arrow.html">arrow</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">2</span>, <span class="st">"mm"</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"closed"</span><span class="op">)</span>,
+               color <span class="op">=</span> <span class="st">"black"</span>, size  <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span>
+  <span class="co"># 矢印の延長線.</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, y <span class="op">=</span> <span class="fl">0</span>, xend <span class="op">=</span> <span class="va">sRDA1</span>, yend <span class="op">=</span> <span class="va">sRDA2</span><span class="op">)</span>,
+               alpha <span class="op">=</span> <span class="fl">0.25</span>, size <span class="op">=</span> <span class="fl">7</span>, data <span class="op">=</span> <span class="va">biplot1</span>, color <span class="op">=</span> <span class="st">"gray70"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, y <span class="op">=</span> <span class="fl">0</span>, xend <span class="op">=</span> <span class="op">-</span><span class="va">sRDA1</span>, yend <span class="op">=</span> <span class="op">-</span><span class="va">sRDA2</span><span class="op">)</span>,
+               alpha <span class="op">=</span> <span class="fl">0.25</span>, size <span class="op">=</span> <span class="fl">7</span>, data <span class="op">=</span> <span class="va">biplot1</span>, color <span class="op">=</span> <span class="st">"gray70"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="co"># 説明変数の文字.</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">sRDA1</span>, y <span class="op">=</span> <span class="va">sRDA2</span>, label <span class="op">=</span> <span class="va">Label</span>, angle <span class="op">=</span> <span class="va">theta</span>, hjust <span class="op">=</span> <span class="va">hjust</span>, vjust <span class="op">=</span> <span class="va">vjust</span><span class="op">)</span>,
+            data <span class="op">=</span> <span class="va">biplot1</span>, size <span class="op">=</span> <span class="fl">3</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span>  <span class="op">+</span>
+  <span class="co"># サイト.</span>
+  <span class="co"># geom_label_repel(aes(x = RDA1, y = RDA2, label = spot),</span>
+  <span class="co">#                  verbose = T, force = 1, box.padding = 0, point.padding = 0,</span>
+  <span class="co">#                  data = sites1, size = 3)  +</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_color_viridis_c</a></span><span class="op">(</span>begin <span class="op">=</span> <span class="fl">0.1</span>, end <span class="op">=</span> <span class="fl">0.8</span>, option <span class="op">=</span> <span class="st">"B"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">XLABEL</span><span class="op">)</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">YLABEL</span><span class="op">)</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_equal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Distance biplot (scaling = 1)"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span>
+
+<span class="co"># scaling 2.</span>
+<span class="va">p2</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_vline</a></span><span class="op">(</span>xintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, color <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="st">"dashed"</span>, color <span class="op">=</span> <span class="st">"grey50"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">RDA1</span>, y <span class="op">=</span> <span class="va">RDA2</span>, color <span class="op">=</span> <span class="va">n</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">sites2</span>, size <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span>
+  <span class="co"># 矢印</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, y <span class="op">=</span> <span class="fl">0</span>, xend <span class="op">=</span> <span class="va">RDA1</span>, yend <span class="op">=</span> <span class="va">RDA2</span><span class="op">)</span>,
+               data <span class="op">=</span> <span class="va">biplot2</span>,
+               arrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/arrow.html">arrow</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">2</span>, <span class="st">"mm"</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"closed"</span><span class="op">)</span>,
+               color <span class="op">=</span> <span class="st">"black"</span>, size  <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="co"># 矢印の延長線.</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, y <span class="op">=</span> <span class="fl">0</span>, xend <span class="op">=</span> <span class="va">sRDA1</span>, yend <span class="op">=</span> <span class="va">sRDA2</span><span class="op">)</span>,
+               alpha <span class="op">=</span> <span class="fl">0.25</span>, size <span class="op">=</span> <span class="fl">7</span>, data <span class="op">=</span> <span class="va">biplot2</span>, color <span class="op">=</span> <span class="st">"gray70"</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">0</span>, y <span class="op">=</span> <span class="fl">0</span>, xend <span class="op">=</span> <span class="op">-</span><span class="va">sRDA1</span>, yend <span class="op">=</span> <span class="op">-</span><span class="va">sRDA2</span><span class="op">)</span>,
+               alpha <span class="op">=</span> <span class="fl">0.25</span>, size <span class="op">=</span> <span class="fl">7</span>, data <span class="op">=</span> <span class="va">biplot2</span>, color <span class="op">=</span> <span class="st">"gray70"</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="co"># 説明変数の文字.</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html">geom_text</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">sRDA1</span>, y <span class="op">=</span> <span class="va">sRDA2</span>, label <span class="op">=</span> <span class="va">Label</span>, angle <span class="op">=</span> <span class="va">theta</span>, hjust <span class="op">=</span> <span class="va">hjust</span>, vjust <span class="op">=</span> <span class="va">vjust</span><span class="op">)</span>,
+            data <span class="op">=</span> <span class="va">biplot2</span>, size <span class="op">=</span> <span class="fl">2</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span>  <span class="op">+</span>
+  <span class="co"># サイト.</span>
+  <span class="co"># geom_text_repel(aes(x = RDA1, y = RDA2, label = spot),</span>
+  <span class="co">#                  verbose = T, force = 1, box.padding = 0, point.padding = 0,</span>
+  <span class="co">#                  data = sites2, size = 3, color = "steelblue4") +</span>
+  <span class="co"># # 生物種.</span>
+  <span class="co"># geom_text_repel(aes(x = RDA1, y = RDA2, label = Label),</span>
+  <span class="co">#                 verbose = T, force = 1, box.padding = 0, point.padding = 0,</span>
+  <span class="co">#                 data = species2 |&gt; filter(Label %in% SP_LABEL), size = 3, color = "dodgerblue4") +</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_viridis.html">scale_color_viridis_c</a></span><span class="op">(</span>end <span class="op">=</span> <span class="fl">0.9</span>, option <span class="op">=</span> <span class="st">"B"</span>, 
+                        guide <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_colourbar.html">guide_colorbar</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"種数"</span>, 
+                                               title.position <span class="op">=</span> <span class="st">"top"</span>, title.hjust <span class="op">=</span> <span class="fl">0.5</span>, 
+                                               ticks <span class="op">=</span> <span class="cn">F</span>, label <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">XLABEL</span><span class="op">)</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/parse.html">parse</a></span><span class="op">(</span>text <span class="op">=</span> <span class="va">YLABEL</span><span class="op">)</span>, limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_equal</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Distance biplot (scaling = 2)"</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb325"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:unnamed-chunk-42"></span>
+<img src="80-redundancy-analysis_files/figure-html/unnamed-chunk-42-1.png" alt="
+冗長性解析の結果は 2 種類の図で確認できます。
+矢印の起点はその変数の平均値を表しています。
+矢印の反対方向は、変数値が変数平均値より低い方向を示しています。
+矢印が向かく方法は変数値が増加している方向を示しています。
+（右）scaling 1 では, 類似度が地点間の距離として表現されています。近いものは似ていて、離れているものは似ていていない。マアジとクロダイは全く反対側に位置するので、釣れた場所の違いが原因かもしれないです。
+（左）scaling 2 では, 相関関係が地点間の角度として表現されています。起点から点まで矢印を伸ばした場合、矢印間の角が鈍角のとき、負の相関関係を示していて、鋭角のときは正の相関関係を示しています。
+生物群集と環境要因のかかわりを平面に落とし込むことが出来ました。
+" width="90%"><p class="caption">
+Figure 15.1: 
+冗長性解析の結果は 2 種類の図で確認できます。
+矢印の起点はその変数の平均値を表しています。
+矢印の反対方向は、変数値が変数平均値より低い方向を示しています。
+矢印が向かく方法は変数値が増加している方向を示しています。
+（右）scaling 1 では, 類似度が地点間の距離として表現されています。近いものは似ていて、離れているものは似ていていない。マアジとクロダイは全く反対側に位置するので、釣れた場所の違いが原因かもしれないです。
+（左）scaling 2 では, 相関関係が地点間の角度として表現されています。起点から点まで矢印を伸ばした場合、矢印間の角が鈍角のとき、負の相関関係を示していて、鋭角のときは正の相関関係を示しています。
+生物群集と環境要因のかかわりを平面に落とし込むことが出来ました。
+</p>
+</div>
+<pre><code>#&gt; text repel complete in 144 iterations (0.00s), 2 overlaps</code></pre>
+
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="wind-fetch.html"><span class="header-section-number">14</span> 送風距離 (フェッチ, wind fetch )</a></div>
+<div class="next"><a href="wavelet.html"><span class="header-section-number">16</span> Wavelet 解析</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#redundancy-analysis"><span class="header-section-number">15</span> 冗長性分析 (RDA)</a></li>
+<li><a class="nav-link" href="#%E5%BF%85%E8%A6%81%E3%81%AA%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8-12"><span class="header-section-number">15.1</span> 必要なパッケージ</a></li>
+<li><a class="nav-link" href="#%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AE%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF-3"><span class="header-section-number">15.2</span> データの読み込み</a></li>
+<li><a class="nav-link" href="#gis-%E3%81%AE%E5%87%A6%E7%90%86"><span class="header-section-number">15.3</span> GIS の処理</a></li>
+<li><a class="nav-link" href="#%E5%86%97%E9%95%B7%E6%80%A7%E5%88%86%E6%9E%90-rda"><span class="header-section-number">15.4</span> 冗長性分析 (RDA)</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/gnishihara/Lab-Manual/blob/master/80-redundancy-analysis.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/gnishihara/Lab-Manual/edit/master/80-redundancy-analysis.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室 (greg nishihara). It was last built on 2022-05-13.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>
