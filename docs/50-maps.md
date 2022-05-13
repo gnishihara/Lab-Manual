@@ -17,6 +17,7 @@ library(showtext)   # I want to use google fonts in the figures
 
 次の2つは地図専用のパッケージです。
 
+
 ```r
 library(ggspatial)  # Essential for map-making with ggplot
 library(sf)         # Essential for map data manipulation

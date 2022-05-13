@@ -22,6 +22,28 @@
     
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
 <link rel="stylesheet" href="bs4_style.css">
 </head>
 <body data-spy="scroll" data-target="#toc">
@@ -58,7 +80,9 @@
 <li><a class="" href="non-linear-model01.html"><span class="header-section-number">11</span> 非線形モデル-I</a></li>
 <li><a class="" href="ggplot.html"><span class="header-section-number">12</span> ggplot</a></li>
 <li><a class="" href="maps.html"><span class="header-section-number">13</span> 地図の作り方</a></li>
-<li><a class="" href="wavelet.html"><span class="header-section-number">14</span> Wavelet 解析</a></li>
+<li><a class="" href="wind-fetch.html"><span class="header-section-number">14</span> 送風距離 (フェッチ, wind fetch )</a></li>
+<li><a class="" href="redundancy-analysis.html"><span class="header-section-number">15</span> 冗長性分析 (RDA)</a></li>
+<li><a class="" href="wavelet.html"><span class="header-section-number">16</span> Wavelet 解析</a></li>
 </ul>
 
         <div class="book-extra">
@@ -1459,6 +1483,7 @@ Variance &amp;= \mu + \frac{\mu}{\theta} \\
 <span class="co">#&gt; H2_poisson   4 540.6134</span>
 <span class="co">#&gt; H2_negbinom  5 284.8838</span></code></pre></div>
 <p>ポアソン分布GLMのAICが高いので，負の二項分布GLMを採択します。</p>
+<!-- \note[item]{\href{https://stats.stackexchange.com/questions/157575/why-is-the-quasi-poisson-in-glm-not-treated-as-a-special-case-of-negative-binomi}{Quasipoisson and negative binomial model}} -->
 <div id="負の二項分布の結果係数表" class="section level3" number="8.18.1">
 <h3>
 <span class="header-section-number">8.18.1</span> 負の二項分布の結果（係数表）<a class="anchor" aria-label="anchor" href="#%E8%B2%A0%E3%81%AE%E4%BA%8C%E9%A0%85%E5%88%86%E5%B8%83%E3%81%AE%E7%B5%90%E6%9E%9C%E4%BF%82%E6%95%B0%E8%A1%A8"><i class="fas fa-link"></i></a>
@@ -1668,7 +1693,7 @@ Variance &amp;= \mu + \frac{\mu}{\theta} \\
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室 (greg nishihara). It was last built on 2022-05-04.</p>
+    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室 (greg nishihara). It was last built on 2022-05-13.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

@@ -1,10 +1,10 @@
 --- 
 title: "データ解析マニュアル"
 author: "水圏植物生態学研究室 (greg nishihara)"
-date: "2022-05-04"
+date: "2022-05-13"
 site: bookdown::bookdown_site
 documentclass: book
-bibliography: [book.bib, packages.bib]
+bibliography: [book.bib, packages.bib, windfetch.bib, multivariate.bib ]
 # url: your book url like https://bookdown.org/yihui/bookdown
 # cover-image: path to the social sharing image like images/cover.jpg
 description: |
@@ -35,7 +35,7 @@ csl: chicago-fullnote-bibliography.csl
 
 **研究室の皆さん：**研究室用のデータは RStudio の `~/Lab_Data/` に入っています。
 
-マニュアルの更新日：05/04/2022 11:00:59 JST
+マニュアルの更新日：05/13/2022 11:39:16 JST
 
 ## サーバ環境 {-}
 
@@ -76,4 +76,17 @@ bookdown::render_book()
 ```r
 bookdown::serve_book()
 ```
+
+## R, Rtools, RStudio のリンク先
+
+* R は [CRANのサイト](https://cran.r-project.org/) からダウンロードしてください。
+* [Rtools42](https://cran.r-project.org/bin/windows/Rtools/rtools42/files/rtools42-5168-5107.exe) もインストールしてください。直接ダウンロードリンクに飛びます。
+* [RStudio](https://www.rstudio.com/products/rstudio/download/) のインストールも強くおすすめします。
+
+<img src="index_files/figure-html/unnamed-chunk-4-1.png" width="90%" style="display: block; margin: auto;" />
+
+
+
+
+
 

@@ -22,6 +22,28 @@
     
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   </style>
+<style type="text/css">
+    /* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+        }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
 <link rel="stylesheet" href="bs4_style.css">
 </head>
 <body data-spy="scroll" data-target="#toc">
@@ -58,7 +80,9 @@
 <li><a class="" href="non-linear-model01.html"><span class="header-section-number">11</span> 非線形モデル-I</a></li>
 <li><a class="" href="ggplot.html"><span class="header-section-number">12</span> ggplot</a></li>
 <li><a class="" href="maps.html"><span class="header-section-number">13</span> 地図の作り方</a></li>
-<li><a class="" href="wavelet.html"><span class="header-section-number">14</span> Wavelet 解析</a></li>
+<li><a class="" href="wind-fetch.html"><span class="header-section-number">14</span> 送風距離 (フェッチ, wind fetch )</a></li>
+<li><a class="" href="redundancy-analysis.html"><span class="header-section-number">15</span> 冗長性分析 (RDA)</a></li>
+<li><a class="" href="wavelet.html"><span class="header-section-number">16</span> Wavelet 解析</a></li>
 </ul>
 
         <div class="book-extra">
@@ -135,49 +159,49 @@
          c <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span>
 <span class="va">z</span>
 <span class="co">#&gt; $a</span>
-<span class="co">#&gt;  [1] -0.743104512  0.162977214  0.364003008 -0.925303727</span>
-<span class="co">#&gt;  [5] -0.029813896  0.001481265  1.313051198  0.288124445</span>
-<span class="co">#&gt;  [9]  0.238626003  0.229727301</span>
+<span class="co">#&gt;  [1]  1.4791785 -0.1438554  0.2482697  0.3668389  0.6041956</span>
+<span class="co">#&gt;  [6]  0.3306062 -0.2593741 -0.1650458  2.0903996 -1.4555092</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $b</span>
-<span class="co">#&gt;  [1] -0.3518930  0.7153468  0.9543066  1.0261762 -0.8950818</span>
-<span class="co">#&gt;  [6] -0.1867021  1.0894181  0.6495585  0.3339964  0.4533086</span>
+<span class="co">#&gt;  [1]  0.26024647 -1.69152339  0.27190315 -1.10126927</span>
+<span class="co">#&gt;  [5]  0.84767878  2.11992986  0.64611243  0.17848958</span>
+<span class="co">#&gt;  [9]  0.30964498  0.05438722</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $c</span>
-<span class="co">#&gt; [1] -1.2984696 -0.2439102  0.4221782 -0.1945762 -1.7367166</span></code></pre></div>
+<span class="co">#&gt; [1] -1.2820465 -0.5203833  0.5708300 -0.7918932  1.3111160</span></code></pre></div>
 <p>それぞれの要素の平均値を出したいなら、次のように <code><a href="https://purrr.tidyverse.org/reference/map.html">map()</a></code> を使います。</p>
 <div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">z</span>, <span class="va">mean</span><span class="op">)</span>
 <span class="co">#&gt; $a</span>
-<span class="co">#&gt; [1] 0.08997683</span>
+<span class="co">#&gt; [1] 0.3095704</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $b</span>
-<span class="co">#&gt; [1] 0.3788434</span>
+<span class="co">#&gt; [1] 0.18956</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $c</span>
-<span class="co">#&gt; [1] -0.6102989</span></code></pre></div>
+<span class="co">#&gt; [1] -0.1424754</span></code></pre></div>
 <p><code><a href="https://purrr.tidyverse.org/reference/map.html">map()</a></code>は必ず list として結果を返します。
 ベース　(base) R<code><a href="https://rdrr.io/r/base/lapply.html">lapply()</a></code> と同じですね。</p>
 <div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">z</span>, <span class="va">mean</span><span class="op">)</span>
 <span class="co">#&gt; $a</span>
-<span class="co">#&gt; [1] 0.08997683</span>
+<span class="co">#&gt; [1] 0.3095704</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $b</span>
-<span class="co">#&gt; [1] 0.3788434</span>
+<span class="co">#&gt; [1] 0.18956</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $c</span>
-<span class="co">#&gt; [1] -0.6102989</span></code></pre></div>
+<span class="co">#&gt; [1] -0.1424754</span></code></pre></div>
 <p>ベースRの <code><a href="https://rdrr.io/r/base/lapply.html">sapply()</a></code> のようにベクトルとして返してほしいなら、<code><a href="https://purrr.tidyverse.org/reference/map.html">map_dbl()</a></code> を使います。</p>
 <div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_dbl</a></span><span class="op">(</span><span class="va">z</span>, <span class="va">mean</span><span class="op">)</span>
-<span class="co">#&gt;           a           b           c </span>
-<span class="co">#&gt;  0.08997683  0.37884343 -0.61029890</span></code></pre></div>
+<span class="co">#&gt;          a          b          c </span>
+<span class="co">#&gt;  0.3095704  0.1895600 -0.1424754</span></code></pre></div>
 <p>ベースRの <code><a href="https://rdrr.io/r/base/lapply.html">sapply()</a></code> の結果と同じです。</p>
 <div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">z</span>, <span class="va">mean</span><span class="op">)</span>
-<span class="co">#&gt;           a           b           c </span>
-<span class="co">#&gt;  0.08997683  0.37884343 -0.61029890</span></code></pre></div>
+<span class="co">#&gt;          a          b          c </span>
+<span class="co">#&gt;  0.3095704  0.1895600 -0.1424754</span></code></pre></div>
 <p>ちなみに、for-loop でもできますが、研究室では使用を禁じます。</p>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># 良い子はループ使わない。</span>
@@ -187,7 +211,7 @@
   <span class="va">zout</span><span class="op">[</span><span class="va">i</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">z</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>
 <span class="op">}</span>
 <span class="va">zout</span>
-<span class="co">#&gt; [1]  0.08997683  0.37884343 -0.61029890</span></code></pre></div>
+<span class="co">#&gt; [1]  0.3095704  0.1895600 -0.1424754</span></code></pre></div>
 </div>
 <div id="map-の魅力" class="section level2" number="5.4">
 <h2>
@@ -417,7 +441,7 @@ N &gt; 1 のベクトルなので、エラーが発生した。</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室 (greg nishihara). It was last built on 2022-05-04.</p>
+    <p>"<strong>データ解析マニュアル</strong>" was written by 水圏植物生態学研究室 (greg nishihara). It was last built on 2022-05-13.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
